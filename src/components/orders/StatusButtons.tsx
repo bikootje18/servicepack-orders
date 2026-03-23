@@ -1,6 +1,6 @@
 'use client'
 
-import { updateOrderStatus } from '@/lib/db/orders'
+import { updateOrderStatus } from '@/lib/actions/orders'
 import { useRouter } from 'next/navigation'
 import type { Order, OrderStatus } from '@/types'
 

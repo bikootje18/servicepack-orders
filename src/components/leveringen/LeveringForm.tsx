@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { createLevering } from '@/lib/db/leveringen'
+import { createLevering } from '@/lib/actions/leveringen'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 
