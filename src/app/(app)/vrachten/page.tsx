@@ -18,42 +18,44 @@ export default async function VrachtenPage() {
       {vrachten.length === 0 ? (
         <p className="text-gray-500 text-sm">Nog geen vrachten aangemaakt.</p>
       ) : (
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="border-b border-gray-200">
-              <th className="text-left py-2 font-medium text-gray-600">Vrachtbrief nr.</th>
-              <th className="text-left py-2 font-medium text-gray-600">Klant</th>
-              <th className="text-left py-2 font-medium text-gray-600">Datum</th>
-              <th className="text-left py-2 font-medium text-gray-600">Factuur</th>
-              <th className="text-right py-2 font-medium text-gray-600">Bedrag</th>
-            </tr>
-          </thead>
-          <tbody>
-            {vrachten.map(v => (
-              <tr key={v.id} className="border-b border-gray-100 hover:bg-gray-50">
-                <td className="py-2">
-                  <Link href={`/vrachten/${v.id}`} className="font-mono text-xs text-blue-600 hover:underline">
-                    {v.vrachtbrief_nummer}
-                  </Link>
-                </td>
-                <td className="py-2">{v.klant?.naam}</td>
-                <td className="py-2">{formatDate(v.datum)}</td>
-                <td className="py-2">
-                  {v.factuur ? (
-                    <Link href={`/facturen/${v.factuur.id}`} className="font-mono text-xs text-blue-600 hover:underline">
-                      {v.factuur.factuur_nummer}
-                    </Link>
-                  ) : (
-                    <span className="text-gray-400">–</span>
-                  )}
-                </td>
-                <td className="py-2 text-right">
-                  {v.factuur ? formatCurrency(v.factuur.totaal_bedrag) : '–'}
-                </td>
+        <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-gray-100 bg-gray-50/60">
+                <th className="text-left px-4 py-3 font-medium text-gray-500 text-xs uppercase tracking-wide">Vrachtbrief nr.</th>
+                <th className="text-left px-4 py-3 font-medium text-gray-500 text-xs uppercase tracking-wide">Klant</th>
+                <th className="text-left px-4 py-3 font-medium text-gray-500 text-xs uppercase tracking-wide">Datum</th>
+                <th className="text-left px-4 py-3 font-medium text-gray-500 text-xs uppercase tracking-wide">Factuur</th>
+                <th className="text-right px-4 py-3 font-medium text-gray-500 text-xs uppercase tracking-wide">Bedrag</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="divide-y divide-gray-100">
+              {vrachten.map(v => (
+                <tr key={v.id} className="hover:bg-gray-50/70 transition-colors">
+                  <td className="px-4 py-3">
+                    <Link href={`/vrachten/${v.id}`} className="font-mono text-xs text-blue-600 hover:text-blue-800 font-medium">
+                      {v.vrachtbrief_nummer}
+                    </Link>
+                  </td>
+                  <td className="px-4 py-3 font-medium">{v.klant?.naam}</td>
+                  <td className="px-4 py-3 text-gray-400 text-xs">{formatDate(v.datum)}</td>
+                  <td className="px-4 py-3">
+                    {v.factuur ? (
+                      <Link href={`/facturen/${v.factuur.id}`} className="font-mono text-xs text-blue-600 hover:text-blue-800">
+                        {v.factuur.factuur_nummer}
+                      </Link>
+                    ) : (
+                      <span className="text-gray-400">–</span>
+                    )}
+                  </td>
+                  <td className="px-4 py-3 text-right tabular-nums">
+                    {v.factuur ? formatCurrency(v.factuur.totaal_bedrag) : '–'}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
     </div>
   )
