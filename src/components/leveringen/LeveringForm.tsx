@@ -2,7 +2,6 @@
 
 import { useState } from 'react'
 import { createLevering } from '@/lib/actions/leveringen'
-import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 
 interface Props {
@@ -34,15 +33,12 @@ export function LeveringForm({ orderId, orderGrootte, totaalGeleverd }: Props) {
       return
     }
 
-    const supabase = createClient()
-    const { data: { user } } = await supabase.auth.getUser()
-
     await createLevering({
       order_id: orderId,
       aantal_geleverd: aantal,
       leverdatum: formData.get('leverdatum') as string,
       notities: formData.get('notities') as string || '',
-      aangemaakt_door: user?.id ?? null,
+      aangemaakt_door: null,
     })
 
     router.refresh()
@@ -57,23 +53,23 @@ export function LeveringForm({ orderId, orderGrootte, totaalGeleverd }: Props) {
         <div>
           <label className="block text-xs font-medium text-gray-700 mb-1">Aantal geleverd *</label>
           <input name="aantal_geleverd" type="number" min="1" max={resterend} required
-            className="w-full border border-gray-300 rounded px-3 py-2 text-sm" />
+            className="form-input" />
         </div>
         <div>
           <label className="block text-xs font-medium text-gray-700 mb-1">Leverdatum *</label>
           <input name="leverdatum" type="date" required
             defaultValue={new Date().toISOString().split('T')[0]}
-            className="w-full border border-gray-300 rounded px-3 py-2 text-sm" />
+            className="form-input" />
         </div>
         <div>
           <label className="block text-xs font-medium text-gray-700 mb-1">Notities</label>
           <input name="notities"
-            className="w-full border border-gray-300 rounded px-3 py-2 text-sm" />
+            className="form-input" />
         </div>
       </div>
       {fout && <p className="text-sm text-red-600 mt-2">{fout}</p>}
       <button type="submit" disabled={laden}
-        className="mt-3 bg-blue-600 text-white px-4 py-2 rounded text-sm font-medium hover:bg-blue-700 disabled:opacity-50">
+        className="mt-3 btn-primary">
         {laden ? 'Opslaan...' : 'Levering toevoegen'}
       </button>
     </form>
