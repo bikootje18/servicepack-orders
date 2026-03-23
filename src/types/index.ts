@@ -57,9 +57,10 @@ export interface Levering {
 export interface Factuur {
   id: string
   factuur_nummer: string
-  order_id: string
+  order_id: string | null      // null for vracht facturen
+  vracht_id: string | null     // set for vracht facturen
   totaal_eenheden: number
-  tarief: number
+  tarief: number               // stays number for now; Task 8 changes this to number | null
   totaal_bedrag: number
   status: FactuurStatus
   factuurdatum: string
@@ -67,6 +68,7 @@ export interface Factuur {
   aangemaakt_op: string
   // Joins
   order?: Order
+  vracht?: Vracht
 }
 
 export interface VoorraadRegel {
@@ -76,4 +78,29 @@ export interface VoorraadRegel {
   order_grootte: number
   totaal_geleverd: number
   resterend: number
+}
+
+export interface Vracht {
+  id: string
+  klant_id: string
+  vrachtbrief_nummer: string
+  datum: string
+  notities: string
+  aangemaakt_op: string
+  // Joins
+  klant?: Klant
+  regels?: VrachtRegel[]
+  factuur?: Pick<Factuur, 'id' | 'factuur_nummer' | 'status' | 'totaal_bedrag'>
+}
+
+export interface VrachtRegel {
+  id: string
+  vracht_id: string
+  levering_id: string
+  // Joins
+  levering?: Levering & {
+    order?: Order & {
+      facturatie_code?: FacturatieCode
+    }
+  }
 }
