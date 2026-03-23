@@ -6,7 +6,7 @@ export default async function VrachtenPage() {
   const vrachten = await getVrachten()
 
   return (
-    <div className="max-w-4xl">
+    <div>
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold">Vrachten</h1>
         <Link href="/vrachten/nieuw"
