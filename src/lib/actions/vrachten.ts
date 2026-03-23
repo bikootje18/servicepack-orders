@@ -1,0 +1,24 @@
+'use server'
+
+import { redirect } from 'next/navigation'
+import { revalidatePath } from 'next/cache'
+import { createVracht } from '@/lib/db/vrachten'
+import { createVrachtFactuur as dbCreateFactuur } from '@/lib/db/facturen'
+
+export async function createVrachtAction(formData: FormData): Promise<void> {
+  const klant_id = formData.get('klant_id') as string
+  const datum = formData.get('datum') as string
+  const notities = (formData.get('notities') as string) ?? ''
+  const levering_ids = formData.getAll('levering_ids') as string[]
+
+  if (!klant_id || !datum || levering_ids.length === 0) return
+
+  const vracht = await createVracht({ klant_id, datum, notities, levering_ids })
+  redirect(`/vrachten/${vracht.id}`)
+}
+
+export async function createVrachtFactuurAction(vrachtId: string): Promise<void> {
+  const factuur = await dbCreateFactuur(vrachtId)
+  revalidatePath(`/vrachten/${vrachtId}`)
+  redirect(`/facturen/${factuur.id}`)
+}

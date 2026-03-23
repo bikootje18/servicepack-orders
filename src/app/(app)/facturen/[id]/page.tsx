@@ -17,10 +17,13 @@ export default async function FactuurDetailPage({
 }) {
   const { id } = await params
   const factuur = await getFactuur(id)
-  const leveringen = await getLeveringen(factuur.order_id).then(all =>
-    all.filter(l => l.factuur_id === id)
-  )
-  const klantNaam = (factuur.order as any)?.klant?.naam ?? '–'
+  // Guard: vracht facturen have null order_id — Task 8 fully handles them
+  const leveringen = factuur.order_id
+    ? await getLeveringen(factuur.order_id).then(all => all.filter(l => l.factuur_id === id))
+    : []
+  const klantNaam = (factuur.order as any)?.klant?.naam
+    ?? (factuur.vracht as any)?.klant?.naam
+    ?? '–'
 
   async function setVerzonden() {
     'use server'
