@@ -1,0 +1,123 @@
+import { redirect } from 'next/navigation'
+import { getOrder, updateOrder } from '@/lib/db/orders'
+import { getKlanten } from '@/lib/db/klanten'
+import { getCodes } from '@/lib/db/codes'
+
+export default async function BewerkenOrderPage({
+  params,
+}: {
+  params: Promise<{ id: string }>
+}) {
+  const { id } = await params
+  const [order, klanten, codes] = await Promise.all([
+    getOrder(id),
+    getKlanten(),
+    getCodes(),
+  ])
+
+  async function slaOpgeslagenOp(formData: FormData) {
+    'use server'
+    await updateOrder(id, {
+      order_nummer: formData.get('order_nummer') as string,
+      order_code: formData.get('order_code') as string,
+      klant_id: formData.get('klant_id') as string,
+      facturatie_code_id: formData.get('facturatie_code_id') as string,
+      order_grootte: parseInt(formData.get('order_grootte') as string),
+      aantal_per_doos: parseInt(formData.get('aantal_per_doos') as string) || 0,
+      aantal_per_inner: parseInt(formData.get('aantal_per_inner') as string) || 0,
+      aantal_per_pallet: parseInt(formData.get('aantal_per_pallet') as string) || 0,
+      bewerking: formData.get('bewerking') as string || '',
+      opwerken: formData.get('opwerken') === 'on',
+      omschrijving: formData.get('omschrijving') as string || '',
+    })
+    redirect(`/orders/${id}`)
+  }
+
+  return (
+    <div className="max-w-2xl">
+      <h1 className="text-2xl font-bold mb-6">Order bewerken: {order.order_nummer}</h1>
+      <form action={slaOpgeslagenOp} className="space-y-4">
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Ordernummer *</label>
+            <input name="order_nummer" required defaultValue={order.order_nummer}
+              className="w-full border border-gray-300 rounded px-3 py-2 text-sm" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Order code *</label>
+            <input name="order_code" required defaultValue={order.order_code}
+              className="w-full border border-gray-300 rounded px-3 py-2 text-sm" />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Klant *</label>
+            <select name="klant_id" required defaultValue={order.klant_id}
+              className="w-full border border-gray-300 rounded px-3 py-2 text-sm">
+              {klanten.map(k => <option key={k.id} value={k.id}>{k.naam}</option>)}
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Facturatie code *</label>
+            <select name="facturatie_code_id" required defaultValue={order.facturatie_code_id}
+              className="w-full border border-gray-300 rounded px-3 py-2 text-sm">
+              {codes.map(c => <option key={c.id} value={c.id}>{c.code} – {c.omschrijving}</option>)}
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Order grootte *</label>
+          <input name="order_grootte" type="number" min="1" required defaultValue={order.order_grootte}
+            className="w-full border border-gray-300 rounded px-3 py-2 text-sm" />
+        </div>
+
+        <div className="grid grid-cols-3 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Per doos</label>
+            <input name="aantal_per_doos" type="number" min="0" defaultValue={order.aantal_per_doos}
+              className="w-full border border-gray-300 rounded px-3 py-2 text-sm" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Per inner</label>
+            <input name="aantal_per_inner" type="number" min="0" defaultValue={order.aantal_per_inner}
+              className="w-full border border-gray-300 rounded px-3 py-2 text-sm" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Per pallet</label>
+            <input name="aantal_per_pallet" type="number" min="0" defaultValue={order.aantal_per_pallet}
+              className="w-full border border-gray-300 rounded px-3 py-2 text-sm" />
+          </div>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Bewerking</label>
+          <input name="bewerking" defaultValue={order.bewerking}
+            className="w-full border border-gray-300 rounded px-3 py-2 text-sm" />
+        </div>
+
+        <div className="flex items-center gap-2">
+          <input name="opwerken" type="checkbox" id="opwerken" defaultChecked={order.opwerken} />
+          <label htmlFor="opwerken" className="text-sm font-medium text-gray-700">Opwerken</label>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Omschrijving</label>
+          <textarea name="omschrijving" rows={3} defaultValue={order.omschrijving}
+            className="w-full border border-gray-300 rounded px-3 py-2 text-sm" />
+        </div>
+
+        <div className="flex gap-3">
+          <button type="submit"
+            className="bg-blue-600 text-white px-6 py-2 rounded text-sm font-medium hover:bg-blue-700">
+            Opslaan
+          </button>
+          <a href={`/orders/${id}`} className="px-6 py-2 rounded text-sm border border-gray-300 hover:bg-gray-50">
+            Annuleren
+          </a>
+        </div>
+      </form>
+    </div>
+  )
+}
