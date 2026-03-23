@@ -59,7 +59,8 @@ export default async function VrachtDetailPage({
         </thead>
         <tbody>
           {regels.map(r => {
-            const levering = r.levering!
+            if (!r.levering) return null
+            const levering = r.levering
             const tarief = levering.order?.facturatie_code?.tarief ?? 0
             return (
               <tr key={r.id} className="border-b border-gray-100">
