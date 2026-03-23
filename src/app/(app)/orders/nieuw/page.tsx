@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation'
 import { getKlanten } from '@/lib/db/klanten'
 import { getCodes } from '@/lib/db/codes'
 import { createOrder } from '@/lib/db/orders'
+import { createClient } from '@/lib/supabase/server'
 
 export default async function NieuweOrderPage({
   searchParams,
@@ -9,6 +10,8 @@ export default async function NieuweOrderPage({
   searchParams: Promise<{ kloon?: string }>
 }) {
   const params = await searchParams
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
   const klanten = await getKlanten()
   const codes = await getCodes()
 
@@ -33,7 +36,7 @@ export default async function NieuweOrderPage({
       bewerking: formData.get('bewerking') as string || '',
       opwerken: formData.get('opwerken') === 'on',
       omschrijving: formData.get('omschrijving') as string || '',
-      aangemaakt_door: null,
+      aangemaakt_door: user?.id ?? null,
     })
     redirect(`/orders/${order.id}`)
   }
