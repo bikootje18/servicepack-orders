@@ -5,7 +5,7 @@ export function berekenVrachtBedrag(
   regels: { aantal_geleverd: number; tarief: number }[]
 ): number {
   const totaal = regels.reduce((sum, r) => sum + r.tarief * r.aantal_geleverd, 0)
-  return Math.round(totaal * 100) / 100
+  return Number(totaal.toFixed(2))
 }
 
 export async function getVrachten(): Promise<Vracht[]> {
@@ -86,6 +86,8 @@ export async function createVracht(data: {
   notities: string
   levering_ids: string[]
 }): Promise<Vracht> {
+  if (data.levering_ids.length === 0) throw new Error('levering_ids mag niet leeg zijn')
+
   const supabase = await createClient()
 
   const { data: vracht, error: vrachtError } = await supabase

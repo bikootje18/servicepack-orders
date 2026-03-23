@@ -18,4 +18,11 @@ describe('berekenVrachtBedrag', () => {
   it('returns 0 for empty regels', () => {
     expect(berekenVrachtBedrag([])).toBe(0)
   })
+
+  it('handles floating-point tarief correctly', () => {
+    // 1 * 0.575 with Math.round would give 0.57 due to IEEE 754
+    // Number(toFixed(2)) handles this correctly
+    const regels = [{ aantal_geleverd: 2, tarief: 0.155 }]
+    expect(berekenVrachtBedrag(regels)).toBe(0.31)
+  })
 })
