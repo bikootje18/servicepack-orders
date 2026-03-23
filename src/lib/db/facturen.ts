@@ -98,9 +98,12 @@ export async function getLeveringenVoorVrachtFactuur(
     .eq('factuur_id', factuurId)
     .order('leverdatum')
   if (error) throw error
-  return data as any
+  return data as (Levering & { order: Order & { facturatie_code: { tarief: number } } })[]
 }
 
+// Note: the factuur insert and leveringen update are not wrapped in a transaction.
+// If the update fails, an orphan factuur row will exist. This matches the pattern
+// in createFactuur above and should be addressed with a Supabase RPC in the future.
 export async function createVrachtFactuur(vrachtId: string): Promise<Factuur> {
   const supabase = await createClient()
 
@@ -111,10 +114,10 @@ export async function createVrachtFactuur(vrachtId: string): Promise<Factuur> {
     .eq('vracht_id', vrachtId)
   if (regelsError) throw regelsError
 
-  const totaalEenheden = regels.reduce((sum: number, r: any) => sum + r.levering.aantal_geleverd, 0)
+  const totaalEenheden = regels.reduce((sum: number, r: any) => sum + (r.levering?.aantal_geleverd ?? 0), 0)
   const totaalBedrag = regels.reduce((sum: number, r: any) => {
-    const tarief = r.levering.order.facturatie_code.tarief
-    return sum + tarief * r.levering.aantal_geleverd
+    const tarief = r.levering?.order?.facturatie_code?.tarief ?? 0
+    return sum + tarief * (r.levering?.aantal_geleverd ?? 0)
   }, 0)
 
   const { data: factuurNummer, error: seqError } = await supabase.rpc('generate_factuur_nummer')
