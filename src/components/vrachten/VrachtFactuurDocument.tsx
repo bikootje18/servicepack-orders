@@ -33,7 +33,7 @@ interface Props {
 export function VrachtFactuurDocument({ factuur, leveringen, klantNaam }: Props) {
   // Group by order
   const groups = leveringen.reduce<Record<string, LeveringMetOrder[]>>((acc, l) => {
-    const key = (l as any).order?.order_nummer ?? 'Onbekend'
+    const key = l.order?.order_nummer ?? 'Onbekend'
     if (!acc[key]) acc[key] = []
     acc[key].push(l)
     return acc
@@ -52,7 +52,7 @@ export function VrachtFactuurDocument({ factuur, leveringen, klantNaam }: Props)
           // tarief is taken from the first levering in the group; all leveringen within
           // an order share the same facturatie_code (it's an order-level property).
           // Falls back to 0 if the join is missing — this would produce a €0 line.
-          const tarief = (regels[0] as any).order?.facturatie_code?.tarief ?? 0
+          const tarief = regels[0].order?.facturatie_code?.tarief ?? 0
           return (
             <View key={orderNummer}>
               <Text style={S.orderHeader}>Order: {orderNummer}</Text>

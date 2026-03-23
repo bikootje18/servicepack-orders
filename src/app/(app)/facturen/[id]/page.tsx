@@ -70,7 +70,7 @@ export default async function FactuurDetailPage({
         {isVrachtFactuur ? (
           <div><span className="text-gray-500">Vrachten:</span>{' '}
             <Link href={`/vrachten/${factuur.vracht_id}`} className="font-mono text-xs text-blue-600 hover:underline">
-              {(factuur.vracht as any)?.vrachtbrief_nummer}
+              {factuur.vracht?.vrachtbrief_nummer}
             </Link>
           </div>
         ) : (
