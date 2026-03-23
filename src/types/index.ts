@@ -60,7 +60,7 @@ export interface Factuur {
   order_id: string | null      // null for vracht facturen
   vracht_id: string | null     // set for vracht facturen
   totaal_eenheden: number
-  tarief: number               // stays number for now; Task 8 changes this to number | null
+  tarief: number | null        // null for vracht facturen with mixed tarifeven
   totaal_bedrag: number
   status: FactuurStatus
   factuurdatum: string

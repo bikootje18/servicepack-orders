@@ -9,18 +9,18 @@ interface Props {
   klantNaam: string
 }
 
-export function FactuurPrintKnop({ factuur, leveringen, klantNaam }: Props) {
+export function VrachtFactuurKnop({ factuur, leveringen, klantNaam }: Props) {
   const [laden, setLaden] = useState(false)
 
   async function handleDownload() {
     setLaden(true)
     try {
-      const [{ pdf }, { createElement }, { FactuurDocument }] = await Promise.all([
+      const [{ pdf }, { createElement }, { VrachtFactuurDocument }] = await Promise.all([
         import('@react-pdf/renderer'),
         import('react'),
-        import('./FactuurDocument'),
+        import('./VrachtFactuurDocument'),
       ])
-      const blob = await pdf(createElement(FactuurDocument, { factuur, leveringen, klantNaam }) as any).toBlob()
+      const blob = await pdf(createElement(VrachtFactuurDocument, { factuur, leveringen, klantNaam }) as any).toBlob()
       const url = URL.createObjectURL(blob)
       const a = document.createElement('a')
       a.href = url

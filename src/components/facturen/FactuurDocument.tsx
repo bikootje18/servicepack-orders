@@ -39,8 +39,8 @@ export function FactuurDocument({ factuur, leveringen, klantNaam }: Props) {
             <View key={l.id} style={styles.row}>
               <Text>{l.leverdatum}</Text>
               <Text>{l.aantal_geleverd.toLocaleString('nl-NL')}</Text>
-              <Text>€ {factuur.tarief.toFixed(4)}</Text>
-              <Text>€ {(factuur.tarief * l.aantal_geleverd).toFixed(2)}</Text>
+              <Text>€ {(factuur.tarief ?? 0).toFixed(4)}</Text>
+              <Text>€ {((factuur.tarief ?? 0) * l.aantal_geleverd).toFixed(2)}</Text>
             </View>
           ))}
         </View>

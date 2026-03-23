@@ -51,7 +51,7 @@ function verpakkingLabel(aantal: number, perDoos: number, perPallet: number): st
 
 export function VrachtbriefDocument({ vracht }: Props) {
   const regels = vracht.regels ?? []
-  const totaalEenheden = regels.reduce((sum, r) => sum + r.levering.aantal_geleverd, 0)
+  const totaalEenheden = regels.reduce((sum, r) => sum + (r.levering?.aantal_geleverd ?? 0), 0)
 
   return (
     <Document>
@@ -105,9 +105,9 @@ export function VrachtbriefDocument({ vracht }: Props) {
             <Text style={{ ...S.cell, flex: 1, borderBottom: '1pt solid #333' }}>Verpakking</Text>
             <Text style={{ ...S.cellRight, flex: 1, borderBottom: '1pt solid #333', borderRight: '1pt solid #333' }}>Tarief code</Text>
           </View>
-          {regels.map(r => {
-            const l = r.levering
-            const o = l.order
+          {regels.filter(r => r.levering != null).map(r => {
+            const l = r.levering!
+            const o = l.order!
             return (
               <View key={l.id} style={{ ...S.tableRow, borderBottom: '1pt solid #ccc' }}>
                 <View style={{ ...S.cell, flex: 2 }}>

@@ -18,7 +18,7 @@ export function VrachtbriefKnop({ vracht }: Props) {
         import('react'),
         import('./VrachtbriefDocument'),
       ])
-      const blob = await pdf(createElement(VrachtbriefDocument, { vracht })).toBlob()
+      const blob = await pdf(createElement(VrachtbriefDocument, { vracht: vracht as any }) as any).toBlob()
       const url = URL.createObjectURL(blob)
       const a = document.createElement('a')
       a.href = url

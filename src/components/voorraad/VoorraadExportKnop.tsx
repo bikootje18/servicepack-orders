@@ -1,17 +1,7 @@
 'use client'
 
-import dynamic from 'next/dynamic'
+import { useState } from 'react'
 import type { VoorraadRegel } from '@/types'
-
-const PDFDownloadLink = dynamic(
-  () => import('@react-pdf/renderer').then(m => m.PDFDownloadLink),
-  { ssr: false }
-)
-
-const VoorraadDocument = dynamic(
-  () => import('./VoorraadDocument').then(m => m.VoorraadDocument),
-  { ssr: false }
-)
 
 interface Props {
   klantNaam: string
@@ -19,14 +9,36 @@ interface Props {
 }
 
 export function VoorraadExportKnop({ klantNaam, regels }: Props) {
-  const datum = new Date().toLocaleDateString('nl-NL')
+  const [laden, setLaden] = useState(false)
+
+  async function handleDownload() {
+    setLaden(true)
+    try {
+      const datum = new Date().toLocaleDateString('nl-NL')
+      const [{ pdf }, { createElement }, { VoorraadDocument }] = await Promise.all([
+        import('@react-pdf/renderer'),
+        import('react'),
+        import('./VoorraadDocument'),
+      ])
+      const blob = await pdf(createElement(VoorraadDocument, { klantNaam, regels, datum }) as any).toBlob()
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `voorraad-${klantNaam.replace(/\s+/g, '-').toLowerCase()}.pdf`
+      a.click()
+      URL.revokeObjectURL(url)
+    } finally {
+      setLaden(false)
+    }
+  }
+
   return (
-    <PDFDownloadLink
-      document={<VoorraadDocument klantNaam={klantNaam} regels={regels} datum={datum} />}
-      fileName={`voorraad-${klantNaam.replace(/\s+/g, '-').toLowerCase()}.pdf`}
-      className="text-sm border border-gray-300 px-3 py-1 rounded hover:bg-gray-50 inline-block"
+    <button
+      onClick={handleDownload}
+      disabled={laden}
+      className="text-sm border border-gray-300 px-3 py-1 rounded hover:bg-gray-50 disabled:opacity-50"
     >
-      {({ loading }) => loading ? 'PDF laden...' : 'Export PDF'}
-    </PDFDownloadLink>
+      {laden ? 'PDF laden...' : 'Export PDF'}
+    </button>
   )
 }
