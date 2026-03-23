@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { DM_Sans, Syne } from 'next/font/google'
+import { DM_Sans } from 'next/font/google'
 import './globals.css'
 
 const dmSans = DM_Sans({
@@ -8,18 +8,11 @@ const dmSans = DM_Sans({
   display: 'swap',
 })
 
-const syne = Syne({
-  subsets: ['latin'],
-  variable: '--font-syne',
-  weight: ['600', '700'],
-  display: 'swap',
-})
-
 export const metadata: Metadata = { title: 'OSS – Orderbeheer' }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="nl" className={`${dmSans.variable} ${syne.variable}`}>
+    <html lang="nl" className={dmSans.variable}>
       <body className="bg-[#F8F7F4] text-[#111827] antialiased">{children}</body>
     </html>
   )
