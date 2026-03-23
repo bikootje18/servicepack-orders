@@ -35,7 +35,15 @@ export default async function VoorraadPage() {
                   <td className="py-2 font-mono text-xs">{r.order_nummer}</td>
                   <td className="py-2 text-right">{formatAantal(r.order_grootte)}</td>
                   <td className="py-2 text-right">{formatAantal(r.totaal_geleverd)}</td>
-                  <td className="py-2 text-right font-semibold">{formatAantal(r.resterend)}</td>
+                  <td className="py-2 text-right">
+                    <span className="font-semibold">{formatAantal(r.resterend)}</span>
+                    <div className="mt-1 h-0.5 bg-gray-200 rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-[#7C3AED] rounded-full transition-all"
+                        style={{ width: `${r.order_grootte > 0 ? Math.round((r.resterend / r.order_grootte) * 100) : 0}%` }}
+                      />
+                    </div>
+                  </td>
                 </tr>
               ))}
             </tbody>
