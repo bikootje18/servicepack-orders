@@ -29,7 +29,7 @@ export default async function DashboardPage() {
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-lg font-semibold">Actieve orders</h2>
         <Link href="/orders/nieuw"
-          className="bg-blue-600 text-white px-4 py-2 rounded text-sm font-medium hover:bg-blue-700">
+          className="btn-primary">
           + Nieuwe order
         </Link>
       </div>

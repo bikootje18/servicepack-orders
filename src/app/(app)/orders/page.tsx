@@ -20,39 +20,41 @@ export default async function OrdersPage({
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold">Orders</h1>
         <Link href="/orders/nieuw"
-          className="bg-blue-600 text-white px-4 py-2 rounded text-sm font-medium hover:bg-blue-700">
+          className="btn-primary">
           + Nieuwe order
         </Link>
       </div>
 
-      <table className="w-full text-sm">
-        <thead>
-          <tr className="border-b border-gray-200">
-            <th className="text-left py-2 font-medium text-gray-600">Ordernummer</th>
-            <th className="text-left py-2 font-medium text-gray-600">Klant</th>
-            <th className="text-left py-2 font-medium text-gray-600">Order code</th>
-            <th className="text-right py-2 font-medium text-gray-600">Grootte</th>
-            <th className="text-left py-2 font-medium text-gray-600">Status</th>
-            <th className="text-left py-2 font-medium text-gray-600">Datum</th>
-          </tr>
-        </thead>
-        <tbody>
-          {orders.map(order => (
-            <tr key={order.id} className="border-b border-gray-100 hover:bg-gray-50">
-              <td className="py-2">
-                <Link href={`/orders/${order.id}`} className="text-blue-600 hover:underline font-mono text-xs">
-                  {order.order_nummer}
-                </Link>
-              </td>
-              <td className="py-2">{order.klant?.naam}</td>
-              <td className="py-2 font-mono text-xs text-gray-500">{order.order_code}</td>
-              <td className="py-2 text-right">{order.order_grootte.toLocaleString('nl-NL')}</td>
-              <td className="py-2"><StatusBadge status={order.status} /></td>
-              <td className="py-2 text-gray-500">{formatDate(order.aangemaakt_op.split('T')[0])}</td>
+      <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="border-b border-gray-100 bg-gray-50/60">
+              <th className="text-left px-4 py-3 font-medium text-gray-500 text-xs uppercase tracking-wide">Ordernummer</th>
+              <th className="text-left px-4 py-3 font-medium text-gray-500 text-xs uppercase tracking-wide">Klant</th>
+              <th className="text-left px-4 py-3 font-medium text-gray-500 text-xs uppercase tracking-wide">Code</th>
+              <th className="text-right px-4 py-3 font-medium text-gray-500 text-xs uppercase tracking-wide">Grootte</th>
+              <th className="text-left px-4 py-3 font-medium text-gray-500 text-xs uppercase tracking-wide">Status</th>
+              <th className="text-left px-4 py-3 font-medium text-gray-500 text-xs uppercase tracking-wide">Datum</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody className="divide-y divide-gray-100">
+            {orders.map(order => (
+              <tr key={order.id} className="hover:bg-gray-50/70 transition-colors">
+                <td className="px-4 py-3">
+                  <Link href={`/orders/${order.id}`} className="text-blue-600 hover:text-blue-800 font-mono text-xs font-medium">
+                    {order.order_nummer}
+                  </Link>
+                </td>
+                <td className="px-4 py-3 font-medium">{order.klant?.naam}</td>
+                <td className="px-4 py-3 font-mono text-xs text-gray-400">{order.order_code}</td>
+                <td className="px-4 py-3 text-right tabular-nums">{order.order_grootte.toLocaleString('nl-NL')}</td>
+                <td className="px-4 py-3"><StatusBadge status={order.status} /></td>
+                <td className="px-4 py-3 text-gray-400 text-xs">{formatDate(order.aangemaakt_op.split('T')[0])}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
       <Pagination pagina={pagina} totaalPaginas={totaalPaginas} basisUrl="/orders" />
     </div>

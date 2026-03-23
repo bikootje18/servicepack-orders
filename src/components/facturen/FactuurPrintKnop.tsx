@@ -36,7 +36,7 @@ export function FactuurPrintKnop({ factuur, leveringen, klantNaam }: Props) {
     <button
       onClick={handleDownload}
       disabled={laden}
-      className="bg-blue-600 text-white px-4 py-2 rounded text-sm font-medium hover:bg-blue-700 disabled:opacity-50"
+      className="btn-primary"
     >
       {laden ? 'PDF laden...' : 'Download PDF'}
     </button>
