@@ -73,7 +73,7 @@ export default async function NieuweVrachtPage({
               name="datum"
               defaultValue={today}
               required
-              className="border border-gray-300 rounded px-3 py-2 text-sm w-full"
+              className="form-input"
             />
           </div>
           <div>
@@ -82,7 +82,7 @@ export default async function NieuweVrachtPage({
               type="text"
               name="notities"
               placeholder="Optioneel"
-              className="border border-gray-300 rounded px-3 py-2 text-sm w-full"
+              className="form-input"
             />
           </div>
         </div>
@@ -113,7 +113,7 @@ export default async function NieuweVrachtPage({
 
         <button
           type="submit"
-          className="bg-blue-600 text-white px-6 py-2 rounded text-sm font-medium hover:bg-blue-700"
+          className="btn-primary px-6"
         >
           Vracht aanmaken
         </button>

@@ -21,14 +21,14 @@ export default async function CodesPage() {
 
       <form action={maakCodeAan} className="grid grid-cols-3 gap-2 mb-6">
         <input name="code" placeholder="Code" required
-          className="border border-gray-300 rounded px-3 py-2 text-sm" />
+          className="form-input" />
         <input name="omschrijving" placeholder="Omschrijving" required
-          className="border border-gray-300 rounded px-3 py-2 text-sm" />
+          className="form-input" />
         <div className="flex gap-2">
           <input name="tarief" type="number" step="0.0001" min="0.0001" placeholder="Tarief (€)"
-            required className="flex-1 border border-gray-300 rounded px-3 py-2 text-sm" />
+            required className="form-input flex-1" />
           <button type="submit"
-            className="bg-blue-600 text-white px-4 py-2 rounded text-sm font-medium hover:bg-blue-700">
+            className="btn-primary">
             Toevoegen
           </button>
         </div>

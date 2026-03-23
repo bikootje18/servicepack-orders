@@ -22,11 +22,11 @@ export default async function KlantenPage() {
           name="naam"
           placeholder="Bedrijfsnaam"
           required
-          className="flex-1 border border-gray-300 rounded px-3 py-2 text-sm"
+          className="form-input flex-1"
         />
         <button
           type="submit"
-          className="bg-blue-600 text-white px-4 py-2 rounded text-sm font-medium hover:bg-blue-700"
+          className="btn-primary"
         >
           Toevoegen
         </button>
