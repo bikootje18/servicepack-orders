@@ -41,12 +41,12 @@ export default async function BewerkenOrderPage({
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Ordernummer *</label>
             <input name="order_nummer" required defaultValue={order.order_nummer}
-              className="w-full border border-gray-300 rounded px-3 py-2 text-sm" />
+              className="form-input" />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Order code *</label>
             <input name="order_code" required defaultValue={order.order_code}
-              className="w-full border border-gray-300 rounded px-3 py-2 text-sm" />
+              className="form-input" />
           </div>
         </div>
 
@@ -54,14 +54,14 @@ export default async function BewerkenOrderPage({
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Klant *</label>
             <select name="klant_id" required defaultValue={order.klant_id}
-              className="w-full border border-gray-300 rounded px-3 py-2 text-sm">
+              className="form-select">
               {klanten.map(k => <option key={k.id} value={k.id}>{k.naam}</option>)}
             </select>
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Facturatie code *</label>
             <select name="facturatie_code_id" required defaultValue={order.facturatie_code_id}
-              className="w-full border border-gray-300 rounded px-3 py-2 text-sm">
+              className="form-select">
               {codes.map(c => <option key={c.id} value={c.id}>{c.code} – {c.omschrijving}</option>)}
             </select>
           </div>
@@ -70,47 +70,47 @@ export default async function BewerkenOrderPage({
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Order grootte *</label>
           <input name="order_grootte" type="number" min="1" required defaultValue={order.order_grootte}
-            className="w-full border border-gray-300 rounded px-3 py-2 text-sm" />
+            className="form-input" />
         </div>
 
         <div className="grid grid-cols-3 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Per doos</label>
             <input name="aantal_per_doos" type="number" min="0" defaultValue={order.aantal_per_doos}
-              className="w-full border border-gray-300 rounded px-3 py-2 text-sm" />
+              className="form-input" />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Per inner</label>
             <input name="aantal_per_inner" type="number" min="0" defaultValue={order.aantal_per_inner}
-              className="w-full border border-gray-300 rounded px-3 py-2 text-sm" />
+              className="form-input" />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Per pallet</label>
             <input name="aantal_per_pallet" type="number" min="0" defaultValue={order.aantal_per_pallet}
-              className="w-full border border-gray-300 rounded px-3 py-2 text-sm" />
+              className="form-input" />
           </div>
         </div>
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Bewerking</label>
           <input name="bewerking" defaultValue={order.bewerking}
-            className="w-full border border-gray-300 rounded px-3 py-2 text-sm" />
+            className="form-input" />
         </div>
 
         <div className="flex items-center gap-2">
-          <input name="opwerken" type="checkbox" id="opwerken" defaultChecked={order.opwerken} />
+          <input name="opwerken" type="checkbox" id="opwerken" defaultChecked={order.opwerken} className="form-checkbox" />
           <label htmlFor="opwerken" className="text-sm font-medium text-gray-700">Opwerken</label>
         </div>
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Omschrijving</label>
           <textarea name="omschrijving" rows={3} defaultValue={order.omschrijving}
-            className="w-full border border-gray-300 rounded px-3 py-2 text-sm" />
+            className="form-textarea" />
         </div>
 
         <div className="flex gap-3">
           <button type="submit"
-            className="bg-blue-600 text-white px-6 py-2 rounded text-sm font-medium hover:bg-blue-700">
+            className="btn-primary px-6">
             Opslaan
           </button>
           <a href={`/orders/${id}`} className="px-6 py-2 rounded text-sm border border-gray-300 hover:bg-gray-50">
