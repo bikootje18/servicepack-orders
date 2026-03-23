@@ -57,14 +57,7 @@ export async function getOngefactureerdeLeveringenVoorKlant(
   const orderIds = orders.map(o => o.id)
   if (orderIds.length === 0) return []
 
-  // Get levering_ids already in a vracht (to exclude from selection)
-  const { data: inVracht, error: vrachtError } = await supabase
-    .from('vracht_regels')
-    .select('levering_id')
-  if (vrachtError) throw vrachtError
-  const inVrachtIds = new Set(inVracht.map(r => r.levering_id))
-
-  // Get all unfactured leveringen for these orders, including klant naam for display
+  // Get all unfactured leveringen for these orders
   const { data: leveringen, error } = await supabase
     .from('leveringen')
     .select('*, order:orders(*, klant:klanten(naam), facturatie_code:facturatie_codes(tarief, code))')
@@ -73,8 +66,18 @@ export async function getOngefactureerdeLeveringenVoorKlant(
     .order('leverdatum')
   if (error) throw error
 
-  // Exclude those already assigned to a vracht
-  return leveringen.filter(l => !inVrachtIds.has(l.id)) as any
+  if (leveringen.length === 0) return []
+
+  // Get only the levering_ids from the above set that are already in a vracht
+  const leveringIds = leveringen.map(l => l.id)
+  const { data: inVracht, error: vrachtError } = await supabase
+    .from('vracht_regels')
+    .select('levering_id')
+    .in('levering_id', leveringIds)
+  if (vrachtError) throw vrachtError
+  const inVrachtIds = new Set(inVracht.map(r => r.levering_id))
+
+  return leveringen.filter(l => !inVrachtIds.has(l.id)) as (Levering & { order: Order & { facturatie_code: { tarief: number; code: string } } })[]
 }
 
 export async function createVracht(data: {
