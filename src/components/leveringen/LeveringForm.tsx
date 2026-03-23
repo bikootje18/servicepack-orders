@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { createLevering } from '@/lib/actions/leveringen'
+import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 
 interface Props {
@@ -33,12 +34,15 @@ export function LeveringForm({ orderId, orderGrootte, totaalGeleverd }: Props) {
       return
     }
 
+    const supabase = createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+
     await createLevering({
       order_id: orderId,
       aantal_geleverd: aantal,
       leverdatum: formData.get('leverdatum') as string,
       notities: formData.get('notities') as string || '',
-      aangemaakt_door: null,
+      aangemaakt_door: user?.id ?? null,
     })
 
     router.refresh()
