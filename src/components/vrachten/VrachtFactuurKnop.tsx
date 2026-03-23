@@ -1,11 +1,12 @@
 'use client'
 
 import { useState } from 'react'
-import type { Factuur, Levering } from '@/types'
+import type { Factuur } from '@/types'
+import { type LeveringMetOrder } from './VrachtFactuurDocument'
 
 interface Props {
   factuur: Factuur
-  leveringen: Levering[]
+  leveringen: LeveringMetOrder[]
   klantNaam: string
 }
 

@@ -26,8 +26,8 @@ export default async function FactuurDetailPage({
     : await getLeveringen(factuur.order_id!).then(all => all.filter(l => l.factuur_id === id))
 
   const klantNaam = isVrachtFactuur
-    ? (factuur.vracht as any)?.klant?.naam ?? '–'
-    : (factuur.order as any)?.klant?.naam ?? '–'
+    ? factuur.vracht?.klant?.naam ?? '–'
+    : factuur.order?.klant?.naam ?? '–'
 
   async function setVerzonden() {
     'use server'
