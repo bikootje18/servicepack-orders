@@ -15,7 +15,11 @@ export async function getVrachten(): Promise<Vracht[]> {
     .select('*, klant:klanten(naam), factuur:facturen(id, factuur_nummer, status, totaal_bedrag)')
     .order('datum', { ascending: false })
   if (error) throw error
-  return data as Vracht[]
+  // Supabase returns the factuur join as an array (one-to-many); normalize to single item
+  return (data as any[]).map(v => ({
+    ...v,
+    factuur: Array.isArray(v.factuur) ? (v.factuur[0] ?? null) : v.factuur,
+  })) as Vracht[]
 }
 
 export async function getVracht(id: string): Promise<Vracht> {
@@ -35,12 +39,17 @@ export async function getVracht(id: string): Promise<Vracht> {
           )
         )
       ),
-      factuur:facturen(id, factuur_nummer, status, totaal_bedrag)
+      factuur:facturen(id, factuur_nummer, status, totaal_bedrag, factuurdatum)
     `)
     .eq('id', id)
     .single()
   if (error) throw error
-  return data as Vracht
+  // Supabase returns the factuur join as an array (one-to-many); normalize to single item
+  const vracht = data as any
+  return {
+    ...vracht,
+    factuur: Array.isArray(vracht.factuur) ? (vracht.factuur[0] ?? null) : vracht.factuur,
+  } as Vracht
 }
 
 export async function getOngefactureerdeLeveringenVoorKlant(
