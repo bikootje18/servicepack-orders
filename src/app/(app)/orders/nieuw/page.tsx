@@ -3,6 +3,7 @@ import { getKlanten } from '@/lib/db/klanten'
 import { getCodes, getCodeByCode } from '@/lib/db/codes'
 import { createOrder } from '@/lib/db/orders'
 import { createClient } from '@/lib/supabase/server'
+import { LOCATIES } from '@/lib/constants/locaties'
 
 export default async function NieuweOrderPage({
   searchParams,
@@ -24,6 +25,8 @@ export default async function NieuweOrderPage({
 
   async function slaOrderOp(formData: FormData) {
     'use server'
+    const locatie = formData.get('locatie') as string
+    if (!locatie) throw new Error('Locatie is verplicht')
     const codeText = (formData.get('facturatie_code') as string ?? '').trim()
     const gevondenCode = await getCodeByCode(codeText)
     if (!gevondenCode) throw new Error(`Facturatie code '${codeText}' niet gevonden`)
@@ -39,6 +42,9 @@ export default async function NieuweOrderPage({
       bewerking: formData.get('bewerking') as string || '',
       opwerken: formData.get('opwerken') === 'on',
       omschrijving: formData.get('omschrijving') as string || '',
+      locatie,
+      deadline: formData.get('deadline') as string || null,
+      tht: formData.get('tht') as string || null,
       aangemaakt_door: null,
     })
     redirect(`/orders/${order.id}?print=1`)
@@ -90,6 +96,27 @@ export default async function NieuweOrderPage({
           <label className="block text-sm font-medium text-gray-700 mb-1">Order grootte *</label>
           <input name="order_grootte" type="number" min="1" required defaultValue={v?.order_grootte}
             className="form-input" />
+        </div>
+
+        <div className="grid grid-cols-3 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Locatie *</label>
+            <select name="locatie" required defaultValue={v?.locatie ?? ''}
+              className="form-select">
+              <option value="">Selecteer locatie...</option>
+              {LOCATIES.map(l => <option key={l.waarde} value={l.waarde}>{l.label}</option>)}
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Deadline</label>
+            <input name="deadline" type="date" defaultValue={v?.deadline ?? ''}
+              className="form-input" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">THT</label>
+            <input name="tht" type="date" defaultValue={v?.tht ?? ''}
+              className="form-input" />
+          </div>
         </div>
 
         <div className="grid grid-cols-3 gap-4">
