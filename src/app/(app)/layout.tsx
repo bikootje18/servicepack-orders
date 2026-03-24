@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation'
 import { NavLink } from '@/components/ui/NavLink'
 
 const nav = [
+  { href: '/dashboard', label: 'Dashboard' },
   { href: '/orders', label: 'Orders' },
   { href: '/vrachten', label: 'Vrachten' },
   { href: '/facturen', label: 'Facturen' },
