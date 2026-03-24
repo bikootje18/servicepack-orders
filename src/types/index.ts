@@ -4,6 +4,10 @@ export type FactuurStatus = 'concept' | 'verzonden' | 'betaald'
 export interface Klant {
   id: string
   naam: string
+  adres: string
+  postcode: string
+  stad: string
+  land: string
   aangemaakt_op: string
 }
 
