@@ -42,6 +42,9 @@ export interface Order {
   status: OrderStatus
   aangemaakt_door: string | null
   aangemaakt_op: string
+  locatie: string | null
+  deadline: string | null
+  tht: string | null
   // Joins
   klant?: Klant
   facturatie_code?: FacturatieCode
@@ -56,6 +59,7 @@ export interface Levering {
   notities: string
   aangemaakt_door: string | null
   aangemaakt_op: string
+  tht: string | null
 }
 
 export interface Factuur {
