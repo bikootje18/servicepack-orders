@@ -23,21 +23,22 @@ export function LeveringForm({ orderId, klantId, orderGrootte, totaalGeleverd }:
     return <p className="text-sm text-green-600 mb-4">Volledig gereedgemeld.</p>
   }
 
-  function leesFormulier(): { aantal: number; leverdatum: string; notities: string } | null {
+  function leesFormulier(): { aantal: number; leverdatum: string; notities: string; tht: string | null } | null {
     const form = formRef.current
     if (!form) return null
     const formData = new FormData(form)
     const aantal = parseInt(formData.get('aantal_geleverd') as string)
     const leverdatum = formData.get('leverdatum') as string
     const notities = (formData.get('notities') as string) || ''
-    return { aantal, leverdatum, notities }
+    const tht = (formData.get('tht') as string) || null
+    return { aantal, leverdatum, notities, tht }
   }
 
   async function handleOpslaan(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     const waarden = leesFormulier()
     if (!waarden) return
-    const { aantal, leverdatum, notities } = waarden
+    const { aantal, leverdatum, notities, tht } = waarden
 
     if (aantal > resterend) {
       setFout(`Maximaal ${resterend} eenheden resterend`)
@@ -51,6 +52,7 @@ export function LeveringForm({ orderId, klantId, orderGrootte, totaalGeleverd }:
       aantal_geleverd: aantal,
       leverdatum,
       notities,
+      tht,
       aangemaakt_door: null,
     })
     router.refresh()
@@ -62,7 +64,7 @@ export function LeveringForm({ orderId, klantId, orderGrootte, totaalGeleverd }:
     e.preventDefault()
     const waarden = leesFormulier()
     if (!waarden) return
-    const { aantal, leverdatum, notities } = waarden
+    const { aantal, leverdatum, notities, tht } = waarden
 
     if (!aantal || aantal <= 0) {
       setFout('Vul het aantal in')
@@ -85,13 +87,14 @@ export function LeveringForm({ orderId, klantId, orderGrootte, totaalGeleverd }:
       aantal_geleverd: aantal,
       leverdatum,
       notities,
+      tht,
     })
   }
 
   return (
     <form ref={formRef} onSubmit={handleOpslaan} className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-4">
       <p className="text-sm text-gray-500 mb-3">Resterend: <strong>{resterend.toLocaleString('nl-NL')}</strong> eenheden</p>
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-4 gap-3">
         <div>
           <label className="block text-xs font-medium text-gray-700 mb-1">Aantal gereed *</label>
           <input name="aantal_geleverd" type="number" min="1" max={resterend} required
@@ -106,6 +109,10 @@ export function LeveringForm({ orderId, klantId, orderGrootte, totaalGeleverd }:
         <div>
           <label className="block text-xs font-medium text-gray-700 mb-1">Notities</label>
           <input name="notities" className="form-input" />
+        </div>
+        <div>
+          <label className="block text-xs font-medium text-gray-700 mb-1">THT (afwijkend)</label>
+          <input name="tht" type="date" className="form-input" />
         </div>
       </div>
       {fout && <p className="text-sm text-red-600 mt-2">{fout}</p>}

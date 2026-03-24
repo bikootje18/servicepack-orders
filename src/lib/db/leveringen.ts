@@ -32,6 +32,7 @@ export async function createLevering(data: {
   aantal_geleverd: number
   leverdatum: string
   notities: string
+  tht?: string | null
   aangemaakt_door: string | null
 }): Promise<Levering> {
   const supabase = await createClient()

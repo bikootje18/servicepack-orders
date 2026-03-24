@@ -11,6 +11,7 @@ export async function createLevering(data: {
   aantal_geleverd: number
   leverdatum: string
   notities: string
+  tht?: string | null
   aangemaakt_door: string | null
 }): Promise<void> {
   await dbCreateLevering(data)
@@ -23,12 +24,14 @@ export async function gereedmeldenEnVrachtAanmaken(data: {
   aantal_geleverd: number
   leverdatum: string
   notities: string
+  tht?: string | null
 }): Promise<void> {
   const levering = await dbCreateLevering({
     order_id: data.order_id,
     aantal_geleverd: data.aantal_geleverd,
     leverdatum: data.leverdatum,
     notities: data.notities,
+    tht: data.tht ?? null,
     aangemaakt_door: null,
   })
 
