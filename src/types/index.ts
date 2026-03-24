@@ -112,3 +112,18 @@ export interface VrachtRegel {
     }
   }
 }
+
+export interface GiveXImport {
+  id: string
+  klant_id: string
+  documentnummer: string
+  instructie_code: string
+  leverdatum: string | null
+  totaal_hoeveelheid: number
+  totaal_rollen: number | null
+  heeft_rollen: boolean
+  order_id: string | null
+  aangemaakt_op: string
+  // Joins
+  order?: Pick<Order, 'id' | 'order_nummer' | 'order_code'>
+}
