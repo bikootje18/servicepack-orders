@@ -17,60 +17,70 @@ const STATUS_LABEL: Record<string, string> = {
 export function OrderKaartje({ order }: Props) {
   const kleur = deadlineKleur(order.deadline)
 
-  const borderCls =
-    kleur === 'rood'   ? 'border-l-red-500' :
-    kleur === 'oranje' ? 'border-l-amber-400' :
-                         'border-l-slate-200'
+  const accentKleur =
+    kleur === 'rood'   ? '#ef4444' :
+    kleur === 'oranje' ? '#f59e0b' :
+                         '#e5e7eb'
 
-  const deadlineCls =
-    kleur === 'rood'   ? 'bg-red-50 text-red-600 font-semibold' :
-    kleur === 'oranje' ? 'bg-amber-50 text-amber-700 font-semibold' :
-                         'text-slate-400'
+  const deadlineStijl =
+    kleur === 'rood'
+      ? { backgroundColor: '#fef2f2', color: '#dc2626' }
+      : kleur === 'oranje'
+      ? { backgroundColor: '#fffbeb', color: '#b45309' }
+      : { color: '#9ca3af' }
 
-  const statusCls =
-    order.status === 'in_behandeling' ? 'text-amber-600' :
-    order.status === 'bevestigd'      ? 'text-blue-600'  :
-                                         'text-slate-400'
+  const statusKleur =
+    order.status === 'in_behandeling' ? '#d97706' :
+    order.status === 'bevestigd'      ? '#2563eb' :
+                                         '#6b7280'
 
   return (
     <a
       href={`/orders/${order.id}`}
-      className={`block bg-white border border-slate-200 border-l-4 ${borderCls} rounded-lg px-3.5 py-3 hover:shadow-md hover:-translate-y-px transition-all`}
+      className="block bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-md hover:-translate-y-px transition-all"
     >
-      {/* Top: order number + grootte */}
-      <div className="flex items-baseline justify-between gap-2 mb-1">
-        <span className="font-mono text-sm font-bold text-slate-900 leading-tight">
-          {order.order_nummer}
-        </span>
-        <span className="text-xs text-slate-400 tabular-nums flex-shrink-0">
-          {formatAantal(order.order_grootte)} st.
-        </span>
-      </div>
+      {/* Gekleurde urgentie-balk links */}
+      <div className="flex">
+        <div className="w-1 flex-shrink-0" style={{ backgroundColor: accentKleur }} />
+        <div className="flex-1 px-3 py-2.5">
 
-      {/* Client */}
-      {order.klant && (
-        <p className="text-xs text-slate-500 mb-2.5 truncate leading-tight">
-          {order.klant.naam}
-        </p>
-      )}
-
-      {/* Bottom row: status + deadline + THT */}
-      <div className="flex items-center justify-between gap-2">
-        <span className={`text-[11px] font-semibold ${statusCls}`}>
-          {STATUS_LABEL[order.status] ?? order.status}
-        </span>
-
-        <div className="flex items-center gap-1.5">
-          {order.deadline && (
-            <span className={`text-[11px] px-1.5 py-0.5 rounded ${deadlineCls}`}>
-              {formatDate(order.deadline)}
+          {/* Ordernummer + grootte */}
+          <div className="flex items-baseline justify-between gap-2 mb-0.5">
+            <span className="font-mono text-sm font-bold text-gray-900">
+              {order.order_nummer}
             </span>
-          )}
-          {order.tht && (
-            <span className="text-[11px] text-slate-400 bg-slate-50 px-1.5 py-0.5 rounded">
-              THT {formatDate(order.tht)}
+            <span className="text-xs text-gray-400 tabular-nums flex-shrink-0">
+              {formatAantal(order.order_grootte)} st.
             </span>
+          </div>
+
+          {/* Klant */}
+          {order.klant && (
+            <p className="text-xs text-gray-500 mb-2 truncate">{order.klant.naam}</p>
           )}
+
+          {/* Status + deadline */}
+          <div className="flex items-center justify-between gap-2">
+            <span className="text-[11px] font-semibold" style={{ color: statusKleur }}>
+              {STATUS_LABEL[order.status] ?? order.status}
+            </span>
+            <div className="flex items-center gap-1.5 flex-shrink-0">
+              {order.deadline && (
+                <span
+                  className="text-[11px] font-semibold px-1.5 py-0.5 rounded"
+                  style={deadlineStijl}
+                >
+                  {formatDate(order.deadline)}
+                </span>
+              )}
+              {order.tht && (
+                <span className="text-[11px] text-gray-400 bg-gray-50 px-1.5 py-0.5 rounded">
+                  THT {formatDate(order.tht)}
+                </span>
+              )}
+            </div>
+          </div>
+
         </div>
       </div>
     </a>

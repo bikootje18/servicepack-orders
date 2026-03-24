@@ -4,65 +4,62 @@ import { formatDate } from '@/lib/utils/formatters'
 import { OrderKaartje } from './OrderKaartje'
 
 interface Props {
-  locatie: string
   label: string
-  index: number
+  kleur: string
   inBehandeling: Order[]
   bevestigd: Order[]
   vrachten: Vracht[]
 }
 
-// Per-locatie accent kleuren
-const ACCENT = [
-  { bar: 'bg-blue-500',   badge: 'bg-blue-500 text-white',   section: 'text-blue-600',  vracht: 'bg-blue-50 border-blue-100' },
-  { bar: 'bg-emerald-500', badge: 'bg-emerald-500 text-white', section: 'text-emerald-600', vracht: 'bg-emerald-50 border-emerald-100' },
-  { bar: 'bg-violet-500', badge: 'bg-violet-500 text-white', section: 'text-violet-600', vracht: 'bg-violet-50 border-violet-100' },
-]
-
 function vroegsteDeadline(orders: Order[]): string | null {
-  const dates = orders
+  return orders
     .map(o => o.deadline)
     .filter((d): d is string => !!d)
-    .sort()
-  return dates[0] ?? null
+    .sort()[0] ?? null
 }
 
-export function LocatieKolom({ label, index, inBehandeling, bevestigd, vrachten }: Props) {
-  const accent = ACCENT[index] ?? ACCENT[0]
-  const alleOrders = [...inBehandeling, ...bevestigd]
+export function LocatieKolom({ label, kleur, inBehandeling, bevestigd, vrachten }: Props) {
   const totaalActief = inBehandeling.length
+  const alleOrders = [...inBehandeling, ...bevestigd]
   const vroegste = vroegsteDeadline(alleOrders)
-  const vroegsteKleur = vroegste ? deadlineKleur(vroegste) : null
-  const isEmpty = inBehandeling.length === 0 && bevestigd.length === 0 && vrachten.length === 0
-
-  const deadlineChipCls =
-    vroegsteKleur === 'rood'   ? 'bg-red-500 text-white' :
-    vroegsteKleur === 'oranje' ? 'bg-amber-400 text-amber-900' :
-                                  'bg-slate-200 text-slate-600'
+  const urgentie = vroegste ? deadlineKleur(vroegste) : null
+  const isEmpty = alleOrders.length === 0 && vrachten.length === 0
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm overflow-hidden border border-slate-200">
-      {/* Gekleurde top-bar */}
-      <div className={`h-1.5 ${accent.bar}`} />
+    <div className="rounded-xl overflow-hidden border border-gray-200 shadow-sm bg-white">
 
-      {/* Header */}
-      <div className="px-5 pt-5 pb-4 border-b border-slate-100">
-        <div className="flex items-start justify-between gap-3">
-          <h2 className="text-xl font-bold text-slate-900 leading-tight">{label}</h2>
+      {/* Header — donker blok met locatienaam */}
+      <div className="px-5 py-4" style={{ backgroundColor: kleur }}>
+        <div className="flex items-center justify-between gap-3">
+          <h2 className="text-lg font-bold text-white leading-tight">{label}</h2>
           {totaalActief > 0 && (
-            <span className={`inline-flex items-center justify-center min-w-[28px] h-7 px-2 rounded-full text-sm font-bold flex-shrink-0 ${accent.badge}`}>
+            <span
+              className="inline-flex items-center justify-center w-8 h-8 rounded-full text-sm font-bold flex-shrink-0"
+              style={{ backgroundColor: 'rgba(255,255,255,0.2)', color: '#fff' }}
+            >
               {totaalActief}
             </span>
           )}
         </div>
 
-        <div className="flex items-center gap-2 mt-2">
-          <span className="text-sm text-slate-400">
-            {totaalActief === 0 ? 'Geen actieve orders' : `${totaalActief} actief`}
-            {bevestigd.length > 0 && ` · ${bevestigd.length} aankomend`}
-          </span>
+        {/* Subtekst in header */}
+        <div className="flex items-center gap-2 mt-1.5">
+          <p className="text-sm" style={{ color: 'rgba(255,255,255,0.75)' }}>
+            {totaalActief === 0 && bevestigd.length === 0
+              ? 'Geen orders'
+              : [
+                  totaalActief > 0 && `${totaalActief} actief`,
+                  bevestigd.length > 0 && `${bevestigd.length} aankomend`,
+                ].filter(Boolean).join(' · ')}
+          </p>
           {vroegste && (
-            <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${deadlineChipCls}`}>
+            <span
+              className="text-xs font-semibold px-2 py-0.5 rounded-full flex-shrink-0"
+              style={{
+                backgroundColor: urgentie === 'rood' ? '#fef2f2' : urgentie === 'oranje' ? '#fffbeb' : 'rgba(255,255,255,0.2)',
+                color: urgentie === 'rood' ? '#dc2626' : urgentie === 'oranje' ? '#92400e' : '#fff',
+              }}
+            >
               {formatDate(vroegste)}
             </span>
           )}
@@ -70,20 +67,17 @@ export function LocatieKolom({ label, index, inBehandeling, bevestigd, vrachten 
       </div>
 
       {/* Body */}
-      <div className="flex flex-col">
+      <div className="bg-gray-50">
         {isEmpty ? (
-          <div className="flex flex-col items-center justify-center py-14 px-4 text-center">
-            <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center mb-3">
-              <span className="text-slate-400 text-lg">·</span>
-            </div>
-            <p className="text-sm font-medium text-slate-400">Niets gepland</p>
+          <div className="py-12 text-center">
+            <p className="text-sm text-gray-400">Niets gepland</p>
           </div>
         ) : (
           <>
             {/* In behandeling */}
             {inBehandeling.length > 0 && (
-              <div className="px-4 pt-4 pb-3">
-                <p className={`text-[10px] font-bold uppercase tracking-[0.12em] mb-2.5 ${accent.section}`}>
+              <div className="p-3">
+                <p className="text-[10px] font-bold uppercase tracking-widest mb-2 px-1" style={{ color: kleur }}>
                   In behandeling
                 </p>
                 <div className="flex flex-col gap-2">
@@ -96,8 +90,8 @@ export function LocatieKolom({ label, index, inBehandeling, bevestigd, vrachten 
 
             {/* Aankomend */}
             {bevestigd.length > 0 && (
-              <div className={`px-4 pt-3 pb-3 ${inBehandeling.length > 0 ? 'border-t border-slate-100' : 'pt-4'}`}>
-                <p className="text-[10px] font-bold uppercase tracking-[0.12em] mb-2.5 text-slate-400">
+              <div className={`p-3 ${inBehandeling.length > 0 ? 'border-t border-gray-200' : ''}`}>
+                <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-2 px-1">
                   Aankomend
                 </p>
                 <div className="flex flex-col gap-2">
@@ -110,8 +104,8 @@ export function LocatieKolom({ label, index, inBehandeling, bevestigd, vrachten 
 
             {/* Vrachten */}
             {vrachten.length > 0 && (
-              <div className={`px-4 pt-3 pb-4 border-t border-slate-100 ${accent.vracht} mx-0`}>
-                <p className={`text-[10px] font-bold uppercase tracking-[0.12em] mb-2.5 ${accent.section}`}>
+              <div className="p-3 border-t border-gray-200">
+                <p className="text-[10px] font-bold uppercase tracking-widest mb-2 px-1" style={{ color: kleur }}>
                   Uitgaande vrachten
                 </p>
                 <div className="flex flex-col gap-1.5">
@@ -119,19 +113,17 @@ export function LocatieKolom({ label, index, inBehandeling, bevestigd, vrachten 
                     <a
                       key={vracht.id}
                       href={`/vrachten/${vracht.id}`}
-                      className="flex items-center justify-between gap-2 px-3 py-2 bg-white rounded-lg border border-slate-200 hover:border-slate-300 hover:shadow-sm transition-all"
+                      className="flex items-center justify-between gap-2 bg-white rounded-lg border border-gray-200 px-3 py-2 hover:border-gray-300 hover:shadow-sm transition-all"
                     >
                       <div className="flex items-center gap-2 min-w-0">
-                        <span className="font-mono text-xs font-bold text-slate-700">
+                        <span className="font-mono text-xs font-bold text-gray-800">
                           {vracht.vrachtbrief_nummer}
                         </span>
                         {vracht.klant && (
-                          <span className="text-xs text-slate-400 truncate">
-                            {vracht.klant.naam}
-                          </span>
+                          <span className="text-xs text-gray-400 truncate">{vracht.klant.naam}</span>
                         )}
                       </div>
-                      <span className="text-xs text-slate-400 tabular-nums flex-shrink-0">
+                      <span className="text-xs text-gray-400 tabular-nums flex-shrink-0">
                         {formatDate(vracht.datum)}
                       </span>
                     </a>
