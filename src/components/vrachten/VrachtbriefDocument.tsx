@@ -37,7 +37,7 @@ interface VrachtRegel {
 
 interface Props {
   vracht: Vracht & {
-    klant: { naam: string }
+    klant: { naam: string; adres: string; postcode: string; stad: string; land: string }
     regels: VrachtRegel[]
   }
 }
@@ -71,7 +71,13 @@ export function VrachtbriefDocument({ vracht }: Props) {
           <View style={{ ...S.box, flex: 2 }}>
             <Text style={S.boxLabel}>2. Ontvanger (naam, adres, land)</Text>
             <Text style={S.boxValue}>{vracht.klant.naam}</Text>
-            <Text style={{ fontSize: 8, color: '#aaa' }}>[Adres invullen]</Text>
+            {!!vracht.klant.adres && <Text style={S.boxValue}>{vracht.klant.adres}</Text>}
+            {!!(vracht.klant.postcode || vracht.klant.stad) && (
+              <Text style={S.boxValue}>
+                {[vracht.klant.postcode, vracht.klant.stad].filter(Boolean).join(' ')}
+              </Text>
+            )}
+            {!!vracht.klant.land && <Text style={S.boxValue}>{vracht.klant.land}</Text>}
           </View>
           <View style={{ ...S.box, flex: 1 }}>
             <Text style={S.boxLabel}>Vrachtbrief nr.</Text>
@@ -85,7 +91,9 @@ export function VrachtbriefDocument({ vracht }: Props) {
         <View style={S.row}>
           <View style={{ ...S.box, flex: 2 }}>
             <Text style={S.boxLabel}>3. Afleverplaats (plaats, land)</Text>
-            <Text style={{ fontSize: 8, color: '#aaa' }}>[Afleverplaats invullen]</Text>
+            <Text style={S.boxValue}>
+              {[vracht.klant.stad, vracht.klant.land].filter(Boolean).join(', ') || '–'}
+            </Text>
           </View>
           <View style={{ ...S.box, flex: 1 }}>
             <Text style={S.boxLabel}>8. Vervoerder</Text>
