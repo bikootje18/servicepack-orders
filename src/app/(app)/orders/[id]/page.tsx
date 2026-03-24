@@ -7,6 +7,7 @@ import { LeveringForm } from '@/components/leveringen/LeveringForm'
 import { LeveringenList } from '@/components/leveringen/LeveringenList'
 import { berekenResterend } from '@/lib/db/orders'
 import { formatDate, formatCurrency, formatAantal } from '@/lib/utils/formatters'
+import { locatieLabel } from '@/lib/constants/locaties'
 import { AutoPrint } from '@/components/orders/AutoPrint'
 import { PrintKnop } from '@/components/orders/PrintKnop'
 
@@ -51,6 +52,15 @@ export default async function OrderDetailPage({
         <div><span className="text-gray-500">Facturatie code:</span> <strong className="font-mono text-xs">{order.facturatie_code?.code}</strong></div>
         <div><span className="text-gray-500">Per doos/inner/pallet:</span> <strong>{order.aantal_per_doos} / {order.aantal_per_inner} / {order.aantal_per_pallet}</strong></div>
         <div><span className="text-gray-500">Bewerking:</span> <strong>{order.bewerking || '–'}</strong></div>
+        {order.locatie && (
+          <div><span className="text-gray-500">Locatie:</span> <strong>{locatieLabel(order.locatie)}</strong></div>
+        )}
+        {order.deadline && (
+          <div><span className="text-gray-500">Deadline:</span> <strong>{formatDate(order.deadline)}</strong></div>
+        )}
+        {order.tht && (
+          <div><span className="text-gray-500">THT:</span> <strong>{formatDate(order.tht)}</strong></div>
+        )}
         {order.omschrijving && (
           <div className="col-span-2"><span className="text-gray-500">Omschrijving:</span> {order.omschrijving}</div>
         )}
