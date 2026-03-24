@@ -7,6 +7,7 @@ export function validateOrder(data: {
   klant_id: string
   facturatie_code_id: string
   order_grootte: number
+  locatie: string
 }): Record<string, string> {
   const errors: Record<string, string> = {}
   if (!data.order_nummer.trim()) errors.order_nummer = 'Ordernummer is verplicht'
@@ -14,6 +15,7 @@ export function validateOrder(data: {
   if (!data.klant_id) errors.klant_id = 'Klant is verplicht'
   if (!data.facturatie_code_id) errors.facturatie_code_id = 'Facturatie code is verplicht'
   if (!data.order_grootte || data.order_grootte <= 0) errors.order_grootte = 'Order grootte moet groter zijn dan 0'
+  if (!data.locatie) errors.locatie = 'Locatie is verplicht'
   return errors
 }
 

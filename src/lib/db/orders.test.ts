@@ -8,6 +8,7 @@ describe('validateOrder', () => {
     klant_id: 'uuid-1',
     facturatie_code_id: 'uuid-2',
     order_grootte: 100,
+    locatie: 'Pauvreweg',
   }
 
   it('rejects empty order_nummer', () => {
@@ -20,6 +21,14 @@ describe('validateOrder', () => {
   })
   it('accepts valid order', () => {
     expect(validateOrder(base)).toEqual({})
+  })
+  it('rejects missing locatie', () => {
+    const errors = validateOrder({ ...base, locatie: '' })
+    expect(errors.locatie).toBeDefined()
+  })
+  it('accepts valid locatie', () => {
+    const errors = validateOrder({ ...base, locatie: 'Pauvreweg' })
+    expect(errors.locatie).toBeUndefined()
   })
 })
 
