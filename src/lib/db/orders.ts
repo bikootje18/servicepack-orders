@@ -21,17 +21,25 @@ export function berekenResterend(orderGrootte: number, totaalGeleverd: number): 
   return Math.max(0, orderGrootte - totaalGeleverd)
 }
 
-export async function getOrders(page = 1, perPagina = 50): Promise<{ orders: Order[]; totaal: number }> {
+export async function getOrders(
+  page = 1,
+  perPagina = 50,
+  zoek?: string
+): Promise<{ orders: Order[]; totaal: number }> {
   const supabase = await createClient()
   const van = (page - 1) * perPagina
   const tot = van + perPagina - 1
 
-  const { data, count, error } = await supabase
+  let query = supabase
     .from('orders')
     .select('*, klant:klanten(id, naam), facturatie_code:facturatie_codes(id, code, tarief)', { count: 'exact' })
     .order('aangemaakt_op', { ascending: false })
-    .range(van, tot)
 
+  if (zoek && zoek.trim()) {
+    query = query.or(`order_nummer.ilike.%${zoek}%,order_code.ilike.%${zoek}%`)
+  }
+
+  const { data, count, error } = await query.range(van, tot)
   if (error) throw error
   return { orders: data as Order[], totaal: count ?? 0 }
 }
