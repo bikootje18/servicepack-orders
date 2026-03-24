@@ -1,6 +1,5 @@
 import Link from 'next/link'
 import { getVracht } from '@/lib/db/vrachten'
-import { createVrachtFactuurAction } from '@/lib/actions/vrachten'
 import { VrachtbriefKnop } from '@/components/vrachten/VrachtbriefKnop'
 import { formatDate, formatAantal, formatCurrency } from '@/lib/utils/formatters'
 
@@ -21,11 +20,6 @@ export default async function VrachtDetailPage({
     const tarief = r.levering?.order?.facturatie_code?.tarief ?? 0
     return sum + tarief * (r.levering?.aantal_geleverd ?? 0)
   }, 0)
-
-  async function factuurAanmaken() {
-    'use server'
-    await createVrachtFactuurAction(id)
-  }
 
   return (
     <div className="max-w-3xl">
@@ -88,27 +82,19 @@ export default async function VrachtDetailPage({
         </tfoot>
       </table>
 
-      {vracht.factuur ? (
-        <div className="bg-green-50 border border-green-200 rounded p-4 text-sm">
-          <p className="font-medium text-green-800 mb-1">Factuur aangemaakt</p>
-          <Link
-            href={`/facturen/${vracht.factuur.id}`}
-            className="text-blue-600 hover:underline font-mono text-xs"
-          >
-            {vracht.factuur.factuur_nummer}
-          </Link>
-          {' · '}
-          {formatCurrency(vracht.factuur.totaal_bedrag)}
+      {vracht.factuur && (
+        <div className="bg-gray-50 border border-gray-200 rounded p-4 text-sm flex items-center justify-between">
+          <div>
+            <p className="text-xs text-gray-500 mb-0.5">Factuur</p>
+            <Link
+              href={`/facturen/${vracht.factuur.id}`}
+              className="text-blue-600 hover:underline font-mono text-sm font-medium"
+            >
+              {vracht.factuur.factuur_nummer}
+            </Link>
+          </div>
+          <span className="font-semibold text-gray-900">{formatCurrency(vracht.factuur.totaal_bedrag ?? 0)}</span>
         </div>
-      ) : (
-        <form action={factuurAanmaken}>
-          <button
-            type="submit"
-            className="bg-green-600 text-white px-4 py-2 rounded text-sm font-medium hover:bg-green-700"
-          >
-            Factuur aanmaken
-          </button>
-        </form>
       )}
     </div>
   )

@@ -20,7 +20,7 @@ export default async function FacturenPage() {
             <th className="text-left py-2 font-medium text-gray-600">Factuurnummer</th>
             <th className="text-left py-2 font-medium text-gray-600">Klant</th>
             <th className="text-left py-2 font-medium text-gray-600">Order</th>
-            <th className="text-right py-2 font-medium text-gray-600">Bedrag</th>
+            <th className="text-right py-2 pr-4 font-medium text-gray-600">Bedrag</th>
             <th className="text-left py-2 font-medium text-gray-600">Status</th>
             <th className="text-left py-2 font-medium text-gray-600">Datum</th>
           </tr>
@@ -33,9 +33,9 @@ export default async function FacturenPage() {
                   {f.factuur_nummer}
                 </Link>
               </td>
-              <td className="py-2">{(f.order as any)?.klant?.naam}</td>
-              <td className="py-2 font-mono text-xs text-gray-500">{(f.order as any)?.order_nummer}</td>
-              <td className="py-2 text-right">{formatCurrency(f.totaal_bedrag)}</td>
+              <td className="py-2">{(f.order as any)?.klant?.naam ?? (f.vracht as any)?.klant?.naam ?? '–'}</td>
+              <td className="py-2 font-mono text-xs text-gray-500">{(f.order as any)?.order_nummer ?? (f.vracht as any)?.vrachtbrief_nummer ?? '–'}</td>
+              <td className="py-2 text-right pr-4">{formatCurrency(f.totaal_bedrag)}</td>
               <td className="py-2">{statusLabel[f.status]}</td>
               <td className="py-2 text-gray-500">{formatDate(f.factuurdatum)}</td>
             </tr>

@@ -14,7 +14,9 @@ export async function createVrachtAction(formData: FormData): Promise<void> {
   if (!klant_id || !datum || levering_ids.length === 0) return
 
   const vracht = await createVracht({ klant_id, datum, notities, levering_ids })
-  redirect(`/vrachten/${vracht.id}`)
+  // Factuur wordt altijd direct aangemaakt bij het aanmaken van een vracht
+  await dbCreateFactuur(vracht.id)
+  redirect(`/vrachten/${vracht.id}/klaar`)
 }
 
 export async function createVrachtFactuurAction(vrachtId: string): Promise<void> {

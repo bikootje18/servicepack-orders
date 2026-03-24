@@ -15,9 +15,6 @@ export default async function NieuweFactuurPage({
 
   async function maakFactuurAan(formData: FormData) {
     'use server'
-    const supabase = await createClient()
-    const { data: { user } } = await supabase.auth.getUser()
-
     const leveringIds = formData.getAll('levering_ids') as string[]
     if (leveringIds.length === 0) return
 
@@ -25,7 +22,7 @@ export default async function NieuweFactuurPage({
       order_id,
       levering_ids: leveringIds,
       tarief: order.facturatie_code!.tarief,
-      aangemaakt_door: user?.id ?? null,
+      aangemaakt_door: null,
     })
     redirect(`/facturen/${factuur.id}`)
   }

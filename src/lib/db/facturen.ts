@@ -9,7 +9,7 @@ export async function getFacturen(): Promise<Factuur[]> {
   const supabase = await createClient()
   const { data, error } = await supabase
     .from('facturen')
-    .select('*, order:orders(id, order_nummer, klant:klanten(naam))')
+    .select('*, order:orders(id, order_nummer, klant:klanten(naam)), vracht:vrachten(id, vrachtbrief_nummer, klant:klanten(naam))')
     .order('aangemaakt_op', { ascending: false })
   if (error) throw error
   return data as Factuur[]

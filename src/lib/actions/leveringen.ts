@@ -1,5 +1,6 @@
 'use server'
 
+import { revalidatePath } from 'next/cache'
 import { createLevering as dbCreateLevering } from '@/lib/db/leveringen'
 
 export async function createLevering(data: {
@@ -9,5 +10,6 @@ export async function createLevering(data: {
   notities: string
   aangemaakt_door: string | null
 }): Promise<void> {
-  return dbCreateLevering(data)
+  await dbCreateLevering(data)
+  revalidatePath(`/orders/${data.order_id}`)
 }
