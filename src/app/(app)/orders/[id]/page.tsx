@@ -7,13 +7,18 @@ import { LeveringForm } from '@/components/leveringen/LeveringForm'
 import { LeveringenList } from '@/components/leveringen/LeveringenList'
 import { berekenResterend } from '@/lib/db/orders'
 import { formatDate, formatCurrency, formatAantal } from '@/lib/utils/formatters'
+import { AutoPrint } from '@/components/orders/AutoPrint'
+import { PrintKnop } from '@/components/orders/PrintKnop'
 
 export default async function OrderDetailPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>
+  searchParams: Promise<{ print?: string }>
 }) {
   const { id } = await params
+  const { print } = await searchParams
   const order = await getOrder(id)
   const leveringen = await getLeveringen(id)
   const totaalGeleverd = leveringen.reduce((sum, l) => sum + l.aantal_geleverd, 0)
@@ -22,6 +27,7 @@ export default async function OrderDetailPage({
 
   return (
     <div className="max-w-3xl">
+      {print === '1' && <AutoPrint />}
       <div className="flex items-start justify-between mb-6">
         <div>
           <div className="flex items-center gap-3 mb-1">
@@ -30,10 +36,13 @@ export default async function OrderDetailPage({
           </div>
           <p className="text-gray-500 text-sm">{order.klant?.naam} · {order.order_code}</p>
         </div>
-        <Link href={`/orders/${id}/bewerken`}
-          className="text-sm border border-gray-300 px-3 py-1 rounded hover:bg-gray-50">
-          Bewerken
-        </Link>
+        <div className="flex gap-2">
+          <PrintKnop />
+          <Link href={`/orders/${id}/bewerken`}
+            className="text-sm border border-gray-300 px-3 py-1 rounded hover:bg-gray-50">
+            Bewerken
+          </Link>
+        </div>
       </div>
 
       <div className="bg-white border border-gray-200 rounded-lg p-4 mb-4 grid grid-cols-2 gap-3 text-sm">

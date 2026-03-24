@@ -38,7 +38,7 @@ export default async function NieuweOrderPage({
       omschrijving: formData.get('omschrijving') as string || '',
       aangemaakt_door: user?.id ?? null,
     })
-    redirect(`/orders/${order.id}`)
+    redirect(`/orders/${order.id}?print=1`)
   }
 
   const v = kloonOrder
