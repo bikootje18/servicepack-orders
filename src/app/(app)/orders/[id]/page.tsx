@@ -23,7 +23,6 @@ export default async function OrderDetailPage({
   const leveringen = await getLeveringen(id)
   const totaalGeleverd = leveringen.reduce((sum, l) => sum + l.aantal_geleverd, 0)
   const resterend = berekenResterend(order.order_grootte, totaalGeleverd)
-  const ongefactureerdeLeveringen = leveringen.filter(l => l.factuur_id === null)
 
   return (
     <div className="max-w-3xl">
@@ -66,18 +65,9 @@ export default async function OrderDetailPage({
         </Link>
       </div>
 
-      <h2 className="text-lg font-semibold mb-3">Leveringen</h2>
-      <LeveringForm orderId={id} orderGrootte={order.order_grootte} totaalGeleverd={totaalGeleverd} />
+      <h2 className="text-lg font-semibold mb-3">Gereedmeldingen</h2>
+      <LeveringForm orderId={id} klantId={order.klant_id} orderGrootte={order.order_grootte} totaalGeleverd={totaalGeleverd} />
       <LeveringenList leveringen={leveringen} />
-
-      {ongefactureerdeLeveringen.length > 0 && order.status !== 'gefactureerd' && (
-        <div className="mt-6">
-          <Link href={`/facturen/nieuw?order_id=${id}`}
-            className="bg-green-600 text-white px-4 py-2 rounded text-sm font-medium hover:bg-green-700">
-            Factuur aanmaken ({ongefactureerdeLeveringen.length} levering{ongefactureerdeLeveringen.length > 1 ? 'en' : ''})
-          </Link>
-        </div>
-      )}
     </div>
   )
 }
