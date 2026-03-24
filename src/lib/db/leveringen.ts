@@ -33,8 +33,13 @@ export async function createLevering(data: {
   leverdatum: string
   notities: string
   aangemaakt_door: string | null
-}): Promise<void> {
+}): Promise<Levering> {
   const supabase = await createClient()
-  const { error } = await supabase.from('leveringen').insert(data)
+  const { data: levering, error } = await supabase
+    .from('leveringen')
+    .insert(data)
+    .select()
+    .single()
   if (error) throw error
+  return levering as Levering
 }
