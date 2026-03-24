@@ -34,15 +34,12 @@ export function LeveringForm({ orderId, orderGrootte, totaalGeleverd }: Props) {
       return
     }
 
-    const supabase = createClient()
-    const { data: { user } } = await supabase.auth.getUser()
-
     await createLevering({
       order_id: orderId,
       aantal_geleverd: aantal,
       leverdatum: formData.get('leverdatum') as string,
       notities: formData.get('notities') as string || '',
-      aangemaakt_door: user?.id ?? null,
+      aangemaakt_door: null,
     })
 
     router.refresh()

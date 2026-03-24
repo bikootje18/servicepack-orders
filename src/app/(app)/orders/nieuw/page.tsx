@@ -39,7 +39,7 @@ export default async function NieuweOrderPage({
       bewerking: formData.get('bewerking') as string || '',
       opwerken: formData.get('opwerken') === 'on',
       omschrijving: formData.get('omschrijving') as string || '',
-      aangemaakt_door: user?.id ?? null,
+      aangemaakt_door: null,
     })
     redirect(`/orders/${order.id}?print=1`)
   }
