@@ -35,3 +35,15 @@ export async function toggleCodeActief(id: string, actief: boolean): Promise<voi
   const { error } = await supabase.from('facturatie_codes').update({ actief }).eq('id', id)
   if (error) throw error
 }
+
+export async function getCodeByCode(code: string): Promise<FacturatieCode | null> {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('facturatie_codes')
+    .select('*')
+    .eq('code', code.trim())
+    .eq('actief', true)
+    .single()
+  if (error) return null
+  return data
+}
