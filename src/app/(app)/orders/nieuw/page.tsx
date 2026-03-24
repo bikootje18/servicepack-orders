@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation'
 import { getKlanten } from '@/lib/db/klanten'
-import { getCodes } from '@/lib/db/codes'
+import { getCodes, getCodeByCode } from '@/lib/db/codes'
 import { createOrder } from '@/lib/db/orders'
 import { createClient } from '@/lib/supabase/server'
 
@@ -24,11 +24,14 @@ export default async function NieuweOrderPage({
 
   async function slaOrderOp(formData: FormData) {
     'use server'
+    const codeText = (formData.get('facturatie_code') as string ?? '').trim()
+    const gevondenCode = await getCodeByCode(codeText)
+    if (!gevondenCode) throw new Error(`Facturatie code '${codeText}' niet gevonden`)
     const order = await createOrder({
       order_nummer: formData.get('order_nummer') as string,
       order_code: formData.get('order_code') as string,
       klant_id: formData.get('klant_id') as string,
-      facturatie_code_id: formData.get('facturatie_code_id') as string,
+      facturatie_code_id: gevondenCode.id,
       order_grootte: parseInt(formData.get('order_grootte') as string),
       aantal_per_doos: parseInt(formData.get('aantal_per_doos') as string) || 0,
       aantal_per_inner: parseInt(formData.get('aantal_per_inner') as string) || 0,
@@ -73,11 +76,13 @@ export default async function NieuweOrderPage({
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Facturatie code *</label>
-            <select name="facturatie_code_id" required defaultValue={v?.facturatie_code_id}
-              className="form-select">
-              <option value="">Selecteer code...</option>
-              {codes.map(c => <option key={c.id} value={c.id}>{c.code} – {c.omschrijving}</option>)}
-            </select>
+            <input name="facturatie_code" list="codes-datalist" required
+              defaultValue={v?.facturatie_code?.code ?? ''}
+              placeholder="Type code..."
+              className="form-input" autoComplete="off" />
+            <datalist id="codes-datalist">
+              {codes.map(c => <option key={c.id} value={c.code}>{c.omschrijving}</option>)}
+            </datalist>
           </div>
         </div>
 
