@@ -19,7 +19,7 @@ function vroegsteDeadline(orders: Order[]): string | null {
   return dates[0] ?? null
 }
 
-export function LocatieKolom({ label, inBehandeling, bevestigd, vrachten }: Props) {
+export function LocatieKolom({ label, inBehandeling, bevestigd, vrachten, locatie: _locatie }: Props) {
   const alleOrders = [...inBehandeling, ...bevestigd]
   const totaalActief = inBehandeling.length
   const vroegste = vroegsteDeadline(alleOrders)
