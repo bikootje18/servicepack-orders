@@ -3,12 +3,14 @@ import { getGiveXImports } from '@/lib/db/give-x-imports'
 import { ImportDropzone } from '@/components/give-x/ImportDropzone'
 import { notFound } from 'next/navigation'
 
+const GIVE_X_NAAM_VARIANTEN = ['give-x', 'givex']
+
 export default async function KlantDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
   const klant = await getKlant(id).catch(() => null)
   if (!klant) notFound()
 
-  const isGiveX = klant.naam.toLowerCase().includes('give-x') || klant.naam.toLowerCase().includes('givex')
+  const isGiveX = GIVE_X_NAAM_VARIANTEN.some(v => klant.naam.toLowerCase().includes(v))
   const imports = isGiveX ? await getGiveXImports(id) : []
   const ongematchteImports = imports.filter(i => !i.order_id)
   const gematchteImports = imports.filter(i => i.order_id)

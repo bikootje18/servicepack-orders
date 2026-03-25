@@ -44,7 +44,7 @@ export function ImportDropzone({ klantId }: { klantId: string }) {
           htmlFor="give-x-upload"
           className="block cursor-pointer text-sm text-gray-500 mb-3 hover:text-gray-700"
         >
-          Klik om bestanden te kiezen, of sleep ze hierheen
+          Klik om bestanden te kiezen
           <span className="block text-xs mt-1">.xlsx of .csv — meerdere bestanden tegelijk</span>
         </label>
         <button
