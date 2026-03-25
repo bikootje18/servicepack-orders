@@ -6,7 +6,6 @@ const nav = [
   { href: '/dashboard', label: 'Dashboard' },
   { href: '/orders', label: 'Orders' },
   { href: '/vrachten', label: 'Vrachten' },
-  { href: '/facturen', label: 'Facturen' },
   { href: '/voorraad', label: 'Voorraad' },
 ]
 

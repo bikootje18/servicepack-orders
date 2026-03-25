@@ -1,5 +1,6 @@
 import { getKlanten, createKlant } from '@/lib/db/klanten'
 import { revalidatePath } from 'next/cache'
+import Link from 'next/link'
 
 export default async function KlantenPage() {
   const klanten = await getKlanten()
@@ -61,8 +62,12 @@ export default async function KlantenPage() {
         </thead>
         <tbody>
           {klanten.map(klant => (
-            <tr key={klant.id} className="border-b border-gray-100">
-              <td className="py-2 font-medium">{klant.naam}</td>
+            <tr key={klant.id} className="border-b border-gray-100 hover:bg-gray-50">
+              <td className="py-2 font-medium">
+                <Link href={`/klanten/${klant.id}`} className="hover:underline">
+                  {klant.naam}
+                </Link>
+              </td>
               <td className="py-2 text-gray-500 text-xs">
                 {[klant.adres, klant.postcode && klant.stad ? `${klant.postcode} ${klant.stad}` : (klant.postcode || klant.stad), klant.land]
                   .filter(Boolean).join(' · ')}
