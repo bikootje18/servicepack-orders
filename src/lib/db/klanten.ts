@@ -35,6 +35,17 @@ export async function getKlanten(): Promise<Klant[]> {
   return data
 }
 
+export async function getKlant(id: string): Promise<Klant> {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('klanten')
+    .select('*')
+    .eq('id', id)
+    .single()
+  if (error) throw error
+  return data
+}
+
 export async function createKlant(data: KlantData): Promise<Klant> {
   const supabase = await createClient()
   const { data: klant, error } = await supabase
