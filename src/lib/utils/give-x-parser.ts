@@ -11,7 +11,12 @@ function parseNLDate(s: string): Date | null {
   const match = s.match(/^(\d{1,2})-(\d{1,2})-(\d{4})$/)
   if (!match) return null
   const [, d, m, y] = match
-  return new Date(parseInt(y), parseInt(m) - 1, parseInt(d))
+  const day = parseInt(d), month = parseInt(m), year = parseInt(y)
+  const date = new Date(year, month - 1, day)
+  if (date.getFullYear() !== year || date.getMonth() !== month - 1 || date.getDate() !== day) {
+    return null
+  }
+  return date
 }
 
 export function parseGiveXRows(rows: string[][], bestandsnaam: string): GiveXParseResult {
@@ -33,7 +38,7 @@ export function parseGiveXRows(rows: string[][], bestandsnaam: string): GiveXPar
   const instructieRaw = firstRow[instructieIdx]?.trim()
   if (!instructieRaw) throw new Error(`${bestandsnaam}: Instructie waarde ontbreekt`)
 
-  const instructie_code = instructieRaw.replace('-', '')
+  const instructie_code = instructieRaw.replaceAll('-', '')
 
   const leveringIdx = headers.indexOf('Levering OCC')
   const leveringRaw = leveringIdx >= 0 ? firstRow[leveringIdx]?.trim() ?? '' : ''
