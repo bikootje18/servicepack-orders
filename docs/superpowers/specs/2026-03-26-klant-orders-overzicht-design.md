@@ -50,6 +50,8 @@ orders
 
 Orders met `status = geleverd` maar zonder gekoppelde vrachten vallen onder **Lopend** (levering geregistreerd maar nog niet ingepland voor transport).
 
+Orders met `status = gefactureerd` worden behandeld als **Opgehaald** — ze zijn volledig afgerond.
+
 ### Per order getoond
 
 - Ordernummer (klikbaar → `/orders/[id]`)
@@ -68,7 +70,7 @@ Groepen zonder orders worden niet getoond.
 - **Client component voor bewerk-knop** — alleen het formulier-toggle is client-side (`'use client'`)
 - **DB query** — nieuwe functie `getOrdersVoorKlant(klantId)` in `src/lib/db/orders.ts`
 - **Groepering** — TypeScript logica in de server component, geen extra DB queries
-- **Bestaande `updateKlant`** — Server Action in `src/lib/actions/` of direct via een inline server action in de page
+- **Bewerken formulier** — inline Server Action in de page component, roept `updateKlant` aan uit `src/lib/db/klanten.ts`
 
 ## Niet in scope
 
