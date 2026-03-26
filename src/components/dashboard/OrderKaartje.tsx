@@ -42,10 +42,10 @@ export function OrderKaartje({ order }: Props) {
       {/* Gekleurde urgentie-balk links */}
       <div className="flex">
         <div className="w-1 flex-shrink-0" style={{ backgroundColor: accentKleur }} />
-        <div className="flex-1 px-3 py-2.5">
+        <div className="flex-1 px-4 py-3.5">
 
           {/* Ordernummer + grootte */}
-          <div className="flex items-baseline justify-between gap-2 mb-0.5">
+          <div className="flex items-baseline justify-between gap-2 mb-1">
             <span className="font-mono text-sm font-bold text-gray-900">
               {order.order_nummer}
             </span>
@@ -56,7 +56,7 @@ export function OrderKaartje({ order }: Props) {
 
           {/* Klant */}
           {order.klant && (
-            <p className="text-xs text-gray-500 mb-2 truncate">{order.klant.naam}</p>
+            <p className="text-xs text-gray-500 mb-2.5 truncate">{order.klant.naam}</p>
           )}
 
           {/* Status + deadline */}

@@ -63,7 +63,10 @@ export default async function OrdersPage({
                   </Link>
                 </td>
                 <td className="px-4 py-3 font-medium">{order.klant?.naam}</td>
-                <td className="px-4 py-3 font-mono text-xs text-gray-400">{order.order_code}</td>
+                <td className="px-4 py-3 font-mono text-xs text-gray-400">
+                  {order.order_code}
+                  {order.bio && <span className="ml-2 inline-flex items-center bg-green-100 text-green-800 text-xs font-semibold px-1.5 py-0.5 rounded">🌿</span>}
+                </td>
                 <td className="px-4 py-3 text-right tabular-nums">{order.order_grootte.toLocaleString('nl-NL')}</td>
                 <td className="px-4 py-3"><StatusBadge status={order.status} /></td>
                 <td className="px-4 py-3 text-gray-400 text-xs">{formatDate(order.aangemaakt_op.split('T')[0])}</td>

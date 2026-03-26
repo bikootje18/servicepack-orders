@@ -29,7 +29,7 @@ export function LocatieKolom({ label, kleur, inBehandeling, bevestigd, vrachten 
     <div className="rounded-xl overflow-hidden border border-gray-200 shadow-sm bg-white">
 
       {/* Header — donker blok met locatienaam */}
-      <div className="px-5 py-4" style={{ backgroundColor: kleur }}>
+      <div className="px-5 py-5" style={{ backgroundColor: kleur }}>
         <div className="flex items-center justify-between gap-3">
           <h2 className="text-lg font-bold text-white leading-tight">{label}</h2>
           {totaalActief > 0 && (
@@ -76,11 +76,11 @@ export function LocatieKolom({ label, kleur, inBehandeling, bevestigd, vrachten 
           <>
             {/* In behandeling */}
             {inBehandeling.length > 0 && (
-              <div className="p-3">
-                <p className="text-[10px] font-bold uppercase tracking-widest mb-2 px-1" style={{ color: kleur }}>
+              <div className="p-4">
+                <p className="text-[10px] font-bold uppercase tracking-widest mb-3 px-1" style={{ color: kleur }}>
                   In behandeling
                 </p>
-                <div className="flex flex-col gap-2">
+                <div className="flex flex-col gap-2.5">
                   {inBehandeling.map(order => (
                     <OrderKaartje key={order.id} order={order} />
                   ))}
@@ -90,11 +90,11 @@ export function LocatieKolom({ label, kleur, inBehandeling, bevestigd, vrachten 
 
             {/* Aankomend */}
             {bevestigd.length > 0 && (
-              <div className={`p-3 ${inBehandeling.length > 0 ? 'border-t border-gray-200' : ''}`}>
-                <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-2 px-1">
+              <div className={`p-4 ${inBehandeling.length > 0 ? 'border-t border-gray-200' : ''}`}>
+                <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-3 px-1">
                   Aankomend
                 </p>
-                <div className="flex flex-col gap-2">
+                <div className="flex flex-col gap-2.5">
                   {bevestigd.map(order => (
                     <OrderKaartje key={order.id} order={order} />
                   ))}
@@ -104,8 +104,8 @@ export function LocatieKolom({ label, kleur, inBehandeling, bevestigd, vrachten 
 
             {/* Vrachten */}
             {vrachten.length > 0 && (
-              <div className="p-3 border-t border-gray-200">
-                <p className="text-[10px] font-bold uppercase tracking-widest mb-2 px-1" style={{ color: kleur }}>
+              <div className="p-4 border-t border-gray-200">
+                <p className="text-[10px] font-bold uppercase tracking-widest mb-3 px-1" style={{ color: kleur }}>
                   Uitgaande vrachten
                 </p>
                 <div className="flex flex-col gap-1.5">

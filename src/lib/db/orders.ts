@@ -118,7 +118,7 @@ export async function getOrdersVoorKlant(klantId: string): Promise<OrderMetVrach
   return (data ?? []).map(order => {
     const alleVrachten = (order.leveringen ?? [])
       .flatMap((l: any) =>
-        (l.vracht_regels ?? [])
+        [].concat(l.vracht_regels ?? [])
           .map((vr: any) => vr.vracht)
           .filter(Boolean)
       )

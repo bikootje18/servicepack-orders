@@ -138,7 +138,7 @@ function OrderGroepTabel({ titel, orders }: { titel: string; orders: OrderMetVra
             <th className="text-left py-2 font-medium text-gray-600">Order</th>
             <th className="text-left py-2 font-medium text-gray-600">Code</th>
             <th className="text-right py-2 font-medium text-gray-600">Stuks</th>
-            <th className="text-left py-2 font-medium text-gray-600">Deadline</th>
+            <th className="text-left py-2 pl-12 font-medium text-gray-600">Deadline</th>
             <th className="text-left py-2 font-medium text-gray-600">Vracht</th>
           </tr>
         </thead>
@@ -152,7 +152,7 @@ function OrderGroepTabel({ titel, orders }: { titel: string; orders: OrderMetVra
               </td>
               <td className="py-2 text-gray-500 font-mono text-xs">{order.order_code}</td>
               <td className="py-2 text-right">{order.order_grootte.toLocaleString('nl-NL')}</td>
-              <td className="py-2 text-gray-500 text-xs">{order.deadline ?? '—'}</td>
+              <td className="py-2 pl-12 text-gray-500 text-xs">{order.deadline ?? '—'}</td>
               <td className="py-2 text-gray-500 text-xs">
                 {order.vrachten.length > 0
                   ? order.vrachten.map(v => v.vrachtbrief_nummer).join(', ')
