@@ -2,6 +2,8 @@ import { redirect } from 'next/navigation'
 import { getOrder, updateOrder } from '@/lib/db/orders'
 import { getKlanten } from '@/lib/db/klanten'
 import { getCodes, getCodeByCode } from '@/lib/db/codes'
+import { getArtikelenVoorOrder } from '@/lib/db/artikelen'
+import { ArtikelenForm } from '@/components/orders/ArtikelenForm'
 import { LOCATIES } from '@/lib/constants/locaties'
 
 export default async function BewerkenOrderPage({
@@ -10,10 +12,11 @@ export default async function BewerkenOrderPage({
   params: Promise<{ id: string }>
 }) {
   const { id } = await params
-  const [order, klanten, codes] = await Promise.all([
+  const [order, klanten, codes, artikelen] = await Promise.all([
     getOrder(id),
     getKlanten(),
     getCodes(),
+    getArtikelenVoorOrder(id),
   ])
 
   async function slaOpgeslagenOp(formData: FormData) {
@@ -34,11 +37,27 @@ export default async function BewerkenOrderPage({
       aantal_per_pallet: parseInt(formData.get('aantal_per_pallet') as string) || 0,
       bewerking: formData.get('bewerking') as string || '',
       opwerken: formData.get('opwerken') === 'on',
+      bio: formData.get('bio') === 'on',
       omschrijving: formData.get('omschrijving') as string || '',
       locatie,
       deadline: formData.get('deadline') as string || null,
       tht: formData.get('tht') as string || null,
     })
+    // Artikelen opslaan als de sectie geopend was bij submit
+    if (formData.get('artikelen_geopend') === 'true') {
+      const count = parseInt(formData.get('artikelen_count') as string ?? '0')
+      const regels: Array<{ naam: string; berekening_type: 'delen' | 'vermenigvuldigen'; factor: number }> = []
+      for (let i = 0; i < count; i++) {
+        const naam = (formData.get(`artikel_naam_${i}`) as string ?? '').trim()
+        const type = formData.get(`artikel_type_${i}`) as string
+        const factor = parseFloat(formData.get(`artikel_factor_${i}`) as string ?? '0')
+        if (naam && (type === 'delen' || type === 'vermenigvuldigen') && factor > 0) {
+          regels.push({ naam, berekening_type: type as 'delen' | 'vermenigvuldigen', factor })
+        }
+      }
+      const { saveArtikelen } = await import('@/lib/db/artikelen')
+      await saveArtikelen(id, regels)
+    }
     redirect(`/orders/${id}`)
   }
 
@@ -130,9 +149,15 @@ export default async function BewerkenOrderPage({
             className="form-input" />
         </div>
 
-        <div className="flex items-center gap-2">
-          <input name="opwerken" type="checkbox" id="opwerken" defaultChecked={order.opwerken} className="form-checkbox" />
-          <label htmlFor="opwerken" className="text-sm font-medium text-gray-700">Opwerken</label>
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
+            <input name="opwerken" type="checkbox" id="opwerken" defaultChecked={order.opwerken} className="form-checkbox" />
+            <label htmlFor="opwerken" className="text-sm font-medium text-gray-700">Opwerken</label>
+          </div>
+          <div className="flex items-center gap-2">
+            <input name="bio" type="checkbox" id="bio" defaultChecked={order.bio} className="form-checkbox" />
+            <label htmlFor="bio" className="text-sm font-medium text-gray-700">Bio</label>
+          </div>
         </div>
 
         <div>
@@ -140,6 +165,11 @@ export default async function BewerkenOrderPage({
           <textarea name="omschrijving" rows={3} defaultValue={order.omschrijving}
             className="form-textarea" />
         </div>
+
+        <ArtikelenForm
+          initialArtikelen={artikelen}
+          defaultOrderGrootte={order.order_grootte}
+        />
 
         <div className="flex gap-3">
           <button type="submit"
