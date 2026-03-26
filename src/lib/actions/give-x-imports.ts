@@ -28,8 +28,7 @@ async function vindOrder(klantId: string, instructieCode: string) {
     .eq('klant_id', klantId)
     .eq('order_code', instructieCode)
     .order('aangemaakt_op', { ascending: false })
-    .limit(1)
-    .single()
+    .maybeSingle()
   return data
 }
 
@@ -67,7 +66,7 @@ export async function verwerkGiveXImports(
     } catch (err) {
       const fout = err as Error
       // Duplicate documentnummer → al verwerkt
-      if (fout.message?.includes('duplicate') || fout.message?.includes('unique')) {
+      if ((fout as { code?: string }).code === '23505') {
         resultaten.push({ bestandsnaam: bestand.name, status: 'al_verwerkt' })
       } else {
         resultaten.push({ bestandsnaam: bestand.name, status: 'fout', foutmelding: fout.message })
