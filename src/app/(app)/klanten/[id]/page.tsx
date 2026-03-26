@@ -29,8 +29,10 @@ export default async function KlantDetailPage({ params }: { params: Promise<{ id
 
   async function bewerkKlant(formData: FormData) {
     'use server'
+    const naam = (formData.get('naam') as string ?? '').trim()
+    if (!naam) return
     await updateKlant(id, {
-      naam: formData.get('naam') as string,
+      naam,
       adres: formData.get('adres') as string,
       postcode: formData.get('postcode') as string,
       stad: formData.get('stad') as string,
