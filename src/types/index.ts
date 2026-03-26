@@ -38,6 +38,7 @@ export interface Order {
   aantal_per_pallet: number
   bewerking: string
   opwerken: boolean
+  bio: boolean
   omschrijving: string
   status: OrderStatus
   aangemaakt_door: string | null
@@ -93,12 +94,34 @@ export interface Vracht {
   klant_id: string
   vrachtbrief_nummer: string
   datum: string
+  status: 'aangemaakt' | 'opgehaald'
   notities: string
   aangemaakt_op: string
   // Joins
   klant?: Klant
   regels?: VrachtRegel[]
   factuur?: Pick<Factuur, 'id' | 'factuur_nummer' | 'status' | 'totaal_bedrag'>
+}
+
+export interface OrderBijlage {
+  id: string
+  order_id: string
+  bestandsnaam: string
+  opslag_pad: string
+  bestandsgrootte: number | null
+  mime_type: string | null
+  aangemaakt_op: string
+  url?: string // signed URL, server-side only
+}
+
+export interface OrderArtikel {
+  id: string
+  order_id: string
+  naam: string
+  berekening_type: 'delen' | 'vermenigvuldigen'
+  factor: number
+  volgorde: number
+  aangemaakt_op: string
 }
 
 export interface VrachtRegel {
