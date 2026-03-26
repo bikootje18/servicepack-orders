@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import type { Order } from '@/types'
+import type { OrderMetVrachten, VrachtInfo } from '@/lib/utils/order-groepering'
 
 export function validateOrder(data: {
   order_nummer: string
@@ -96,4 +97,44 @@ export async function updateOrderStatus(id: string, status: Order['status']): Pr
     .update({ status })
     .eq('id', id)
   if (error) throw error
+}
+
+export async function getOrdersVoorKlant(klantId: string): Promise<OrderMetVrachten[]> {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('orders')
+    .select(`
+      id, order_nummer, order_code, order_grootte, status, deadline,
+      leveringen(
+        vracht_regels(
+          vracht:vrachten(id, vrachtbrief_nummer, status)
+        )
+      )
+    `)
+    .eq('klant_id', klantId)
+    .order('deadline', { ascending: true, nullsFirst: false })
+  if (error) throw error
+
+  return (data ?? []).map(order => {
+    const alleVrachten = (order.leveringen ?? [])
+      .flatMap((l: any) =>
+        (l.vracht_regels ?? [])
+          .map((vr: any) => vr.vracht)
+          .filter(Boolean)
+      )
+    // Dedupliceer op id
+    const vrachten = Array.from(
+      new Map(alleVrachten.map((v: any) => [v.id, v])).values()
+    ) as VrachtInfo[]
+
+    return {
+      id: order.id,
+      order_nummer: order.order_nummer,
+      order_code: order.order_code,
+      order_grootte: order.order_grootte,
+      status: order.status,
+      deadline: order.deadline,
+      vrachten,
+    }
+  })
 }
