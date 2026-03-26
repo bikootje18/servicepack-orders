@@ -19,6 +19,14 @@ export async function createVrachtAction(formData: FormData): Promise<void> {
   redirect(`/vrachten/${vracht.id}/klaar`)
 }
 
+export async function markeerVrachtOpgehaald(id: string): Promise<void> {
+  const { createClient } = await import('@/lib/supabase/server')
+  const supabase = await createClient()
+  const { error } = await supabase.from('vrachten').update({ status: 'opgehaald' }).eq('id', id)
+  if (error) throw error
+  revalidatePath('/vrachten')
+}
+
 export async function createVrachtFactuurAction(vrachtId: string): Promise<void> {
   const factuur = await dbCreateFactuur(vrachtId)
   revalidatePath(`/vrachten/${vrachtId}`)
