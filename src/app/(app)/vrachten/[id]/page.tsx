@@ -22,7 +22,7 @@ export default async function VrachtDetailPage({
   }, 0)
 
   return (
-    <div className="max-w-3xl">
+    <div className="max-w-4xl">
       <div className="flex items-start justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold font-mono mb-1">{vracht.vrachtbrief_nummer}</h1>

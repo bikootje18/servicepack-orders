@@ -42,7 +42,7 @@ export default async function KlantDetailPage({ params }: { params: Promise<{ id
   }
 
   return (
-    <div className="max-w-3xl">
+    <div className="max-w-4xl">
       {/* Klantinfo + bewerken */}
       <KlantBewerkFormulier klant={klant} bewerkAction={bewerkKlant} />
 

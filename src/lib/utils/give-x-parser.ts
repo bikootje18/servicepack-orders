@@ -25,12 +25,15 @@ export function parseGiveXRows(rows: string[][], bestandsnaam: string): GiveXPar
   const headers = rows[0].map(h => h.trim())
   const heeft_rollen = headers.includes('Rollen')
 
-  // Datarijen: Documentnummer is gevuld
+  const docIdx = headers.indexOf('Documentnummer')
+  if (docIdx === -1) throw new Error(`${bestandsnaam}: Documentnummer kolom niet gevonden`)
+
+  // Datarijen: rijen waar kolom 0 (rijteller) gevuld is
   const dataRows = rows.slice(1).filter(row => row[0]?.trim())
   if (dataRows.length === 0) throw new Error(`${bestandsnaam}: geen datarijen gevonden`)
 
   const firstRow = dataRows[0]
-  const documentnummer = firstRow[0].trim()
+  const documentnummer = firstRow[docIdx].trim()
 
   const instructieIdx = headers.indexOf('Instructie')
   if (instructieIdx === -1) throw new Error(`${bestandsnaam}: Instructie kolom niet gevonden`)

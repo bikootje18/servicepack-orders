@@ -1,9 +1,11 @@
 import { redirect } from 'next/navigation'
-import { getOrder, updateOrder } from '@/lib/db/orders'
+import { getOrder, updateOrder, deleteOrder } from '@/lib/db/orders'
+import { getLeveringen } from '@/lib/db/leveringen'
 import { getKlanten } from '@/lib/db/klanten'
 import { getCodes, getCodeByCode } from '@/lib/db/codes'
 import { getArtikelenVoorOrder } from '@/lib/db/artikelen'
 import { ArtikelenForm } from '@/components/orders/ArtikelenForm'
+import { VerwijderOrderKnop } from '@/components/orders/VerwijderOrderKnop'
 import { LOCATIES } from '@/lib/constants/locaties'
 
 export default async function BewerkenOrderPage({
@@ -12,11 +14,12 @@ export default async function BewerkenOrderPage({
   params: Promise<{ id: string }>
 }) {
   const { id } = await params
-  const [order, klanten, codes, artikelen] = await Promise.all([
+  const [order, klanten, codes, artikelen, leveringen] = await Promise.all([
     getOrder(id),
     getKlanten(),
     getCodes(),
     getArtikelenVoorOrder(id),
+    getLeveringen(id),
   ])
 
   async function slaOpgeslagenOp(formData: FormData) {
@@ -60,6 +63,14 @@ export default async function BewerkenOrderPage({
     }
     redirect(`/orders/${id}`)
   }
+
+  async function verwijderOrder() {
+    'use server'
+    await deleteOrder(id)
+    redirect('/orders')
+  }
+
+  const kanVerwijderen = leveringen.length === 0
 
   return (
     <div className="max-w-2xl">
@@ -181,6 +192,14 @@ export default async function BewerkenOrderPage({
           </a>
         </div>
       </form>
+
+      <div className="mt-8">
+{kanVerwijderen ? (
+          <VerwijderOrderKnop orderNummer={order.order_nummer} action={verwijderOrder} />
+        ) : (
+          <p className="text-sm text-gray-400">Order kan niet worden verwijderd — er zijn al gereedmeldingen geregistreerd.</p>
+        )}
+      </div>
     </div>
   )
 }

@@ -77,7 +77,7 @@ export async function createOrder(data: Omit<Order, 'id' | 'status' | 'aangemaak
     .insert({ ...data, status: 'concept' })
     .select()
     .single()
-  if (error) throw error
+  if (error) throw new Error(`[createOrder] ${error.message} (code: ${error.code})`)
   return order
 }
 
@@ -87,7 +87,16 @@ export async function updateOrder(id: string, data: Partial<Order>): Promise<voi
     .from('orders')
     .update(data)
     .eq('id', id)
-  if (error) throw error
+  if (error) throw new Error(`[updateOrder] ${error.message} (code: ${error.code})`)
+}
+
+export async function deleteOrder(id: string): Promise<void> {
+  const supabase = await createClient()
+  const { error } = await supabase
+    .from('orders')
+    .delete()
+    .eq('id', id)
+  if (error) throw new Error(`[deleteOrder] ${error.message} (code: ${error.code})`)
 }
 
 export async function updateOrderStatus(id: string, status: Order['status']): Promise<void> {

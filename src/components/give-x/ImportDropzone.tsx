@@ -24,8 +24,8 @@ export function ImportDropzone({ klantId }: { klantId: string }) {
     }
   }
 
-  const gematchte = resultaten?.filter(r => r.status === 'gematcht').length ?? 0
-  const nietGevonden = resultaten?.filter(r => r.status === 'niet_gevonden').length ?? 0
+  const aangemaakt = resultaten?.filter(r => r.status === 'aangemaakt') ?? []
+  const geenTemplate = resultaten?.filter(r => r.status === 'geen_template') ?? []
   const fouten = resultaten?.filter(r => r.status === 'fout' || r.status === 'al_verwerkt') ?? []
 
   return (
@@ -58,12 +58,16 @@ export function ImportDropzone({ klantId }: { klantId: string }) {
 
       {resultaten && (
         <div className="mt-4 text-sm space-y-2">
-          {gematchte > 0 && (
-            <p className="text-green-700">✓ {gematchte} order{gematchte !== 1 ? 's' : ''} gematcht</p>
-          )}
-          {nietGevonden > 0 && (
-            <p className="text-amber-700">⚠ {nietGevonden} code{nietGevonden !== 1 ? 's' : ''} niet gevonden — staat onder "Nog te koppelen"</p>
-          )}
+          {aangemaakt.map(r => (
+            <p key={r.bestandsnaam} className="text-green-700">
+              ✓ Order aangemaakt: {r.order_nummer} ({r.instructie_code})
+            </p>
+          ))}
+          {geenTemplate.map(r => (
+            <p key={r.bestandsnaam} className="text-amber-700">
+              ⚠ Geen bestaande order gevonden voor code &ldquo;{r.instructie_code}&rdquo; — voer handmatig in
+            </p>
+          ))}
           {fouten.map(r => (
             <p key={r.bestandsnaam} className="text-red-700">
               ✗ {r.bestandsnaam}: {r.status === 'al_verwerkt' ? 'al eerder verwerkt' : r.foutmelding}

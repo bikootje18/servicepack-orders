@@ -9,7 +9,7 @@ export async function getArtikelenVoorOrder(orderId: string): Promise<OrderArtik
     .select('*')
     .eq('order_id', orderId)
     .order('volgorde', { ascending: true })
-  if (error) throw error
+  if (error) throw new Error(`[getArtikelenVoorOrder] ${error.message} (code: ${error.code})`)
   return (data ?? []) as OrderArtikel[]
 }
 
@@ -45,7 +45,7 @@ export async function saveArtikelen(
     .from('order_artikelen')
     .delete()
     .eq('order_id', orderId)
-  if (deleteError) throw deleteError
+  if (deleteError) throw new Error(`[saveArtikelen delete] ${deleteError.message} (code: ${deleteError.code})`)
 
   if (regels.length === 0) return
 
@@ -60,5 +60,5 @@ export async function saveArtikelen(
         volgorde: i,
       }))
     )
-  if (insertError) throw insertError
+  if (insertError) throw new Error(`[saveArtikelen insert] ${insertError.message} (code: ${insertError.code})`)
 }
