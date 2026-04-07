@@ -195,7 +195,7 @@ export default async function BewerkenOrderPage({
 
       <div className="mt-8">
 {kanVerwijderen ? (
-          <VerwijderOrderKnop orderNummer={order.order_nummer} action={verwijderOrder} />
+          <VerwijderOrderKnop orderId={id} orderNummer={order.order_nummer} />
         ) : (
           <p className="text-sm text-gray-400">Order kan niet worden verwijderd — er zijn al gereedmeldingen geregistreerd.</p>
         )}

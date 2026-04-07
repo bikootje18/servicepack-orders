@@ -1,7 +1,7 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { deleteOrder } from '@/lib/db/orders'
+import { verwijderOrder } from '@/lib/actions/orders'
 
 interface Props {
   orderId: string
@@ -13,10 +13,10 @@ export function VerwijderOrderKnop({ orderId, orderNummer }: Props) {
 
   async function handleVerwijder() {
     const bevestigd = confirm(
-      `Order ${orderNummer ? orderNummer : ''} verwijderen? Dit kan niet ongedaan worden gemaakt.`
+      `Order ${orderNummer ?? ''} verwijderen? Dit kan niet ongedaan worden gemaakt.`
     )
     if (!bevestigd) return
-    await deleteOrder(orderId)
+    await verwijderOrder(orderId)
     router.push('/orders')
   }
 
