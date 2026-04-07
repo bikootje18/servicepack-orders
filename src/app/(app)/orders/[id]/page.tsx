@@ -78,7 +78,7 @@ export default async function OrderDetailPage({
             >
               Bewerken
             </Link>
-            <VerwijderOrderKnop orderId={id} />
+            <VerwijderOrderKnop orderId={id} orderNummer={order.order_nummer} />
           </div>
         </div>
       </div>

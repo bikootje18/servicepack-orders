@@ -1,24 +1,32 @@
 'use client'
 
+import { useRouter } from 'next/navigation'
+import { deleteOrder } from '@/lib/db/orders'
+
 interface Props {
-  orderNummer: string
-  action: () => Promise<void>
+  orderId: string
+  orderNummer?: string
 }
 
-export function VerwijderOrderKnop({ orderNummer, action }: Props) {
+export function VerwijderOrderKnop({ orderId, orderNummer }: Props) {
+  const router = useRouter()
+
+  async function handleVerwijder() {
+    const bevestigd = confirm(
+      `Order ${orderNummer ? orderNummer : ''} verwijderen? Dit kan niet ongedaan worden gemaakt.`
+    )
+    if (!bevestigd) return
+    await deleteOrder(orderId)
+    router.push('/orders')
+  }
+
   return (
-    <form action={action}>
-      <button
-        type="submit"
-        className="px-4 py-2 text-sm font-medium text-red-600 border border-red-300 rounded hover:bg-red-50 transition-colors"
-        onClick={(e) => {
-          if (!confirm(`Order ${orderNummer} verwijderen? Dit kan niet ongedaan worden gemaakt.`)) {
-            e.preventDefault()
-          }
-        }}
-      >
-        Order verwijderen
-      </button>
-    </form>
+    <button
+      type="button"
+      onClick={handleVerwijder}
+      className="px-3 py-1.5 text-sm font-medium text-red-600 border border-red-300 rounded-md hover:bg-red-50 transition-colors"
+    >
+      Verwijderen
+    </button>
   )
 }
