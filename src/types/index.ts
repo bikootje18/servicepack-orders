@@ -31,7 +31,7 @@ export interface Order {
   order_nummer: string
   order_code: string
   klant_id: string
-  facturatie_code_id: string
+  facturatie_code_id: string | null
   order_grootte: number
   aantal_per_doos: number
   aantal_per_inner: number

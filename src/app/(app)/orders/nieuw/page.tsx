@@ -47,13 +47,13 @@ export default async function NieuweOrderPage({
     const locatie = formData.get('locatie') as string
     if (!locatie) throw new Error('Locatie is verplicht')
     const codeText = (formData.get('facturatie_code') as string ?? '').trim()
-    const gevondenCode = await getCodeByCode(codeText)
-    if (!gevondenCode) throw new Error(`Facturatie code '${codeText}' niet gevonden`)
+    const gevondenCode = codeText ? await getCodeByCode(codeText) : null
+    if (codeText && !gevondenCode) throw new Error(`Facturatie code '${codeText}' niet gevonden`)
     const order = await createOrder({
       order_nummer: formData.get('order_nummer') as string,
       order_code: formData.get('order_code') as string,
       klant_id: formData.get('klant_id') as string,
-      facturatie_code_id: gevondenCode.id,
+      facturatie_code_id: gevondenCode?.id ?? null,
       order_grootte: parseInt(formData.get('order_grootte') as string),
       aantal_per_doos: parseInt(formData.get('aantal_per_doos') as string) || 0,
       aantal_per_inner: parseInt(formData.get('aantal_per_inner') as string) || 0,
@@ -155,10 +155,10 @@ export default async function NieuweOrderPage({
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Facturatie code *</label>
-            <input name="facturatie_code" list="codes-datalist" required
+            <label className="block text-sm font-medium text-gray-700 mb-1">Facturatie code</label>
+            <input name="facturatie_code" list="codes-datalist"
               defaultValue={v?.facturatie_code?.code ?? ''}
-              placeholder="Type code..."
+              placeholder="Optioneel"
               className="form-input" autoComplete="off" />
             <datalist id="codes-datalist">
               {codes.map(c => <option key={c.id} value={c.code}>{c.omschrijving}</option>)}
