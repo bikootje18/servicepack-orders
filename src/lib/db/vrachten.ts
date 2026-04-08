@@ -89,28 +89,94 @@ export async function getOngefactureerdeLeveringenVoorKlant(
   return leveringen.filter(l => !inVrachtIds.has(l.id)) as (Levering & { order: Order & { facturatie_code: { tarief: number; code: string } } })[]
 }
 
+export async function splitLeveringVoorVracht(
+  leveringId: string,
+  aantalInVracht: number
+): Promise<string> {
+  const supabase = await createClient()
+
+  const { data: levering, error } = await supabase
+    .from('leveringen')
+    .select('*')
+    .eq('id', leveringId)
+    .single()
+  if (error) throw error
+
+  if (aantalInVracht <= 0) throw new Error('Aantal moet groter zijn dan 0')
+  if (aantalInVracht > levering.aantal_geleverd) throw new Error(`Maximaal ${levering.aantal_geleverd} beschikbaar`)
+
+  // Geen split nodig als aantallen gelijk zijn
+  if (aantalInVracht === levering.aantal_geleverd) return leveringId
+
+  // Update origineel naar het gewenste aantal
+  const { error: updateError } = await supabase
+    .from('leveringen')
+    .update({ aantal_geleverd: aantalInVracht })
+    .eq('id', leveringId)
+  if (updateError) throw updateError
+
+  // Maak resterende deellevering aan
+  const rest = levering.aantal_geleverd - aantalInVracht
+  const { error: insertError } = await supabase
+    .from('leveringen')
+    .insert({
+      order_id:        levering.order_id,
+      aantal_geleverd: rest,
+      leverdatum:      levering.leverdatum,
+      notities:        levering.notities,
+      tht:             levering.tht,
+      aangemaakt_door: levering.aangemaakt_door,
+    })
+  if (insertError) throw insertError
+
+  return leveringId
+}
+
 export async function createVracht(data: {
   klant_id: string
   datum: string
   notities: string
   levering_ids: string[]
+  aantallen: Record<string, number>
+  aflever_naam:     string | null
+  aflever_adres:    string | null
+  aflever_postcode: string | null
+  aflever_stad:     string | null
+  aflever_land:     string | null
 }): Promise<Vracht> {
   if (data.levering_ids.length === 0) throw new Error('levering_ids mag niet leeg zijn')
 
   const supabase = await createClient()
 
+  // Split leveringen waar nodig
+  const definitieveLeveringIds: string[] = []
+  for (const leveringId of data.levering_ids) {
+    const gewenstAantal = data.aantallen[leveringId]
+    if (gewenstAantal) {
+      const definitiefId = await splitLeveringVoorVracht(leveringId, gewenstAantal)
+      definitieveLeveringIds.push(definitiefId)
+    } else {
+      definitieveLeveringIds.push(leveringId)
+    }
+  }
+
   const { data: vracht, error: vrachtError } = await supabase
     .from('vrachten')
     .insert({
-      klant_id: data.klant_id,
-      datum: data.datum,
-      notities: data.notities,
+      klant_id:         data.klant_id,
+      datum:            data.datum,
+      notities:         data.notities,
+      aflever_naam:     data.aflever_naam     || null,
+      aflever_adres:    data.aflever_adres    || null,
+      aflever_postcode: data.aflever_postcode || null,
+      aflever_stad:     data.aflever_stad     || null,
+      aflever_land:     data.aflever_land     || null,
     })
     .select()
     .single()
   if (vrachtError) throw vrachtError
 
-  const regels = data.levering_ids.map(levering_id => ({
+  const regels = definitieveLeveringIds.map(levering_id => ({
     vracht_id: vracht.id,
     levering_id,
   }))

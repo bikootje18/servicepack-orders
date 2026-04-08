@@ -36,10 +36,16 @@ export async function gereedmeldenEnVrachtAanmaken(data: {
   })
 
   const vracht = await createVracht({
-    klant_id: data.klant_id,
-    datum: data.leverdatum,
-    notities: '',
-    levering_ids: [levering.id],
+    klant_id:         data.klant_id,
+    datum:            data.leverdatum,
+    notities:         '',
+    levering_ids:     [levering.id],
+    aantallen:        {},
+    aflever_naam:     null,
+    aflever_adres:    null,
+    aflever_postcode: null,
+    aflever_stad:     null,
+    aflever_land:     null,
   })
 
   await dbCreateFactuur(vracht.id)

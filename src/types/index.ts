@@ -97,6 +97,11 @@ export interface Vracht {
   status: 'aangemaakt' | 'opgehaald'
   notities: string
   aangemaakt_op: string
+  aflever_naam:     string | null
+  aflever_adres:    string | null
+  aflever_postcode: string | null
+  aflever_stad:     string | null
+  aflever_land:     string | null
   // Joins
   klant?: Klant
   regels?: VrachtRegel[]

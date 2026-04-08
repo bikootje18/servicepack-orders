@@ -1,5 +1,6 @@
 import { Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer'
 import type { Vracht } from '@/types'
+import { BEDRIJF } from '@/lib/constants/bedrijf'
 
 const S = StyleSheet.create({
   page: { padding: 20, fontFamily: 'Helvetica', fontSize: 9, color: '#111' },
@@ -53,6 +54,15 @@ export function VrachtbriefDocument({ vracht }: Props) {
   const regels = vracht.regels ?? []
   const totaalEenheden = regels.reduce((sum, r) => sum + (r.levering?.aantal_geleverd ?? 0), 0)
 
+  // Afleveradres: override indien opgegeven, anders klantadres
+  const aflever = {
+    naam:     vracht.aflever_naam     ?? vracht.klant.naam,
+    adres:    vracht.aflever_adres    ?? vracht.klant.adres,
+    postcode: vracht.aflever_postcode ?? vracht.klant.postcode,
+    stad:     vracht.aflever_stad     ?? vracht.klant.stad,
+    land:     vracht.aflever_land     ?? vracht.klant.land,
+  }
+
   return (
     <Document>
       <Page size="A4" style={S.page}>
@@ -65,19 +75,21 @@ export function VrachtbriefDocument({ vracht }: Props) {
         <View style={S.row}>
           <View style={{ ...S.box, flex: 2 }}>
             <Text style={S.boxLabel}>1. Afzender (naam, adres, land)</Text>
-            <Text style={S.boxValue}>[Uw bedrijfsnaam]</Text>
-            <Text style={{ fontSize: 8, color: '#aaa' }}>[Adres invullen]</Text>
+            <Text style={S.boxValue}>{BEDRIJF.naam}</Text>
+            <Text style={S.boxValue}>{BEDRIJF.adres}</Text>
+            <Text style={S.boxValue}>{BEDRIJF.postcode} {BEDRIJF.stad}</Text>
+            <Text style={S.boxValue}>{BEDRIJF.land}</Text>
           </View>
           <View style={{ ...S.box, flex: 2 }}>
             <Text style={S.boxLabel}>2. Ontvanger (naam, adres, land)</Text>
-            <Text style={S.boxValue}>{vracht.klant.naam}</Text>
-            {!!vracht.klant.adres && <Text style={S.boxValue}>{vracht.klant.adres}</Text>}
-            {!!(vracht.klant.postcode || vracht.klant.stad) && (
+            <Text style={S.boxValue}>{aflever.naam}</Text>
+            {!!aflever.adres && <Text style={S.boxValue}>{aflever.adres}</Text>}
+            {!!(aflever.postcode || aflever.stad) && (
               <Text style={S.boxValue}>
-                {[vracht.klant.postcode, vracht.klant.stad].filter(Boolean).join(' ')}
+                {[aflever.postcode, aflever.stad].filter(Boolean).join(' ')}
               </Text>
             )}
-            {!!vracht.klant.land && <Text style={S.boxValue}>{vracht.klant.land}</Text>}
+            {!!aflever.land && <Text style={S.boxValue}>{aflever.land}</Text>}
           </View>
           <View style={{ ...S.box, flex: 1 }}>
             <Text style={S.boxLabel}>Vrachtbrief nr.</Text>
@@ -92,12 +104,12 @@ export function VrachtbriefDocument({ vracht }: Props) {
           <View style={{ ...S.box, flex: 2 }}>
             <Text style={S.boxLabel}>3. Afleverplaats (plaats, land)</Text>
             <Text style={S.boxValue}>
-              {[vracht.klant.stad, vracht.klant.land].filter(Boolean).join(', ') || '–'}
+              {[aflever.stad, aflever.land].filter(Boolean).join(', ') || '–'}
             </Text>
           </View>
           <View style={{ ...S.box, flex: 1 }}>
             <Text style={S.boxLabel}>8. Vervoerder</Text>
-            <Text style={{ fontSize: 8, color: '#aaa' }}>[Vervoerder invullen]</Text>
+            <Text style={S.boxValue}>{BEDRIJF.naam}</Text>
           </View>
           <View style={{ ...S.box, flex: 2 }}>
             <Text style={S.boxLabel}>16. Bijzondere overeenkomsten</Text>
