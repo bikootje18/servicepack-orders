@@ -1,6 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import type { Order, Vracht } from '@/types'
-import type { Locatie } from '@/lib/constants/locaties'
+import { LOCATIES, type Locatie } from '@/lib/constants/locaties'
 
 export type DeadlineKleur = 'rood' | 'oranje' | null
 
@@ -26,11 +26,9 @@ export async function getOrdersPerLocatie(): Promise<Record<Locatie, { inBehande
     .order('deadline', { ascending: true, nullsFirst: false })
   if (error) throw error
 
-  const result: Record<Locatie, { inBehandeling: Order[]; bevestigd: Order[] }> = {
-    Lokkerdreef20: { inBehandeling: [], bevestigd: [] },
-    Pauvreweg:     { inBehandeling: [], bevestigd: [] },
-    WVB:           { inBehandeling: [], bevestigd: [] },
-  }
+  const result = Object.fromEntries(
+    LOCATIES.map(l => [l.waarde, { inBehandeling: [] as Order[], bevestigd: [] as Order[] }])
+  ) as Record<Locatie, { inBehandeling: Order[]; bevestigd: Order[] }>
 
   for (const order of data as Order[]) {
     const loc = order.locatie as Locatie
@@ -61,11 +59,9 @@ export async function getVrachtenPerLocatie(): Promise<Record<Locatie, Vracht[]>
     .order('datum', { ascending: true })
   if (error) throw error
 
-  const result: Record<Locatie, Vracht[]> = {
-    Lokkerdreef20: [],
-    Pauvreweg: [],
-    WVB: [],
-  }
+  const result = Object.fromEntries(
+    LOCATIES.map(l => [l.waarde, [] as Vracht[]])
+  ) as Record<Locatie, Vracht[]>
 
   for (const vracht of data as any[]) {
     const locaties = new Set<Locatie>()

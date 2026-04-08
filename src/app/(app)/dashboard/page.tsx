@@ -1,5 +1,5 @@
 import { getOrdersPerLocatie, getVrachtenPerLocatie } from '@/lib/db/dashboard'
-import { LOCATIES } from '@/lib/constants/locaties'
+import { DASHBOARD_LOCATIES } from '@/lib/constants/locaties'
 import { LocatieKolom } from '@/components/dashboard/LocatieKolom'
 
 const KLEUREN = ['#2563eb', '#059669', '#7c3aed'] as const
@@ -25,7 +25,7 @@ export default async function DashboardPage() {
       </div>
 
       <div className="grid grid-cols-3 gap-5 items-start">
-        {LOCATIES.map((l, i) => (
+        {DASHBOARD_LOCATIES.map((l, i) => (
           <LocatieKolom
             key={l.waarde}
             label={l.label}
