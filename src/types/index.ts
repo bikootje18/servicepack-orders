@@ -1,4 +1,5 @@
 export type OrderStatus = 'concept' | 'bevestigd' | 'in_behandeling' | 'geleverd' | 'gefactureerd'
+export type PalletType = 'chep' | 'eurochep' | 'euro' | 'lpr' | 'geen'
 export type FactuurStatus = 'concept' | 'verzonden' | 'betaald'
 
 export interface Klant {
@@ -8,6 +9,7 @@ export interface Klant {
   postcode: string
   stad: string
   land: string
+  email: string | null
   aangemaakt_op: string
 }
 
@@ -46,6 +48,7 @@ export interface Order {
   locatie: string | null
   deadline: string | null
   tht: string | null
+  pallet_type: PalletType
   // Joins
   klant?: Klant
   facturatie_code?: FacturatieCode
@@ -102,6 +105,7 @@ export interface Vracht {
   aflever_postcode: string | null
   aflever_stad:     string | null
   aflever_land:     string | null
+  aangemaakt_door:  string | null
   // Joins
   klant?: Klant
   regels?: VrachtRegel[]
@@ -133,6 +137,7 @@ export interface VrachtRegel {
   id: string
   vracht_id: string
   levering_id: string
+  cmr_notitie: string | null
   // Joins
   levering?: Levering & {
     order?: Order & {

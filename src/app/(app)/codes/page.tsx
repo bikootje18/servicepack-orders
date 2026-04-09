@@ -1,6 +1,7 @@
 import { getCodes, createCode } from '@/lib/db/codes'
 import { revalidatePath } from 'next/cache'
 import { formatCurrency } from '@/lib/utils/formatters'
+import { VerwijderCodeKnop } from '@/components/codes/VerwijderCodeKnop'
 
 export default async function CodesPage() {
   const codes = await getCodes(true)
@@ -41,6 +42,7 @@ export default async function CodesPage() {
             <th className="text-left py-2 font-medium text-gray-600">Omschrijving</th>
             <th className="text-right py-2 font-medium text-gray-600">Tarief</th>
             <th className="text-center py-2 font-medium text-gray-600">Actief</th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
@@ -50,6 +52,9 @@ export default async function CodesPage() {
               <td className="py-2">{code.omschrijving}</td>
               <td className="py-2 text-right">{formatCurrency(code.tarief)}</td>
               <td className="py-2 text-center">{code.actief ? '✓' : '✗'}</td>
+              <td className="py-2 text-right">
+                <VerwijderCodeKnop id={code.id} code={code.code} />
+              </td>
             </tr>
           ))}
         </tbody>

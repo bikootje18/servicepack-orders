@@ -19,16 +19,16 @@ export function KlaarDownloadKnoppen({ vracht, factuur, leveringen, klantNaam }:
   async function downloadVrachtbrief() {
     setVrachtbriefLaden(true)
     try {
-      const [{ pdf }, { createElement }, { VrachtbriefDocument }] = await Promise.all([
+      const [{ pdf }, { createElement }, { CmrOverlayDocument }] = await Promise.all([
         import('@react-pdf/renderer'),
         import('react'),
-        import('./VrachtbriefDocument'),
+        import('./CmrOverlayDocument'),
       ])
-      const blob = await pdf(createElement(VrachtbriefDocument, { vracht: vracht as any }) as any).toBlob()
+      const blob = await pdf(createElement(CmrOverlayDocument, { vracht: vracht as any }) as any).toBlob()
       const url = URL.createObjectURL(blob)
       const a = document.createElement('a')
       a.href = url
-      a.download = `vrachtbrief-${vracht.vrachtbrief_nummer}.pdf`
+      a.download = `cmr-${vracht.vrachtbrief_nummer}.pdf`
       a.click()
       URL.revokeObjectURL(url)
     } finally {
@@ -44,7 +44,11 @@ export function KlaarDownloadKnoppen({ vracht, factuur, leveringen, klantNaam }:
         import('react'),
         import('./VrachtFactuurDocument'),
       ])
-      const blob = await pdf(createElement(VrachtFactuurDocument, { factuur, leveringen, klantNaam }) as any).toBlob()
+      const logoUrl = await fetch('/servicepack_logo.png')
+        .then(r => r.blob())
+        .then(b => new Promise<string>(res => { const fr = new FileReader(); fr.onload = () => res(fr.result as string); fr.readAsDataURL(b) }))
+        .catch(() => undefined)
+      const blob = await pdf(createElement(VrachtFactuurDocument, { factuur, leveringen, klantNaam, logoUrl }) as any).toBlob()
       const url = URL.createObjectURL(blob)
       const a = document.createElement('a')
       a.href = url
@@ -70,7 +74,7 @@ export function KlaarDownloadKnoppen({ vracht, factuur, leveringen, klantNaam }:
           </svg>
         </div>
         <div className="text-center">
-          <p className="font-semibold text-gray-900 mb-0.5">Vrachtbrief</p>
+          <p className="font-semibold text-gray-900 mb-0.5">CMR</p>
           <p className="text-xs text-gray-400 font-mono">{vracht.vrachtbrief_nummer}</p>
           <p className="text-xs text-gray-400 mt-0.5">voor de chauffeur</p>
         </div>

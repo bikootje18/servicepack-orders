@@ -27,6 +27,23 @@ export async function getLeveringen(orderId: string): Promise<Levering[]> {
   return data
 }
 
+export async function deleteLevering(id: string): Promise<void> {
+  const supabase = await createClient()
+  const { error } = await supabase.from('leveringen').delete().eq('id', id)
+  if (error) throw error
+}
+
+export async function updateLevering(id: string, data: {
+  aantal_geleverd: number
+  leverdatum: string
+  notities: string
+  tht?: string | null
+}): Promise<void> {
+  const supabase = await createClient()
+  const { error } = await supabase.from('leveringen').update(data).eq('id', id)
+  if (error) throw error
+}
+
 export async function createLevering(data: {
   order_id: string
   aantal_geleverd: number

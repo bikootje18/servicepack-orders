@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { getKlanten, getKlant } from '@/lib/db/klanten'
+import { KlantKiezer } from '@/components/vrachten/KlantKiezer'
 import { getOngefactureerdeLeveringenVoorKlant } from '@/lib/db/vrachten'
 import { createVrachtAction } from '@/lib/actions/vrachten'
 import { formatDate, formatAantal } from '@/lib/utils/formatters'
@@ -17,17 +18,7 @@ export default async function NieuweVrachtPage({
     return (
       <div className="max-w-md">
         <h1 className="text-2xl font-bold mb-6">Nieuwe vracht – kies klant</h1>
-        <div className="space-y-2">
-          {klanten.map(k => (
-            <Link
-              key={k.id}
-              href={`/vrachten/nieuw?klant_id=${k.id}`}
-              className="block border border-gray-200 rounded px-4 py-3 hover:bg-gray-50 text-sm font-medium"
-            >
-              {k.naam}
-            </Link>
-          ))}
-        </div>
+        <KlantKiezer klanten={klanten} />
       </div>
     )
   }
@@ -158,7 +149,7 @@ export default async function NieuweVrachtPage({
                     {(l as any).order?.order_nummer}
                   </td>
                   <td className="px-4 py-3 text-gray-600">{formatDate(l.leverdatum)}</td>
-                  <td className="px-4 py-3 text-right tabular-nums text-gray-500">
+                  <td className="px-4 py-3 pr-8 text-right tabular-nums text-gray-500">
                     {formatAantal(l.aantal_geleverd)}
                   </td>
                   <td className="px-4 py-3 text-right">
@@ -168,7 +159,7 @@ export default async function NieuweVrachtPage({
                       defaultValue={l.aantal_geleverd}
                       min={1}
                       max={l.aantal_geleverd}
-                      className="form-input w-28 text-right tabular-nums"
+                      className="form-input w-28 text-right tabular-nums text-base font-semibold"
                     />
                   </td>
                 </tr>
@@ -177,9 +168,11 @@ export default async function NieuweVrachtPage({
           </table>
         </div>
 
-        <button type="submit" className="btn-primary px-6">
-          Vracht aanmaken
-        </button>
+        <div className="mt-6">
+          <button type="submit" className="btn-primary px-6">
+            Vracht aanmaken
+          </button>
+        </div>
       </form>
     </div>
   )

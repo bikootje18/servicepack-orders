@@ -1,10 +1,11 @@
-import { getKlant, updateKlant } from '@/lib/db/klanten'
+import { getKlant, updateKlant, deleteKlant } from '@/lib/db/klanten'
 import { getGiveXImports } from '@/lib/db/give-x-imports'
 import { getOrdersVoorKlant } from '@/lib/db/orders'
 import { groepeerOrders } from '@/lib/utils/order-groepering'
 import { ImportDropzone } from '@/components/give-x/ImportDropzone'
 import { KlantBewerkFormulier } from '@/components/klanten/KlantBewerkFormulier'
-import { notFound } from 'next/navigation'
+import { VerwijderKlantKnop } from '@/components/klanten/VerwijderKlantKnop'
+import { notFound, redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
 import Link from 'next/link'
 import type { OrderMetVrachten } from '@/lib/utils/order-groepering'
@@ -37,8 +38,15 @@ export default async function KlantDetailPage({ params }: { params: Promise<{ id
       postcode: formData.get('postcode') as string,
       stad: formData.get('stad') as string,
       land: formData.get('land') as string,
+      email: formData.get('email') as string || null,
     })
     revalidatePath(`/klanten/${id}`)
+  }
+
+  async function verwijderKlant() {
+    'use server'
+    await deleteKlant(id)
+    redirect('/klanten')
   }
 
   return (
@@ -57,6 +65,18 @@ export default async function KlantDetailPage({ params }: { params: Promise<{ id
         <OrderGroepTabel titel="Lopend" orders={groepen.lopend} />
         <OrderGroepTabel titel="Vracht klaar" orders={groepen.vracht_klaar} />
         <OrderGroepTabel titel="Opgehaald" orders={groepen.opgehaald} />
+      </section>
+
+      {/* Klant verwijderen */}
+      <section className="mb-10 pt-6 border-t border-gray-100">
+        <h2 className="text-sm font-semibold text-gray-400 uppercase tracking-wide mb-3">Gevaarlijke zone</h2>
+        {alleOrders.length > 0 ? (
+          <p className="text-sm text-gray-400">
+            Klant kan niet worden verwijderd zolang er {alleOrders.length} order{alleOrders.length !== 1 ? 's' : ''} aan gekoppeld {alleOrders.length !== 1 ? 'zijn' : 'is'}.
+          </p>
+        ) : (
+          <VerwijderKlantKnop naam={klant.naam} action={verwijderKlant} />
+        )}
       </section>
 
       {/* Give-X imports sectie */}

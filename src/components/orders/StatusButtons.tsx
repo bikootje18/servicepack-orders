@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation'
 import type { Order, OrderStatus } from '@/types'
 
 const transities: Partial<Record<OrderStatus, { naar: OrderStatus; label: string; variant?: 'primary' | 'green' }>> = {
-  concept:        { naar: 'bevestigd',      label: 'Markeer als bevestigd' },
   bevestigd:      { naar: 'in_behandeling', label: 'Start behandeling' },
   in_behandeling: { naar: 'geleverd',       label: 'Markeer als geleverd', variant: 'green' },
 }

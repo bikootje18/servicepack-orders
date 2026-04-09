@@ -27,9 +27,16 @@ export async function createVrachtAction(formData: FormData): Promise<void> {
     if (raw) aantallen[leveringId] = parseInt(raw, 10)
   }
 
+  // Ingelogde gebruiker ophalen
+  const { createClient } = await import('@/lib/supabase/server')
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  const aangemaakt_door = user?.user_metadata?.naam ?? user?.email ?? null
+
   const vracht = await createVracht({
     klant_id, datum, notities, levering_ids, aantallen,
     aflever_naam, aflever_adres, aflever_postcode, aflever_stad, aflever_land,
+    aangemaakt_door,
   })
   await dbCreateFactuur(vracht.id)
   redirect(`/vrachten/${vracht.id}/klaar`)
@@ -41,6 +48,7 @@ export async function markeerVrachtOpgehaald(id: string): Promise<void> {
   const { error } = await supabase.from('vrachten').update({ status: 'opgehaald' }).eq('id', id)
   if (error) throw error
   revalidatePath('/vrachten')
+  redirect(`/vrachten/${id}?mail=1`)
 }
 
 export async function createVrachtFactuurAction(vrachtId: string): Promise<void> {

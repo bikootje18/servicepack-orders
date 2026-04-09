@@ -36,6 +36,12 @@ export async function toggleCodeActief(id: string, actief: boolean): Promise<voi
   if (error) throw error
 }
 
+export async function deleteCode(id: string): Promise<void> {
+  const supabase = await createClient()
+  const { error } = await supabase.from('facturatie_codes').delete().eq('id', id)
+  if (error) throw error
+}
+
 export async function getCodeByCode(code: string): Promise<FacturatieCode | null> {
   const supabase = await createClient()
   const { data, error } = await supabase

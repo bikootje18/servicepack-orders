@@ -4,6 +4,7 @@ import { getCodes, getCodeByCode } from '@/lib/db/codes'
 import { createOrder } from '@/lib/db/orders'
 import { createClient } from '@/lib/supabase/server'
 import { LOCATIES } from '@/lib/constants/locaties'
+import { PALLET_OPTIES } from '@/lib/constants/pallets'
 import { ArtikelenForm } from '@/components/orders/ArtikelenForm'
 
 export default async function NieuweOrderPage({
@@ -58,6 +59,7 @@ export default async function NieuweOrderPage({
       aantal_per_doos: parseInt(formData.get('aantal_per_doos') as string) || 0,
       aantal_per_inner: parseInt(formData.get('aantal_per_inner') as string) || 0,
       aantal_per_pallet: parseInt(formData.get('aantal_per_pallet') as string) || 0,
+      pallet_type: (formData.get('pallet_type') as string || 'chep') as any,
       bewerking: formData.get('bewerking') as string || '',
       opwerken: formData.get('opwerken') === 'on',
       bio: formData.get('bio') === 'on',
@@ -193,7 +195,7 @@ export default async function NieuweOrderPage({
           </div>
         </div>
 
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-4 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Per doos</label>
             <input name="aantal_per_doos" type="number" min="0" defaultValue={v?.aantal_per_doos ?? 0}
@@ -209,11 +211,17 @@ export default async function NieuweOrderPage({
             <input name="aantal_per_pallet" type="number" min="0" defaultValue={v?.aantal_per_pallet ?? 0}
               className="form-input" />
           </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Pallettype</label>
+            <select name="pallet_type" defaultValue={(v as any)?.pallet_type ?? 'chep'} className="form-select">
+              {PALLET_OPTIES.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+            </select>
+          </div>
         </div>
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Bewerking</label>
-          <input name="bewerking" defaultValue={v?.bewerking}
+          <input name="bewerking" type="number" min="0" defaultValue={v?.bewerking}
             className="form-input" />
         </div>
 

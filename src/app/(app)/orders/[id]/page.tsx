@@ -13,6 +13,7 @@ import { berekenResterend } from '@/lib/db/orders'
 import { formatDate, formatAantal } from '@/lib/utils/formatters'
 import { berekenAantal } from '@/lib/utils/artikel-berekening'
 import { locatieLabel } from '@/lib/constants/locaties'
+import { BEDRIJF } from '@/lib/constants/bedrijf'
 import { AutoPrint } from '@/components/orders/AutoPrint'
 import { PrintKnop } from '@/components/orders/PrintKnop'
 import { VerwijderOrderKnop } from '@/components/orders/VerwijderOrderKnop'
@@ -43,8 +44,25 @@ export default async function OrderDetailPage({
     <div className="max-w-4xl">
       {print === '1' && <AutoPrint />}
 
+      {/* ── Print header (alleen zichtbaar bij printen) ── */}
+      <div className="hidden print:flex print:items-center print:justify-between print:mb-6 print:pb-4 print:border-b-2 print:border-gray-800">
+        <div className="flex items-center gap-4">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/servicepack_logo.png" alt="Service Pack b.v." className="h-12 w-auto" />
+          <div>
+            <p className="text-xs text-gray-500">{BEDRIJF.adres} · {BEDRIJF.postcode} {BEDRIJF.stad}</p>
+          </div>
+        </div>
+        <div className="text-right">
+          <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-0.5">Werkorder</p>
+          <p className="text-sm font-semibold text-gray-700">
+            {new Date().toLocaleDateString('nl-NL', { day: 'numeric', month: 'long', year: 'numeric' })}
+          </p>
+        </div>
+      </div>
+
       {/* ── Header ── */}
-      <div className="mb-6">
+      <div className="mb-4 print:mb-2">
         <div className="flex items-start justify-between gap-4">
           <div className="min-w-0">
             <div className="flex items-center gap-3 mb-1 flex-wrap">
@@ -53,8 +71,8 @@ export default async function OrderDetailPage({
               </h1>
               <StatusBadge status={order.status} />
               {order.bio && (
-                <span className="inline-flex items-center gap-1 bg-green-100 text-green-800 text-xs font-semibold px-2 py-0.5 rounded-full">
-                  🌿 Bio
+                <span className="inline-flex items-center bg-green-100 text-green-800 text-xs font-semibold px-2 py-0.5 rounded-full">
+                  Bio
                 </span>
               )}
             </div>
@@ -84,32 +102,38 @@ export default async function OrderDetailPage({
       </div>
 
       {/* ── Voortgang ── */}
-      <div className="bg-white border border-gray-200 rounded-xl p-5 mb-4 shadow-sm">
-        <div className="grid grid-cols-3 gap-4 mb-4">
+      <div className="bg-white border border-gray-200 rounded-xl p-4 mb-4 shadow-sm print:p-3">
+        <div className="grid grid-cols-3 gap-4 mb-4 print:mb-2">
           <div className="text-center">
-            <p className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-1">Besteld</p>
-            <p className="text-2xl font-bold text-gray-900 tabular-nums">{formatAantal(order.order_grootte)}</p>
+            <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-gray-400 mb-1">Besteld</p>
+            <p className="text-2xl font-bold text-gray-900 tabular-nums print:text-xl leading-none">{formatAantal(order.order_grootte)}</p>
           </div>
           <div className="text-center border-x border-gray-100">
-            <p className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-1">Gereed</p>
-            <p className="text-2xl font-bold text-emerald-600 tabular-nums">{formatAantal(totaalGeleverd)}</p>
+            <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-gray-400 mb-1">Gereed</p>
+            <p className="text-2xl font-bold text-emerald-600 tabular-nums print:text-xl leading-none">{formatAantal(totaalGeleverd)}</p>
           </div>
           <div className="text-center">
-            <p className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-1">Resterend</p>
-            <p className={`text-2xl font-bold tabular-nums ${resterend === 0 ? 'text-gray-400' : 'text-amber-600'}`}>
+            <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-gray-400 mb-1">Resterend</p>
+            <p className={`text-2xl font-bold tabular-nums print:text-xl leading-none ${resterend === 0 ? 'text-gray-300' : 'text-amber-600'}`}>
               {formatAantal(resterend)}
             </p>
           </div>
         </div>
 
         {/* Progress bar */}
-        <div className="h-2.5 bg-gray-100 rounded-full overflow-hidden">
+        <div style={{ height: '3px', backgroundColor: '#e5e7eb', borderRadius: '9999px', overflow: 'hidden' }}>
           <div
-            className={`h-full rounded-full transition-all ${voortgang === 100 ? 'bg-emerald-500' : 'bg-violet-500'}`}
-            style={{ width: `${voortgang}%` }}
+            className={voortgang > 0 && voortgang < 100 ? 'progress-animate' : ''}
+            style={{
+              height: '100%',
+              width: `${voortgang}%`,
+              backgroundColor: voortgang === 100 ? '#10b981' : '#7c3aed',
+              borderRadius: '9999px',
+              transition: 'width 600ms cubic-bezier(0.4, 0, 0.2, 1)',
+            }}
           />
         </div>
-        <p className="text-xs text-gray-400 mt-1.5 text-right">{voortgang}% gereed</p>
+        <p className="text-xs text-gray-400 mt-1.5 text-right tabular-nums">{voortgang}% gereed</p>
       </div>
 
       {/* ── Afgerond banner ── */}
@@ -134,94 +158,95 @@ export default async function OrderDetailPage({
         <div className="px-5 py-4 border-b border-gray-100">
           <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-3">Logistiek</p>
           <div className="grid grid-cols-3 gap-x-6 gap-y-3 text-sm">
-            {order.locatie && (
-              <div>
-                <p className="text-xs text-gray-400 mb-0.5">Locatie</p>
-                <p className="font-semibold text-gray-900">{locatieLabel(order.locatie)}</p>
-              </div>
-            )}
-            {order.deadline && (
-              <div>
-                <p className="text-xs text-gray-400 mb-0.5">Deadline</p>
-                <p className="font-semibold text-gray-900">{formatDate(order.deadline)}</p>
-              </div>
-            )}
-            {order.tht && (
-              <div>
-                <p className="text-xs text-gray-400 mb-0.5">THT</p>
-                <p className="font-semibold text-gray-900">{formatDate(order.tht)}</p>
-              </div>
-            )}
+            <div>
+              <p className="text-xs text-gray-400 mb-0.5">Locatie</p>
+              <p className="font-semibold text-gray-900">{order.locatie ? locatieLabel(order.locatie) : <span className="text-gray-300">–</span>}</p>
+            </div>
+            <div>
+              <p className="text-xs text-gray-400 mb-0.5">Deadline</p>
+              <p className="font-semibold text-gray-900">{order.deadline ? formatDate(order.deadline) : <span className="text-gray-300">–</span>}</p>
+            </div>
+            <div>
+              <p className="text-xs text-gray-400 mb-0.5">THT</p>
+              <p className="font-semibold text-gray-900">{order.tht ? formatDate(order.tht) : <span className="text-gray-300">–</span>}</p>
+            </div>
           </div>
         </div>
 
         {/* Verpakking */}
         <div className="px-5 py-4 border-b border-gray-100">
           <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-3">Verpakking</p>
-          <div className="grid grid-cols-3 gap-x-6 gap-y-3 text-sm">
+          <div className="grid grid-cols-4 gap-x-6 gap-y-3 text-sm">
             <div>
               <p className="text-xs text-gray-400 mb-0.5">Per doos</p>
               <p className="font-semibold text-gray-900 tabular-nums">
-                {order.aantal_per_doos > 0 ? formatAantal(order.aantal_per_doos) : '–'}
+                {order.aantal_per_doos > 0 ? formatAantal(order.aantal_per_doos) : <span className="text-gray-300">–</span>}
               </p>
             </div>
             <div>
               <p className="text-xs text-gray-400 mb-0.5">Per inner</p>
               <p className="font-semibold text-gray-900 tabular-nums">
-                {order.aantal_per_inner > 0 ? formatAantal(order.aantal_per_inner) : '–'}
+                {order.aantal_per_inner > 0 ? formatAantal(order.aantal_per_inner) : <span className="text-gray-300">–</span>}
               </p>
             </div>
             <div>
               <p className="text-xs text-gray-400 mb-0.5">Per pallet</p>
               <p className="font-semibold text-gray-900 tabular-nums">
-                {order.aantal_per_pallet > 0 ? formatAantal(order.aantal_per_pallet) : '–'}
+                {order.aantal_per_pallet > 0 ? formatAantal(order.aantal_per_pallet) : <span className="text-gray-300">–</span>}
               </p>
             </div>
-            {order.facturatie_code?.code && (
-              <div>
-                <p className="text-xs text-gray-400 mb-0.5">Facturatie code</p>
-                <p className="font-mono text-xs font-semibold text-violet-700 bg-violet-50 inline-block px-2 py-0.5 rounded">
-                  {order.facturatie_code.code}
-                </p>
-              </div>
-            )}
+            <div>
+              <p className="text-xs text-gray-400 mb-0.5">Facturatie code</p>
+              {order.facturatie_code?.code
+                ? <p className="font-mono text-xs font-semibold text-violet-700 bg-violet-50 inline-block px-2 py-0.5 rounded">{order.facturatie_code.code}</p>
+                : <p className="text-gray-300 font-semibold">–</p>
+              }
+            </div>
           </div>
         </div>
 
-        {/* Verwerking */}
-        {(order.bewerking || order.opwerken || order.omschrijving) && (
-          <div className="px-5 py-4">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-3">Verwerking</p>
-            <div className="grid grid-cols-2 gap-x-6 gap-y-3 text-sm">
-              {order.bewerking && (
-                <div>
-                  <p className="text-xs text-gray-400 mb-0.5">Bewerking</p>
-                  <p className="font-semibold text-gray-900">{order.bewerking}</p>
-                </div>
-              )}
-              {order.opwerken && (
-                <div>
-                  <p className="text-xs text-gray-400 mb-0.5">Opwerken</p>
-                  <p className="font-semibold text-amber-700">Ja</p>
-                </div>
-              )}
-              {order.omschrijving && (
-                <div className="col-span-2">
-                  <p className="text-xs text-gray-400 mb-0.5">Omschrijving</p>
-                  <p className="text-gray-700 leading-relaxed">{order.omschrijving}</p>
-                </div>
-              )}
+        {/* Verwerking — altijd tonen */}
+        <div className="px-5 py-4">
+          <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-3">Verwerking</p>
+          <div className="grid grid-cols-3 gap-x-6 gap-y-3 text-sm">
+            <div>
+              <p className="text-xs text-gray-400 mb-0.5">Bewerking</p>
+              <p className="font-semibold text-gray-900">{order.bewerking || <span className="text-gray-300">–</span>}</p>
+            </div>
+            <div>
+              <p className="text-xs text-gray-400 mb-0.5">Opwerken</p>
+              <p className={`font-semibold ${order.opwerken ? 'text-amber-700' : 'text-gray-300'}`}>
+                {order.opwerken ? 'Ja' : 'Nee'}
+              </p>
+            </div>
+            <div>
+              <p className="text-xs text-gray-400 mb-0.5">Bio</p>
+              <p className={`font-semibold ${order.bio ? 'text-green-700' : 'text-gray-300'}`}>
+                {order.bio ? 'Ja' : 'Nee'}
+              </p>
             </div>
           </div>
-        )}
+          {order.omschrijving && (
+            <div className="mt-3 pt-3 border-t border-gray-50">
+              <p className="text-xs text-gray-400 mb-1">Omschrijving / opmerkingen</p>
+              <p className="text-sm text-gray-700 leading-relaxed whitespace-pre-wrap">{order.omschrijving}</p>
+            </div>
+          )}
+          {!order.omschrijving && (
+            <div className="mt-3 pt-3 border-t border-gray-50">
+              <p className="text-xs text-gray-400 mb-1">Omschrijving / opmerkingen</p>
+              <p className="text-sm text-gray-300">–</p>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* ── Status actie ── */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-6 print:hidden">
         <StatusButtons order={order} />
         <Link
           href={`/orders/nieuw?kloon=${id}`}
-          className="text-sm text-gray-400 hover:text-violet-600 hover:underline print:hidden"
+          className="text-sm text-gray-400 hover:text-violet-600 hover:underline"
         >
           + Kloon deze order
         </Link>
@@ -265,16 +290,25 @@ export default async function OrderDetailPage({
 
       {/* ── Gereedmeldingen ── */}
       <div className="mb-6">
-        <h2 className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-3">Gereedmeldingen</h2>
+        <h2 className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-3">
+          Gereedmeldingen
+          {leveringen.length > 0 && (
+            <span className="ml-2 font-normal normal-case text-gray-400">
+              — {leveringen.length} {leveringen.length === 1 ? 'melding' : 'meldingen'}, totaal {formatAantal(totaalGeleverd)} stuks
+            </span>
+          )}
+        </h2>
         {!isAfgerond && (
-          <LeveringForm
-            orderId={id}
-            klantId={order.klant_id}
-            orderGrootte={order.order_grootte}
-            totaalGeleverd={totaalGeleverd}
-          />
+          <div className="print:hidden">
+            <LeveringForm
+              orderId={id}
+              klantId={order.klant_id}
+              orderGrootte={order.order_grootte}
+              totaalGeleverd={totaalGeleverd}
+            />
+          </div>
         )}
-        <LeveringenList leveringen={leveringen} />
+        <LeveringenList leveringen={leveringen} orderId={id} />
       </div>
 
       {/* ── Bijlagen ── */}

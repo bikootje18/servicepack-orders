@@ -19,7 +19,7 @@ export async function getFactuur(id: string): Promise<Factuur> {
   const supabase = await createClient()
   const { data, error } = await supabase
     .from('facturen')
-    .select('*, order:orders(*, klant:klanten(naam), facturatie_code:facturatie_codes(code)), vracht:vrachten(*, klant:klanten(naam))')
+    .select('*, order:orders(*, klant:klanten(naam), facturatie_code:facturatie_codes(code, omschrijving)), vracht:vrachten(*, klant:klanten(naam))')
     .eq('id', id)
     .single()
   if (error) throw error
@@ -94,11 +94,11 @@ export async function getLeveringenVoorVrachtFactuur(
   const supabase = await createClient()
   const { data, error } = await supabase
     .from('leveringen')
-    .select('*, order:orders(order_nummer, omschrijving, facturatie_code:facturatie_codes(tarief))')
+    .select('*, order:orders(order_nummer, order_code, omschrijving, bewerking, facturatie_code:facturatie_codes(code, omschrijving, tarief))')
     .eq('factuur_id', factuurId)
     .order('leverdatum')
   if (error) throw error
-  return data as (Levering & { order: Order & { facturatie_code: { tarief: number } } })[]
+  return data as (Levering & { order: Order & { facturatie_code: { code: string; omschrijving: string; tarief: number } } })[]
 }
 
 // Note: the factuur insert and leveringen update are not wrapped in a transaction.

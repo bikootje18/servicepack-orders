@@ -7,6 +7,7 @@ import { getArtikelenVoorOrder } from '@/lib/db/artikelen'
 import { ArtikelenForm } from '@/components/orders/ArtikelenForm'
 import { VerwijderOrderKnop } from '@/components/orders/VerwijderOrderKnop'
 import { LOCATIES } from '@/lib/constants/locaties'
+import { PALLET_OPTIES } from '@/lib/constants/pallets'
 
 export default async function BewerkenOrderPage({
   params,
@@ -45,6 +46,7 @@ export default async function BewerkenOrderPage({
       locatie,
       deadline: formData.get('deadline') as string || null,
       tht: formData.get('tht') as string || null,
+      pallet_type: (formData.get('pallet_type') as string || 'chep') as any,
     })
     // Artikelen opslaan als de sectie geopend was bij submit
     if (formData.get('artikelen_geopend') === 'true') {
@@ -136,7 +138,7 @@ export default async function BewerkenOrderPage({
           </div>
         </div>
 
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-4 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Per doos</label>
             <input name="aantal_per_doos" type="number" min="0" defaultValue={order.aantal_per_doos}
@@ -152,11 +154,17 @@ export default async function BewerkenOrderPage({
             <input name="aantal_per_pallet" type="number" min="0" defaultValue={order.aantal_per_pallet}
               className="form-input" />
           </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Pallettype</label>
+            <select name="pallet_type" defaultValue={order.pallet_type ?? 'chep'} className="form-select">
+              {PALLET_OPTIES.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+            </select>
+          </div>
         </div>
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Bewerking</label>
-          <input name="bewerking" defaultValue={order.bewerking}
+          <input name="bewerking" type="number" min="0" defaultValue={order.bewerking}
             className="form-input" />
         </div>
 

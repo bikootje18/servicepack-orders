@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { NavLink } from '@/components/ui/NavLink'
+import { uitloggen } from '@/lib/actions/auth'
 
 const nav = [
   { href: '/dashboard', label: 'Dashboard' },
@@ -18,6 +19,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
+  const naam = user.user_metadata?.naam ?? null
 
   return (
     <div className="min-h-screen flex">
@@ -30,7 +32,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
           <img
             src="/favicon-preview.png"
             alt="Service Pack b.v."
-            className="h-10 w-auto object-contain"
+            className="h-16 w-auto object-contain"
           />
         </div>
 
@@ -59,8 +61,18 @@ export default async function AppLayout({ children }: { children: React.ReactNod
         </nav>
 
         {/* User */}
-        <div className="mt-auto px-5 py-4 border-t border-white/8">
-          <p className="text-white/30 text-[11px] truncate">{user.email}</p>
+        <div className="mt-auto px-4 py-4 border-t border-white/8">
+          <div className="mb-2">
+            {naam && (
+              <p className="text-white/80 text-[12px] font-medium truncate">{naam}</p>
+            )}
+            <p className="text-white/35 text-[11px] truncate">{user.email}</p>
+          </div>
+          <form action={uitloggen}>
+            <button type="submit" className="text-[11px] text-white/30 hover:text-white/70 transition-colors">
+              Uitloggen
+            </button>
+          </form>
         </div>
       </aside>
 

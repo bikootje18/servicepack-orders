@@ -20,7 +20,11 @@ export function FactuurPrintKnop({ factuur, leveringen, klantNaam }: Props) {
         import('react'),
         import('./FactuurDocument'),
       ])
-      const blob = await pdf(createElement(FactuurDocument, { factuur, leveringen, klantNaam }) as any).toBlob()
+      const logoUrl = await fetch('/servicepack_logo.png')
+        .then(r => r.blob())
+        .then(b => new Promise<string>(res => { const fr = new FileReader(); fr.onload = () => res(fr.result as string); fr.readAsDataURL(b) }))
+        .catch(() => undefined)
+      const blob = await pdf(createElement(FactuurDocument, { factuur, leveringen, klantNaam, logoUrl }) as any).toBlob()
       const url = URL.createObjectURL(blob)
       const a = document.createElement('a')
       a.href = url

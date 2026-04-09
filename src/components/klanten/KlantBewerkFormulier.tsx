@@ -30,6 +30,9 @@ export function KlantBewerkFormulier({ klant, bewerkAction }: Props) {
           {formatAdres(klant) && (
             <p className="text-sm text-gray-500 mt-1">{formatAdres(klant)}</p>
           )}
+          {klant.email && (
+            <p className="text-sm text-gray-500 mt-0.5">{klant.email}</p>
+          )}
         </div>
         <button
           onClick={() => setOpen(true)}
@@ -71,6 +74,10 @@ export function KlantBewerkFormulier({ klant, bewerkAction }: Props) {
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">Land</label>
         <input name="land" defaultValue={klant.land ?? ''} className="form-input" />
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">E-mailadres</label>
+        <input name="email" type="email" defaultValue={klant.email ?? ''} className="form-input" placeholder="Optioneel" />
       </div>
       <div className="flex gap-2 pt-1">
         <button type="submit" className="btn-primary">Opslaan</button>

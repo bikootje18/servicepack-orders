@@ -30,6 +30,17 @@ a, button {
   transition: color 150ms ease, background-color 150ms ease, opacity 150ms ease;
 }
 
+/* Progress bar shimmer animation */
+@keyframes progress-shimmer {
+  0%   { opacity: 1; }
+  50%  { opacity: 0.65; }
+  100% { opacity: 1; }
+}
+
+.progress-animate {
+  animation: progress-shimmer 2.4s ease-in-out infinite;
+}
+
 @layer components {
   .form-input,
   .form-select,
@@ -96,16 +107,32 @@ a, button {
 }
 
 @media print {
+  @page {
+    size: A4;
+    margin: 10mm 12mm;
+  }
+
   nav,
   aside,
-  .no-print {
+  .no-print,
+  .print\:hidden {
     display: none !important;
   }
 
   body {
-    background: white;
-    color: black;
-    font-size: 12pt;
+    background: white !important;
+    color: #111827 !important;
+    font-size: 9pt;
+    line-height: 1.4;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Laat de sidebar-ruimte niet meedrukken */
+  main {
+    margin: 0 !important;
+    padding: 0 !important;
+    max-width: 100% !important;
   }
 
   a {
@@ -113,7 +140,36 @@ a, button {
     text-decoration: none;
   }
 
-  tr {
+  /* Compactere padding op alle kaarten */
+  .rounded-xl {
+    padding-top: 8px !important;
+    padding-bottom: 8px !important;
+    margin-bottom: 6px !important;
+  }
+
+
+  /* Kleinere koppen */
+  h1 { font-size: 16pt !important; }
+  h2 { font-size: 8pt !important; }
+
+  /* Borders en achtergronden meeprinten */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Geen page-breaks midden in tabelrijen of kaarten */
+  tr,
+  .rounded-xl {
     break-inside: avoid;
+  }
+
+  .progress-animate {
+    animation: none !important;
+  }
+
+  /* Voortgang + detailkaart bij elkaar houden */
+  .rounded-xl + .rounded-xl {
+    break-before: avoid;
   }
 }

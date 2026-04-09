@@ -13,13 +13,73 @@ export async function getVrachten(): Promise<Vracht[]> {
   const { data, error } = await supabase
     .from('vrachten')
     .select('*, klant:klanten(naam), factuur:facturen(id, factuur_nummer, status, totaal_bedrag)')
+    .eq('status', 'aangemaakt')
     .order('datum', { ascending: false })
   if (error) throw error
-  // Supabase returns the factuur join as an array (one-to-many); normalize to single item
   return (data as any[]).map(v => ({
     ...v,
     factuur: Array.isArray(v.factuur) ? (v.factuur[0] ?? null) : v.factuur,
   })) as Vracht[]
+}
+
+const ARCHIEF_PAGE_SIZE = 50
+
+export async function getVrachtenArchief(options?: {
+  pagina?: number
+  zoek?: string
+}): Promise<{ vrachten: Vracht[]; totaal: number; pagina: number; paginas: number }> {
+  const supabase = await createClient()
+  const pagina = Math.max(1, options?.pagina ?? 1)
+  const zoek = options?.zoek?.trim() ?? ''
+  const from = (pagina - 1) * ARCHIEF_PAGE_SIZE
+  const to = from + ARCHIEF_PAGE_SIZE - 1
+
+  let klantIds: string[] | null = null
+  if (zoek) {
+    const { data: klanten, error: klantError } = await supabase
+      .from('klanten')
+      .select('id')
+      .ilike('naam', `%${zoek}%`)
+    if (klantError) throw klantError
+    klantIds = klanten.map(k => k.id)
+  }
+
+  let query = supabase
+    .from('vrachten')
+    .select('*, klant:klanten(naam), factuur:facturen(id, factuur_nummer, status, totaal_bedrag)', { count: 'exact' })
+    .eq('status', 'opgehaald')
+    .order('datum', { ascending: false })
+    .range(from, to)
+
+  if (klantIds !== null) {
+    query = klantIds.length > 0
+      ? query.in('klant_id', klantIds) as typeof query
+      : query.in('klant_id', ['00000000-0000-0000-0000-000000000000']) as typeof query // geen resultaten
+  }
+
+  const { data, error, count } = await query
+  if (error) throw error
+
+  const vrachten = (data as any[])
+    .map(v => ({
+      ...v,
+      factuur: Array.isArray(v.factuur) ? (v.factuur[0] ?? null) : v.factuur,
+    })) as Vracht[]
+
+  const totaal = count ?? 0
+  const paginas = Math.ceil(totaal / ARCHIEF_PAGE_SIZE)
+
+  return { vrachten, totaal, pagina, paginas }
+}
+
+export async function countVrachtenArchief(): Promise<number> {
+  const supabase = await createClient()
+  const { count, error } = await supabase
+    .from('vrachten')
+    .select('id', { count: 'exact', head: true })
+    .eq('status', 'opgehaald')
+  if (error) throw error
+  return count ?? 0
 }
 
 export async function getVracht(id: string): Promise<Vracht> {
@@ -143,6 +203,7 @@ export async function createVracht(data: {
   aflever_postcode: string | null
   aflever_stad:     string | null
   aflever_land:     string | null
+  aangemaakt_door:  string | null
 }): Promise<Vracht> {
   if (data.levering_ids.length === 0) throw new Error('levering_ids mag niet leeg zijn')
 
@@ -171,6 +232,7 @@ export async function createVracht(data: {
       aflever_postcode: data.aflever_postcode || null,
       aflever_stad:     data.aflever_stad     || null,
       aflever_land:     data.aflever_land     || null,
+      aangemaakt_door:  data.aangemaakt_door,
     })
     .select()
     .single()

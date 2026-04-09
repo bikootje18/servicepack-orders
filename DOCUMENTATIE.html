@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>New Order System — Documentatie</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --purple: #7C3AED;
+      --purple-light: #EDE9FE;
+      --purple-mid: #C4B5FD;
+      --gray-50: #F9FAFB;
+      --gray-100: #F3F4F6;
+      --gray-200: #E5E7EB;
+      --gray-400: #9CA3AF;
+      --gray-600: #4B5563;
+      --gray-700: #374151;
+      --gray-900: #111827;
+      --green: #059669;
+      --green-light: #D1FAE5;
+      --blue: #2563EB;
+      --blue-light: #DBEAFE;
+      --amber: #D97706;
+      --amber-light: #FEF3C7;
+    }
+
+    html { font-size: 15px; }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      color: var(--gray-700);
+      background: white;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 48px 48px 80px;
+    }
+
+    /* ─── Cover ─── */
+    .cover {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-height: 260px;
+      border-bottom: 3px solid var(--purple);
+      margin-bottom: 56px;
+      padding-bottom: 40px;
+    }
+
+    .cover-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--purple);
+      margin-bottom: 16px;
+    }
+
+    .cover h1 {
+      font-size: 36px;
+      font-weight: 700;
+      color: var(--gray-900);
+      line-height: 1.15;
+      margin-bottom: 12px;
+    }
+
+    .cover-sub {
+      font-size: 16px;
+      color: var(--gray-600);
+      margin-bottom: 28px;
+    }
+
+    .cover-meta {
+      display: flex;
+      gap: 24px;
+      font-size: 13px;
+      color: var(--gray-400);
+    }
+
+    .cover-meta span { display: flex; align-items: center; gap: 6px; }
+
+    /* ─── TOC ─── */
+    .toc {
+      background: var(--gray-50);
+      border: 1px solid var(--gray-200);
+      border-radius: 12px;
+      padding: 28px 32px;
+      margin-bottom: 56px;
+    }
+
+    .toc h2 {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--gray-400);
+      margin-bottom: 16px;
+      border: none;
+      padding: 0;
+    }
+
+    .toc ol {
+      list-style: none;
+      columns: 2;
+      column-gap: 40px;
+    }
+
+    .toc li {
+      font-size: 14px;
+      margin-bottom: 8px;
+      break-inside: avoid;
+    }
+
+    .toc a {
+      color: var(--gray-700);
+      text-decoration: none;
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    .toc a:hover { color: var(--purple); }
+
+    .toc-num {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--purple);
+      background: var(--purple-light);
+      border-radius: 4px;
+      padding: 1px 6px;
+      flex-shrink: 0;
+    }
+
+    /* ─── Sections ─── */
+    section { margin-bottom: 60px; }
+
+    h2 {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--gray-900);
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--gray-200);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    h2 .section-num {
+      font-size: 13px;
+      font-weight: 700;
+      color: white;
+      background: var(--purple);
+      border-radius: 6px;
+      padding: 2px 9px;
+    }
+
+    h3 {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--gray-900);
+      margin: 28px 0 12px;
+    }
+
+    h4 {
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: var(--gray-400);
+      margin: 20px 0 10px;
+    }
+
+    p { margin-bottom: 14px; }
+
+    ul, ol {
+      margin: 0 0 16px 20px;
+    }
+
+    li { margin-bottom: 5px; }
+
+    strong { color: var(--gray-900); font-weight: 600; }
+
+    /* ─── Tables ─── */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0 24px;
+      font-size: 14px;
+    }
+
+    thead th {
+      background: var(--gray-900);
+      color: white;
+      text-align: left;
+      padding: 10px 14px;
+      font-weight: 600;
+      font-size: 12px;
+      letter-spacing: .04em;
+    }
+
+    thead th:first-child { border-radius: 8px 0 0 0; }
+    thead th:last-child  { border-radius: 0 8px 0 0; }
+
+    tbody tr:nth-child(even) { background: var(--gray-50); }
+
+    tbody td {
+      padding: 9px 14px;
+      border-bottom: 1px solid var(--gray-200);
+      vertical-align: top;
+    }
+
+    code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12.5px;
+      background: var(--gray-100);
+      border: 1px solid var(--gray-200);
+      border-radius: 4px;
+      padding: 1px 5px;
+      color: var(--purple);
+    }
+
+    /* ─── Callout boxes ─── */
+    .callout {
+      border-left: 4px solid var(--purple);
+      background: var(--purple-light);
+      border-radius: 0 8px 8px 0;
+      padding: 14px 18px;
+      margin: 16px 0 24px;
+      font-size: 14px;
+    }
+
+    .callout-title {
+      font-weight: 700;
+      color: var(--purple);
+      margin-bottom: 4px;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+
+    /* ─── Status badges ─── */
+    .badges { display: flex; flex-wrap: wrap; gap: 10px; margin: 12px 0 20px; }
+
+    .badge {
+      font-size: 13px;
+      font-weight: 600;
+      padding: 5px 12px;
+      border-radius: 20px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .badge-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+    }
+
+    .badge-gray    { background: #F3F4F6; color: #374151; }
+    .badge-gray .badge-dot    { background: #9CA3AF; }
+    .badge-blue    { background: #DBEAFE; color: #1D4ED8; }
+    .badge-blue .badge-dot    { background: #3B82F6; }
+    .badge-amber   { background: #FEF3C7; color: #92400E; }
+    .badge-amber .badge-dot   { background: #F59E0B; }
+    .badge-green   { background: #D1FAE5; color: #065F46; }
+    .badge-green .badge-dot   { background: #10B981; }
+    .badge-violet  { background: #EDE9FE; color: #5B21B6; }
+    .badge-violet .badge-dot  { background: #7C3AED; }
+
+    /* ─── Workflow steps ─── */
+    .workflow {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      margin: 20px 0 28px;
+    }
+
+    .wf-step {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+
+    .wf-line {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    .wf-dot {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      background: var(--purple);
+      color: white;
+      font-weight: 700;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .wf-connector {
+      width: 2px;
+      flex: 1;
+      background: var(--purple-mid);
+      min-height: 24px;
+    }
+
+    .wf-body {
+      padding: 4px 0 24px;
+      flex: 1;
+    }
+
+    .wf-title {
+      font-weight: 700;
+      color: var(--gray-900);
+      font-size: 15px;
+      margin-bottom: 4px;
+    }
+
+    .wf-desc {
+      font-size: 13.5px;
+      color: var(--gray-600);
+      line-height: 1.5;
+    }
+
+    .wf-route {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--purple);
+      background: var(--purple-light);
+      border-radius: 4px;
+      padding: 1px 6px;
+      margin-top: 6px;
+      display: inline-block;
+    }
+
+    /* ─── Tech stack grid ─── */
+    .stack-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin: 16px 0 24px;
+    }
+
+    .stack-card {
+      border: 1px solid var(--gray-200);
+      border-radius: 10px;
+      padding: 14px 16px;
+      font-size: 13px;
+    }
+
+    .stack-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--gray-400);
+      margin-bottom: 4px;
+    }
+
+    .stack-value {
+      font-weight: 600;
+      color: var(--gray-900);
+    }
+
+    /* ─── Data model ─── */
+    .model-block {
+      background: var(--gray-50);
+      border: 1px solid var(--gray-200);
+      border-radius: 10px;
+      padding: 20px 24px;
+      margin: 12px 0 20px;
+      font-size: 13px;
+    }
+
+    .model-block h4 {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--purple);
+      text-transform: none;
+      letter-spacing: 0;
+      margin-bottom: 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--gray-200);
+    }
+
+    .model-field {
+      display: flex;
+      gap: 12px;
+      padding: 4px 0;
+    }
+
+    .model-field-name {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--gray-900);
+      font-weight: 500;
+      width: 200px;
+      flex-shrink: 0;
+    }
+
+    .model-field-desc {
+      color: var(--gray-600);
+      font-size: 13px;
+    }
+
+    .model-field-fk { color: var(--blue); font-size: 11px; font-weight: 600; }
+
+    /* ─── Formula box ─── */
+    .formula {
+      background: var(--gray-900);
+      color: #E5E7EB;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      border-radius: 8px;
+      padding: 16px 20px;
+      margin: 12px 0 20px;
+      line-height: 1.8;
+    }
+
+    .formula .comment { color: #6B7280; }
+    .formula .val { color: #C4B5FD; }
+
+    /* ─── Page routes table ─── */
+    .route { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--purple); }
+
+    /* ─── Print ─── */
+    @media print {
+      body { padding: 32px 40px; font-size: 13px; max-width: 100%; }
+      .cover { min-height: 180px; }
+      .cover h1 { font-size: 28px; }
+      h2 { font-size: 18px; }
+      .stack-grid { grid-template-columns: repeat(3, 1fr); }
+      .toc ol { columns: 2; }
+      section { page-break-inside: avoid; }
+      h2, h3 { page-break-after: avoid; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── COVER ── -->
+  <div class="cover">
+    <div class="cover-label">Interne documentatie — Service Pack b.v.</div>
+    <h1>New Order System</h1>
+    <p class="cover-sub">Order management &amp; logistiek platform — hoe het systeem werkt</p>
+    <div class="cover-meta">
+      <span>📅 April 2026</span>
+      <span>🔒 Intern gebruik</span>
+    </div>
+  </div>
+
+  <!-- ── TOC ── -->
+  <div class="toc">
+    <h2>Inhoud</h2>
+    <ol>
+      <li><a href="#s1"><span class="toc-num">1</span> Wat doet het systeem?</a></li>
+      <li><a href="#s2"><span class="toc-num">2</span> Technische stack</a></li>
+      <li><a href="#s3"><span class="toc-num">3</span> Gebruikers &amp; toegang</a></li>
+      <li><a href="#s-dashboard"><span class="toc-num">↗</span> Dashboard</a></li>
+      <li><a href="#s4"><span class="toc-num">4</span> Orders</a></li>
+      <li><a href="#s5"><span class="toc-num">5</span> Leveringen</a></li>
+      <li><a href="#s6"><span class="toc-num">6</span> Vrachten</a></li>
+      <li><a href="#s7"><span class="toc-num">7</span> Facturen</a></li>
+      <li><a href="#s8"><span class="toc-num">8</span> Voorraad</a></li>
+      <li><a href="#s9"><span class="toc-num">9</span> GiveX Import</a></li>
+      <li><a href="#s10"><span class="toc-num">10</span> Bijlagen</a></li>
+      <li><a href="#s11"><span class="toc-num">11</span> Volledige workflow</a></li>
+      <li><a href="#s12"><span class="toc-num">12</span> Datamodel</a></li>
+      <li><a href="#s13"><span class="toc-num">13</span> Statussen</a></li>
+      <li><a href="#s14"><span class="toc-num">14</span> Berekeningen</a></li>
+      <li><a href="#s15"><span class="toc-num">15</span> Pagina-overzicht</a></li>
+    </ol>
+  </div>
+
+  <!-- ── 1 ── -->
+  <section id="s1">
+    <h2><span class="section-num">1</span> Wat doet het systeem?</h2>
+    <p>Het <strong>New Order System</strong> is een intern platform voor Service Pack b.v. waarmee het team de volledige levenscyclus van orders beheert: van aanmaken en produceren tot leveren, verzenden en factureren.</p>
+    <div class="callout">
+      <div class="callout-title">Kernfunctionaliteit</div>
+      <ul style="margin:6px 0 0 16px;">
+        <li>Orders aanmaken en bijhouden (verpakkingsconfiguratie, locatie, deadlines)</li>
+        <li>Leveringen registreren per order — gedeeltelijk of volledig</li>
+        <li>Vrachten samenstellen en vrachtbrieven printen</li>
+        <li>Facturen aanmaken op basis van leveringen</li>
+        <li>Voorraadinzicht in real-time per klant</li>
+        <li>Automatisch orders aanmaken via GiveX Excel-imports</li>
+        <li>Bestanden koppelen aan orders (specificaties, artwork, etc.)</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ── 2 ── -->
+  <section id="s2">
+    <h2><span class="section-num">2</span> Technische stack</h2>
+    <div class="stack-grid">
+      <div class="stack-card"><div class="stack-label">Framework</div><div class="stack-value">Next.js 16</div></div>
+      <div class="stack-card"><div class="stack-label">UI</div><div class="stack-value">React 19</div></div>
+      <div class="stack-card"><div class="stack-label">Styling</div><div class="stack-value">Tailwind CSS 4</div></div>
+      <div class="stack-card"><div class="stack-label">Database</div><div class="stack-value">PostgreSQL (Supabase)</div></div>
+      <div class="stack-card"><div class="stack-label">Authenticatie</div><div class="stack-value">Supabase Auth</div></div>
+      <div class="stack-card"><div class="stack-label">Bestandsopslag</div><div class="stack-value">Supabase Storage</div></div>
+      <div class="stack-card"><div class="stack-label">PDF-generatie</div><div class="stack-value">react-pdf/renderer</div></div>
+      <div class="stack-card"><div class="stack-label">Excel-parsing</div><div class="stack-value">XLSX (GiveX import)</div></div>
+      <div class="stack-card"><div class="stack-label">Taal</div><div class="stack-value">TypeScript</div></div>
+    </div>
+    <p>Het systeem draait volledig server-side (Next.js server components + server actions) — er zit geen aparte API-laag tussen de UI en de database.</p>
+  </section>
+
+  <!-- ── 3 ── -->
+  <section id="s3">
+    <h2><span class="section-num">3</span> Gebruikers &amp; toegang</h2>
+    <ul>
+      <li>Toegang vereist een account met <strong>e-mail + wachtwoord</strong></li>
+      <li>Alle ingelogde gebruikers hebben dezelfde rechten (geen rollen op dit moment)</li>
+      <li>Acties worden bijgehouden via <code>aangemaakt_door</code> en <code>aangemaakt_op</code></li>
+      <li>Uitloggen via de navigatiebalk linksonder</li>
+    </ul>
+  </section>
+
+  <!-- ── DASHBOARD (tussensectie, hernummer niet) ── -->
+  <section id="s-dashboard">
+    <h2><span class="section-num">↗</span> Dashboard</h2>
+    <p>Het dashboard is de <strong>startpagina na inloggen</strong>. Het toont een productie-overzicht per locatie — in één oogopslag zie je wat er waar bezig is en welke deadlines urgent zijn.</p>
+
+    <h3>Drie kolommen — één per locatie</h3>
+    <p>Het scherm is verdeeld in drie kolommen: <strong>Lokkerdreef 20</strong> (blauw), <strong>Pauvreweg</strong> (groen) en <strong>WVB</strong> (paars). Elke kolom heeft een header met de locatienaam, het aantal actieve orders en de vroegste deadline.</p>
+
+    <table>
+      <thead>
+        <tr><th>Sectie per kolom</th><th>Inhoud</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>In behandeling</strong></td><td>Orders die actief in productie zijn (<code>in_behandeling</code>)</td></tr>
+        <tr><td><strong>Aankomend</strong></td><td>Bevestigde orders die nog moeten starten (<code>bevestigd</code>)</td></tr>
+        <tr><td><strong>Uitgaande vrachten</strong></td><td>Vrachten gepland voor vandaag of later</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout">
+      <div class="callout-title">Wat je niet ziet</div>
+      Concept-orders, geleverde orders en gefactureerde orders verschijnen niet op het dashboard. Alleen wat <em>nu</em> relevant is voor de productie.
+    </div>
+
+    <h3>Deadline-kleuren op orderkaartjes</h3>
+    <div class="badges">
+      <span class="badge" style="background:#fef2f2;color:#dc2626;"><span class="badge-dot" style="background:#ef4444;"></span>Rood — deadline verstreken</span>
+      <span class="badge badge-amber"><span class="badge-dot"></span>Oranje — vandaag of morgen</span>
+      <span class="badge badge-gray"><span class="badge-dot"></span>Grijs — ruim op tijd</span>
+    </div>
+    <p>De vroegste deadline per locatie wordt ook in de <strong>kolomkop</strong> getoond, zodat je meteen ziet welke locatie de meeste urgentie heeft.</p>
+  </section>
+
+  <!-- ── 4 ── -->
+  <section id="s4">
+    <h2><span class="section-num">4</span> Orders</h2>
+    <p>Orders zijn het centrale object in het systeem. Een order vertegenwoordigt een productieopdracht voor een specifieke klant.</p>
+
+    <table>
+      <thead>
+        <tr><th>Veld</th><th>Beschrijving</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>order_nummer</code></td><td>Handmatig ingevoerd — verplicht veld</td></tr>
+        <tr><td><code>order_code</code></td><td>Code van de klant / instructiecode</td></tr>
+        <tr><td>Klant</td><td>Gekoppelde klant</td></tr>
+        <tr><td>Facturatiecode</td><td>Tarief voor facturering</td></tr>
+        <tr><td>Order grootte</td><td>Totale hoeveelheid te produceren/leveren</td></tr>
+        <tr><td>Aantal per doos / inner / pallet</td><td>Verpakkingsconfiguratie</td></tr>
+        <tr><td>Bewerking</td><td>Beschrijving van speciale verwerking</td></tr>
+        <tr><td>Opwerken</td><td>Vlag: vereist speciale behandeling</td></tr>
+        <tr><td>Bio</td><td>Vlag: biologisch product</td></tr>
+        <tr><td>Locatie</td><td>Lokkerdreef 20 / Pauvreweg / WVB</td></tr>
+        <tr><td>Deadline</td><td>Uiterste datum</td></tr>
+        <tr><td>THT</td><td>Houdbaarheidsdatum</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Acties</h3>
+    <ul>
+      <li>Order <strong>aanmaken</strong> — inclusief optie om een bestaande order te klonen</li>
+      <li>Order <strong>bewerken</strong> na aanmaken</li>
+      <li>Order <strong>verwijderen</strong> (bijlagen en artikelen worden ook verwijderd)</li>
+      <li>Status doorvoeren via knoppen op de detailpagina</li>
+      <li>Bestanden uploaden als bijlage</li>
+    </ul>
+  </section>
+
+  <!-- ── 5 ── -->
+  <section id="s5">
+    <h2><span class="section-num">5</span> Leveringen</h2>
+    <p>Een levering registreert dat (een deel van) een order is uitgeleverd. Toegankelijk via de order detailpagina.</p>
+
+    <table>
+      <thead>
+        <tr><th>Veld</th><th>Beschrijving</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Aantal geleverd</td><td>Hoeveelheid die is uitgeleverd</td></tr>
+        <tr><td>Leverdatum</td><td>Datum van levering</td></tr>
+        <tr><td>THT</td><td>Houdbaarheidsdatum van dit specifieke batch</td></tr>
+        <tr><td>Notities</td><td>Vrij tekstveld</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout">
+      <div class="callout-title">Logica</div>
+      Een order kan meerdere <strong>gedeeltelijke leveringen</strong> hebben. Bij de eerste levering gaat de orderstatus automatisch naar <em>in behandeling</em>. Het resterend saldo wordt berekend als: <code>Order grootte − Totaal geleverd</code>.
+    </div>
+  </section>
+
+  <!-- ── 6 ── -->
+  <section id="s6">
+    <h2><span class="section-num">6</span> Vrachten</h2>
+    <p>Een vracht bundelt één of meerdere leveringen voor dezelfde klant in één fysieke verzending.</p>
+
+    <h3>Stappen</h3>
+    <ol>
+      <li>Selecteer een klant</li>
+      <li>Selecteer openstaande leveringen (van meerdere orders mogelijk)</li>
+      <li>Vracht aanmaken met datum en notities</li>
+      <li>Vrachtbrief (PDF) printen</li>
+      <li>Status omzetten naar <em>opgehaald</em> zodra de vracht is meegenomen</li>
+    </ol>
+
+    <p>Het <strong>vrachtbrief nummer</strong> wordt automatisch gegenereerd in het formaat <code>VB-YYYY-NNNN</code> (bijv. <code>VB-2026-0012</code>).</p>
+
+    <h3>Statussen vracht</h3>
+    <div class="badges">
+      <span class="badge badge-gray"><span class="badge-dot"></span>aangemaakt — wacht op ophaling</span>
+      <span class="badge badge-green"><span class="badge-dot"></span>opgehaald — fysiek verzonden</span>
+    </div>
+
+    <p>Vanuit een vracht kan ook een <strong>gecombineerde factuur</strong> worden aangemaakt die leveringen van meerdere orders dekt.</p>
+  </section>
+
+  <!-- ── 7 ── -->
+  <section id="s7">
+    <h2><span class="section-num">7</span> Facturen</h2>
+    <p>Facturen worden aangemaakt op basis van leveringen. Er zijn twee typen:</p>
+
+    <h3>Order-factuur</h3>
+    <p>Gebaseerd op één order. Selecteer welke leveringen je wilt factureren; het bedrag wordt automatisch berekend op basis van het tarief in de facturatiecode.</p>
+
+    <h3>Vracht-factuur</h3>
+    <p>Dekt leveringen van meerdere orders tegelijk. Nuttig wanneer orders verschillende tarieven hebben. Aangemaakt vanuit de vracht-detailpagina.</p>
+
+    <h3>Statussen factuur</h3>
+    <div class="badges">
+      <span class="badge badge-gray"><span class="badge-dot"></span>concept</span>
+      <span class="badge badge-blue"><span class="badge-dot"></span>verzonden</span>
+      <span class="badge badge-green"><span class="badge-dot"></span>betaald</span>
+    </div>
+
+    <p>Factuurnummers worden automatisch sequentieel gegenereerd via een database-functie.</p>
+  </section>
+
+  <!-- ── 8 ── -->
+  <section id="s8">
+    <h2><span class="section-num">8</span> Voorraad</h2>
+    <p>Real-time overzicht van resterende hoeveelheden per order, gegroepeerd per klant.</p>
+    <ul>
+      <li>Toont voortgangsbalken (geleverd vs. totaal)</li>
+      <li>Gefactureerde orders worden <strong>uitgesloten</strong> uit het overzicht</li>
+      <li>Exporteerbaar als <strong>PDF per klant</strong></li>
+    </ul>
+  </section>
+
+  <!-- ── 9 ── -->
+  <section id="s9">
+    <h2><span class="section-num">9</span> GiveX Import</h2>
+    <p>GiveX is een extern systeem dat Excel-bestanden genereert met leveringsinstructies. Het New Order System verwerkt deze automatisch.</p>
+
+    <h3>Workflow</h3>
+    <ol>
+      <li>Sleep een of meerdere GiveX Excel-bestanden naar de <strong>dropzone</strong> op de klantpagina</li>
+      <li>Het systeem parseert elk bestand: documentnummer, instructiecode, leverdatum, hoeveelheid, rollencount</li>
+      <li>De <strong>instructiecode</strong> wordt vergeleken met bestaande orders van deze klant (template-matching)</li>
+      <li>Als er een template gevonden wordt, wordt automatisch een nieuwe order aangemaakt met dezelfde klant, facturatiecode, verpakkingsconfiguratie en artikelen</li>
+      <li>Dubbele imports worden <strong>geblokkeerd</strong> op basis van het documentnummer</li>
+    </ol>
+
+    <div class="callout">
+      <div class="callout-title">Automatisch gekopieerd van template</div>
+      Klant · Facturatiecode · Verpakkingsconfiguratie · Artikelen — Hoeveelheid en deadline komen uit het GiveX-bestand.
+    </div>
+  </section>
+
+  <!-- ── 10 ── -->
+  <section id="s10">
+    <h2><span class="section-num">10</span> Bijlagen</h2>
+    <p>Bestanden (specificaties, artwork, documenten) kunnen gekoppeld worden aan orders via de order detailpagina.</p>
+    <ul>
+      <li>Upload via drag-and-drop of bestandsdialoog</li>
+      <li>Beveiligde downloadlinks (tijdelijk geldig, 1 uur)</li>
+      <li>Bestanden worden opgeslagen in Supabase Storage</li>
+      <li>Verwijderen mogelijk per bestand</li>
+      <li>Bij verwijderen van een order worden bijlagen <strong>automatisch verwijderd</strong></li>
+    </ul>
+  </section>
+
+  <!-- ── 11 ── -->
+  <section id="s11">
+    <h2><span class="section-num">11</span> Volledige workflow: van order tot factuur</h2>
+
+    <div class="workflow">
+
+      <div class="wf-step">
+        <div class="wf-line"><div class="wf-dot">1</div><div class="wf-connector"></div></div>
+        <div class="wf-body">
+          <div class="wf-title">Order aanmaken</div>
+          <div class="wf-desc">Selecteer klant, voer code, grootte en verpakkingsconfiguratie in. Kies locatie en deadline. Optioneel: kloon een bestaande order als basis.</div>
+          <span class="wf-route">/orders/nieuw</span>
+        </div>
+      </div>
+
+      <div class="wf-step">
+        <div class="wf-line"><div class="wf-dot">2</div><div class="wf-connector"></div></div>
+        <div class="wf-body">
+          <div class="wf-title">Order bevestigen</div>
+          <div class="wf-desc">Gebruik de statusknop op de order detailpagina om de order van <em>concept</em> naar <em>bevestigd</em> te zetten.</div>
+          <span class="wf-route">/orders/[id]</span>
+        </div>
+      </div>
+
+      <div class="wf-step">
+        <div class="wf-line"><div class="wf-dot">3</div><div class="wf-connector"></div></div>
+        <div class="wf-body">
+          <div class="wf-title">Levering registreren</div>
+          <div class="wf-desc">Voeg een levering toe met hoeveelheid en datum. Herhaal voor gedeeltelijke leveringen. Bij de eerste levering gaat de status automatisch naar <em>in behandeling</em>.</div>
+          <span class="wf-route">/orders/[id] → sectie leveringen</span>
+        </div>
+      </div>
+
+      <div class="wf-step">
+        <div class="wf-line"><div class="wf-dot">4</div><div class="wf-connector"></div></div>
+        <div class="wf-body">
+          <div class="wf-title">Vracht aanmaken</div>
+          <div class="wf-desc">Bundel leveringen voor dezelfde klant in één vracht. Print de vrachtbrief. Zet de vracht op <em>opgehaald</em> zodra deze is meegenomen.</div>
+          <span class="wf-route">/vrachten/nieuw</span>
+        </div>
+      </div>
+
+      <div class="wf-step">
+        <div class="wf-line"><div class="wf-dot">5</div></div>
+        <div class="wf-body">
+          <div class="wf-title">Factuur aanmaken</div>
+          <div class="wf-desc">Maak een factuur aan vanuit de order (voor één order) of vanuit de vracht (voor meerdere orders). Selecteer de leveringen; het bedrag wordt automatisch berekend.</div>
+          <span class="wf-route">/facturen/nieuw</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── 12 ── -->
+  <section id="s12">
+    <h2><span class="section-num">12</span> Datamodel</h2>
+
+    <div class="model-block">
+      <h4>orders</h4>
+      <div class="model-field"><span class="model-field-name">id</span><span class="model-field-desc">UUID – primaire sleutel</span></div>
+      <div class="model-field"><span class="model-field-name">order_nummer</span><span class="model-field-desc">Uniek, automatisch gegenereerd</span></div>
+      <div class="model-field"><span class="model-field-name">order_code</span><span class="model-field-desc">Klantcode / instructiecode</span></div>
+      <div class="model-field"><span class="model-field-name">klant_id</span><span class="model-field-desc model-field-fk">→ klanten</span></div>
+      <div class="model-field"><span class="model-field-name">facturatie_code_id</span><span class="model-field-desc model-field-fk">→ facturatie_codes</span></div>
+      <div class="model-field"><span class="model-field-name">order_grootte</span><span class="model-field-desc">Totale hoeveelheid</span></div>
+      <div class="model-field"><span class="model-field-name">bio, opwerken</span><span class="model-field-desc">Boolean vlaggen</span></div>
+      <div class="model-field"><span class="model-field-name">locatie</span><span class="model-field-desc">Lokkerdreef20 | Pauvreweg | WVB</span></div>
+      <div class="model-field"><span class="model-field-name">status</span><span class="model-field-desc">concept | bevestigd | in_behandeling | geleverd | gefactureerd</span></div>
+    </div>
+
+    <div class="model-block">
+      <h4>leveringen</h4>
+      <div class="model-field"><span class="model-field-name">order_id</span><span class="model-field-desc model-field-fk">→ orders</span></div>
+      <div class="model-field"><span class="model-field-name">factuur_id</span><span class="model-field-desc model-field-fk">→ facturen (null totdat gefactureerd)</span></div>
+      <div class="model-field"><span class="model-field-name">aantal_geleverd</span><span class="model-field-desc">Hoeveelheid van deze levering</span></div>
+      <div class="model-field"><span class="model-field-name">leverdatum, tht</span><span class="model-field-desc">Datum en houdbaarheidsdatum</span></div>
+    </div>
+
+    <div class="model-block">
+      <h4>vrachten + vracht_regels</h4>
+      <div class="model-field"><span class="model-field-name">klant_id</span><span class="model-field-desc model-field-fk">→ klanten</span></div>
+      <div class="model-field"><span class="model-field-name">vrachtbrief_nummer</span><span class="model-field-desc">Uniek, format VB-YYYY-NNNN</span></div>
+      <div class="model-field"><span class="model-field-name">status</span><span class="model-field-desc">aangemaakt | opgehaald</span></div>
+      <div class="model-field"><span class="model-field-name">vracht_regels.levering_id</span><span class="model-field-desc model-field-fk">→ leveringen (uniek: elke levering in max. 1 vracht)</span></div>
+    </div>
+
+    <div class="model-block">
+      <h4>facturen</h4>
+      <div class="model-field"><span class="model-field-name">order_id</span><span class="model-field-desc model-field-fk">→ orders (null voor vracht-facturen)</span></div>
+      <div class="model-field"><span class="model-field-name">vracht_id</span><span class="model-field-desc model-field-fk">→ vrachten (null voor order-facturen)</span></div>
+      <div class="model-field"><span class="model-field-name">totaal_bedrag</span><span class="model-field-desc">Berekend bedrag in euro's</span></div>
+      <div class="model-field"><span class="model-field-name">status</span><span class="model-field-desc">concept | verzonden | betaald</span></div>
+    </div>
+
+    <div class="model-block">
+      <h4>give_x_imports</h4>
+      <div class="model-field"><span class="model-field-name">documentnummer</span><span class="model-field-desc">Uniek — voorkomt dubbele imports</span></div>
+      <div class="model-field"><span class="model-field-name">instructie_code</span><span class="model-field-desc">Sleutel voor template-matching</span></div>
+      <div class="model-field"><span class="model-field-name">order_id</span><span class="model-field-desc model-field-fk">→ orders (aangemaakt order)</span></div>
+    </div>
+
+  </section>
+
+  <!-- ── 13 ── -->
+  <section id="s13">
+    <h2><span class="section-num">13</span> Statussen &amp; overgangen</h2>
+
+    <h3>Order statussen</h3>
+    <div class="badges">
+      <span class="badge badge-gray"><span class="badge-dot"></span>concept</span>
+      <span class="badge badge-blue"><span class="badge-dot"></span>bevestigd</span>
+      <span class="badge badge-amber"><span class="badge-dot"></span>in behandeling</span>
+      <span class="badge badge-green"><span class="badge-dot"></span>geleverd</span>
+      <span class="badge badge-violet"><span class="badge-dot"></span>gefactureerd</span>
+    </div>
+
+    <table>
+      <thead>
+        <tr><th>Van</th><th>Naar</th><th>Trigger</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>concept</td><td>bevestigd</td><td>Handmatig via statusknop</td></tr>
+        <tr><td>bevestigd</td><td>in_behandeling</td><td><strong>Automatisch</strong> bij eerste levering</td></tr>
+        <tr><td>in_behandeling</td><td>geleverd</td><td>Handmatig via statusknop</td></tr>
+        <tr><td>geleverd</td><td>gefactureerd</td><td><strong>Automatisch</strong> bij aanmaken factuur</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Factuur statussen</h3>
+    <p><code>concept</code> → <code>verzonden</code> → <code>betaald</code> (handmatig)</p>
+
+    <h3>Vracht statussen</h3>
+    <p><code>aangemaakt</code> → <code>opgehaald</code> (handmatig)</p>
+  </section>
+
+  <!-- ── 14 ── -->
+  <section id="s14">
+    <h2><span class="section-num">14</span> Berekeningen &amp; logica</h2>
+
+    <h3>Resterende voorraad</h3>
+    <div class="formula">
+      <span class="comment">// Per order</span><br>
+      Resterend = <span class="val">order_grootte</span> − <span class="val">SUM(leveringen.aantal_geleverd)</span>
+    </div>
+
+    <h3>Order artikelen</h3>
+    <p>Artikelen worden dynamisch berekend op basis van de order grootte:</p>
+    <table>
+      <thead>
+        <tr><th>Type</th><th>Formule</th><th>Voorbeeld</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Delen</td><td><code>⌈order_grootte ÷ factor⌉</code></td><td>1000 ÷ 100 per doos = <strong>10 dozen</strong></td></tr>
+        <tr><td>Vermenigvuldigen</td><td><code>round(order_grootte × factor)</code></td><td>1000 × 0,5 = <strong>500 eenheden</strong></td></tr>
+      </tbody>
+    </table>
+
+    <h3>Factuur bedrag</h3>
+    <div class="formula">
+      <span class="comment">// Order-factuur</span><br>
+      Bedrag = <span class="val">tarief</span> × <span class="val">totaal_geleverde_eenheden</span><br><br>
+      <span class="comment">// Vracht-factuur (meerdere orders)</span><br>
+      Bedrag = <span class="val">Σ</span> (tarief_per_order × geleverd_per_order)
+    </div>
+  </section>
+
+  <!-- ── 15 ── -->
+  <section id="s15">
+    <h2><span class="section-num">15</span> Pagina-overzicht</h2>
+
+    <h3>Operationeel (dagelijks gebruik)</h3>
+    <table>
+      <thead>
+        <tr><th>Pagina</th><th>Route</th><th>Doel</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Dashboard</td><td class="route">/dashboard</td><td>Overzicht actieve orders</td></tr>
+        <tr><td>Orders lijst</td><td class="route">/orders</td><td>Zoeken, bladeren, filteren</td></tr>
+        <tr><td>Order aanmaken</td><td class="route">/orders/nieuw</td><td>Nieuw order invoeren</td></tr>
+        <tr><td>Order detail</td><td class="route">/orders/[id]</td><td>Details, leveringen, bijlagen, status</td></tr>
+        <tr><td>Order bewerken</td><td class="route">/orders/[id]/bewerken</td><td>Gegevens aanpassen</td></tr>
+        <tr><td>Vrachten</td><td class="route">/vrachten</td><td>Openstaande en opgehaalde vrachten</td></tr>
+        <tr><td>Vracht aanmaken</td><td class="route">/vrachten/nieuw</td><td>Leveringen bundelen</td></tr>
+        <tr><td>Vracht detail</td><td class="route">/vrachten/[id]</td><td>Vrachtbrief, factuur aanmaken</td></tr>
+        <tr><td>Facturen</td><td class="route">/facturen</td><td>Alle facturen</td></tr>
+        <tr><td>Voorraad</td><td class="route">/voorraad</td><td>Real-time voorraadoverzicht</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Beheer</h3>
+    <table>
+      <thead>
+        <tr><th>Pagina</th><th>Route</th><th>Doel</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Klanten</td><td class="route">/klanten</td><td>Klantenbeheer + GiveX import</td></tr>
+        <tr><td>Facturatiecodes</td><td class="route">/codes</td><td>Tarieven en codes beheren</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <hr style="border:none;border-top:2px solid #E5E7EB;margin:40px 0 24px;">
+  <p style="font-size:12px;color:#9CA3AF;text-align:center;">New Order System · Service Pack b.v. · April 2026 · Intern gebruik</p>
+
+</body>
+</html>

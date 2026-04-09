@@ -7,6 +7,7 @@ interface KlantData {
   postcode?: string
   stad?: string
   land?: string
+  email?: string | null
 }
 
 export function validateKlant(data: { naam: string }): Record<string, string> {
@@ -22,6 +23,7 @@ export function buildKlantQuery(data: KlantData) {
     postcode: data.postcode?.trim() ?? '',
     stad: data.stad?.trim() ?? '',
     land: data.land?.trim() ?? '',
+    email: data.email?.trim() || null,
   }
 }
 

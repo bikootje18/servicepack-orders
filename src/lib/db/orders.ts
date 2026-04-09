@@ -74,7 +74,7 @@ export async function createOrder(data: Omit<Order, 'id' | 'status' | 'aangemaak
   const supabase = await createClient()
   const { data: order, error } = await supabase
     .from('orders')
-    .insert({ ...data, status: 'concept' })
+    .insert({ ...data, status: 'bevestigd' })
     .select()
     .single()
   if (error) throw new Error(`[createOrder] ${error.message} (code: ${error.code})`)

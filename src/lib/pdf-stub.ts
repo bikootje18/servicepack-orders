@@ -4,4 +4,5 @@ export const Document = null
 export const Page = null
 export const Text = null
 export const View = null
+export const Image = null
 export const StyleSheet = { create: (styles: object) => styles }

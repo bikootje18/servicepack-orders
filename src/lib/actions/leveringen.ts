@@ -2,7 +2,7 @@
 
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
-import { createLevering as dbCreateLevering } from '@/lib/db/leveringen'
+import { createLevering as dbCreateLevering, deleteLevering as dbDeleteLevering, updateLevering as dbUpdateLevering } from '@/lib/db/leveringen'
 import { createVracht } from '@/lib/db/vrachten'
 import { createVrachtFactuur as dbCreateFactuur } from '@/lib/db/facturen'
 
@@ -16,6 +16,30 @@ export async function createLevering(data: {
 }): Promise<void> {
   await dbCreateLevering(data)
   revalidatePath(`/orders/${data.order_id}`)
+}
+
+export async function deleteLevering(formData: FormData): Promise<void> {
+  const id = formData.get('id') as string
+  const orderId = formData.get('order_id') as string
+  await dbDeleteLevering(id)
+  redirect(`/orders/${orderId}`)
+}
+
+export async function updateLevering(formData: FormData): Promise<void> {
+  const id = formData.get('id') as string
+  const orderId = formData.get('order_id') as string
+  const aantalNum = parseInt(formData.get('aantal_geleverd') as string) || 0
+  if (aantalNum <= 0) {
+    await dbDeleteLevering(id)
+  } else {
+    await dbUpdateLevering(id, {
+      aantal_geleverd: aantalNum,
+      leverdatum: formData.get('leverdatum') as string,
+      notities: (formData.get('notities') as string) ?? '',
+      tht: (formData.get('tht') as string) || null,
+    })
+  }
+  redirect(`/orders/${orderId}`)
 }
 
 export async function gereedmeldenEnVrachtAanmaken(data: {
@@ -46,6 +70,7 @@ export async function gereedmeldenEnVrachtAanmaken(data: {
     aflever_postcode: null,
     aflever_stad:     null,
     aflever_land:     null,
+    aangemaakt_door:  null,
   })
 
   await dbCreateFactuur(vracht.id)
