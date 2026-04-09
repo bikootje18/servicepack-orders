@@ -1,6 +1,6 @@
 'use client'
 
-import { useActionState } from 'react'
+import { useActionState, useState } from 'react'
 import { ArtikelenForm } from './ArtikelenForm'
 import { LOCATIES } from '@/lib/constants/locaties'
 import { PALLET_OPTIES } from '@/lib/constants/pallets'
@@ -40,11 +40,40 @@ export function OrderFormulier({
   klanten,
   codes,
   initialArtikelen,
-  defaultValues: v,
+  defaultValues: init,
   submitLabel = 'Opslaan',
   cancelHref,
 }: Props) {
   const [state, formAction, isPending] = useActionState(action, null)
+
+  const [v, setV] = useState({
+    order_nummer:        init?.order_nummer        ?? '',
+    order_code:          init?.order_code          ?? '',
+    klant_id:            init?.klant_id            ?? '',
+    facturatie_code:     init?.facturatie_code_code ?? '',
+    order_grootte:       init?.order_grootte?.toString() ?? '',
+    locatie:             init?.locatie             ?? '',
+    deadline:            init?.deadline            ?? '',
+    tht:                 init?.tht                 ?? '',
+    aantal_per_doos:     init?.aantal_per_doos?.toString()    ?? '0',
+    aantal_per_inner:    init?.aantal_per_inner?.toString()   ?? '0',
+    aantal_per_pallet:   init?.aantal_per_pallet?.toString()  ?? '0',
+    pallet_type:         init?.pallet_type         ?? 'chep',
+    bewerking:           init?.bewerking           ?? '',
+    opwerken:            init?.opwerken            ?? false,
+    bio:                 init?.bio                 ?? false,
+    omschrijving:        init?.omschrijving        ?? '',
+  })
+
+  function set(field: keyof typeof v) {
+    return (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
+      setV(prev => ({ ...prev, [field]: e.target.value }))
+  }
+
+  function setCheck(field: 'opwerken' | 'bio') {
+    return (e: React.ChangeEvent<HTMLInputElement>) =>
+      setV(prev => ({ ...prev, [field]: e.target.checked }))
+  }
 
   return (
     <form action={formAction} className="space-y-4">
@@ -57,12 +86,12 @@ export function OrderFormulier({
       <div className="grid grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Ordernummer *</label>
-          <input name="order_nummer" required defaultValue={v?.order_nummer}
+          <input name="order_nummer" required value={v.order_nummer} onChange={set('order_nummer')}
             className="form-input" />
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Order code *</label>
-          <input name="order_code" required defaultValue={v?.order_code}
+          <input name="order_code" required value={v.order_code} onChange={set('order_code')}
             className="form-input" />
         </div>
       </div>
@@ -70,7 +99,7 @@ export function OrderFormulier({
       <div className="grid grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Klant *</label>
-          <select name="klant_id" required defaultValue={v?.klant_id ?? ''}
+          <select name="klant_id" required value={v.klant_id} onChange={set('klant_id')}
             className="form-select">
             <option value="">Selecteer klant...</option>
             {klanten.map(k => <option key={k.id} value={k.id}>{k.naam}</option>)}
@@ -79,7 +108,7 @@ export function OrderFormulier({
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Facturatie code</label>
           <input name="facturatie_code" list="codes-datalist"
-            defaultValue={v?.facturatie_code_code ?? ''}
+            value={v.facturatie_code} onChange={set('facturatie_code')}
             placeholder="Optioneel"
             className="form-input" autoComplete="off" />
           <datalist id="codes-datalist">
@@ -90,14 +119,15 @@ export function OrderFormulier({
 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">Order grootte *</label>
-        <input name="order_grootte" type="number" min="1" required defaultValue={v?.order_grootte}
+        <input name="order_grootte" type="number" min="1" required
+          value={v.order_grootte} onChange={set('order_grootte')}
           className="form-input" />
       </div>
 
       <div className="grid grid-cols-3 gap-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Locatie *</label>
-          <select name="locatie" required defaultValue={v?.locatie ?? ''}
+          <select name="locatie" required value={v.locatie} onChange={set('locatie')}
             className="form-select">
             <option value="">Selecteer locatie...</option>
             {LOCATIES.map(l => <option key={l.waarde} value={l.waarde}>{l.label}</option>)}
@@ -105,12 +135,12 @@ export function OrderFormulier({
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Deadline</label>
-          <input name="deadline" type="date" defaultValue={v?.deadline ?? ''}
+          <input name="deadline" type="date" value={v.deadline} onChange={set('deadline')}
             className="form-input" />
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">THT</label>
-          <input name="tht" type="date" defaultValue={v?.tht ?? ''}
+          <input name="tht" type="date" value={v.tht} onChange={set('tht')}
             className="form-input" />
         </div>
       </div>
@@ -118,22 +148,26 @@ export function OrderFormulier({
       <div className="grid grid-cols-4 gap-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Per doos</label>
-          <input name="aantal_per_doos" type="number" min="0" defaultValue={v?.aantal_per_doos ?? 0}
+          <input name="aantal_per_doos" type="number" min="0"
+            value={v.aantal_per_doos} onChange={set('aantal_per_doos')}
             className="form-input" />
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Per inner</label>
-          <input name="aantal_per_inner" type="number" min="0" defaultValue={v?.aantal_per_inner ?? 0}
+          <input name="aantal_per_inner" type="number" min="0"
+            value={v.aantal_per_inner} onChange={set('aantal_per_inner')}
             className="form-input" />
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Per pallet</label>
-          <input name="aantal_per_pallet" type="number" min="0" defaultValue={v?.aantal_per_pallet ?? 0}
+          <input name="aantal_per_pallet" type="number" min="0"
+            value={v.aantal_per_pallet} onChange={set('aantal_per_pallet')}
             className="form-input" />
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Pallettype</label>
-          <select name="pallet_type" defaultValue={v?.pallet_type ?? 'chep'} className="form-select">
+          <select name="pallet_type" value={v.pallet_type} onChange={set('pallet_type')}
+            className="form-select">
             {PALLET_OPTIES.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
           </select>
         </div>
@@ -141,30 +175,32 @@ export function OrderFormulier({
 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">Bewerking</label>
-        <input name="bewerking" type="number" min="0" defaultValue={v?.bewerking}
+        <input name="bewerking" type="number" min="0" value={v.bewerking} onChange={set('bewerking')}
           className="form-input" />
       </div>
 
       <div className="flex items-center gap-4">
         <div className="flex items-center gap-2">
-          <input name="opwerken" type="checkbox" id="opwerken" defaultChecked={v?.opwerken} className="form-checkbox" />
+          <input name="opwerken" type="checkbox" id="opwerken"
+            checked={v.opwerken} onChange={setCheck('opwerken')} className="form-checkbox" />
           <label htmlFor="opwerken" className="text-sm font-medium text-gray-700">Opwerken</label>
         </div>
         <div className="flex items-center gap-2">
-          <input name="bio" type="checkbox" id="bio" defaultChecked={v?.bio} className="form-checkbox" />
+          <input name="bio" type="checkbox" id="bio"
+            checked={v.bio} onChange={setCheck('bio')} className="form-checkbox" />
           <label htmlFor="bio" className="text-sm font-medium text-gray-700">Bio</label>
         </div>
       </div>
 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">Omschrijving</label>
-        <textarea name="omschrijving" rows={3} defaultValue={v?.omschrijving}
+        <textarea name="omschrijving" rows={3} value={v.omschrijving} onChange={set('omschrijving')}
           className="form-textarea" />
       </div>
 
       <ArtikelenForm
         initialArtikelen={initialArtikelen}
-        defaultOrderGrootte={v?.order_grootte ?? null}
+        defaultOrderGrootte={init?.order_grootte ?? null}
       />
 
       <div className="flex gap-3">
