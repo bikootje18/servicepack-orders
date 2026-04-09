@@ -159,10 +159,10 @@ export function CmrOverlayDocument({ vracht }: Props) {
   // Totaal pallets gegroepeerd per pallettype
   const palletTotalen: Record<string, number> = {}
   for (const r of regels) {
-    const per = r.levering.order.aantal_per_pallet
+    const per = r.levering?.order?.aantal_per_pallet ?? 0
     if (per <= 0) continue
-    const type = palletLabel((r.levering.order.pallet_type ?? 'chep') as any)
-    const aantal = Math.ceil(r.levering.aantal_geleverd / per)
+    const type = palletLabel((r.levering?.order?.pallet_type ?? 'chep') as any)
+    const aantal = Math.ceil((r.levering?.aantal_geleverd ?? 0) / per)
     palletTotalen[type] = (palletTotalen[type] ?? 0) + aantal
   }
   const totaalPallets = Object.values(palletTotalen).reduce((s, n) => s + n, 0)
