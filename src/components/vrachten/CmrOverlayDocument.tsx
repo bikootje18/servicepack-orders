@@ -209,7 +209,7 @@ export function CmrOverlayDocument({ vracht }: Props) {
 
         {/* Goederen */}
         {regels.map((r) => {
-          const l = r.levering
+          const l = r.levering!
           const o = l.order
 
           if (r.cmr_notitie) {
