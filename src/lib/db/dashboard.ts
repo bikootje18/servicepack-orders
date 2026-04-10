@@ -12,7 +12,7 @@ export function deadlineKleur(deadline: string | null | undefined): DeadlineKleu
   d.setHours(0, 0, 0, 0)
   const dagVerschil = Math.floor((d.getTime() - vandaag.getTime()) / 86400000)
   if (dagVerschil < 0) return 'rood'
-  if (dagVerschil <= 1) return 'oranje'
+  if (dagVerschil <= 2) return 'oranje'
   return null
 }
 

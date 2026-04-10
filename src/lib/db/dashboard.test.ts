@@ -13,6 +13,14 @@ describe('deadlineKleur', () => {
     const morgen = new Date(Date.now() + 86400000).toISOString().split('T')[0]
     expect(deadlineKleur(morgen)).toBe('oranje')
   })
+  it('returns "oranje" for the day after tomorrow', () => {
+    const overmorgen = new Date(Date.now() + 2 * 86400000).toISOString().split('T')[0]
+    expect(deadlineKleur(overmorgen)).toBe('oranje')
+  })
+  it('returns null for 3 days from now', () => {
+    const drieDagen = new Date(Date.now() + 3 * 86400000).toISOString().split('T')[0]
+    expect(deadlineKleur(drieDagen)).toBeNull()
+  })
   it('returns null for a far-future deadline', () => {
     expect(deadlineKleur('2099-12-31')).toBeNull()
   })
