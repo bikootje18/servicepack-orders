@@ -1,13 +1,14 @@
-import { getOrdersPerLocatie, getVrachtenPerLocatie } from '@/lib/db/dashboard'
+import { getOrdersPerLocatie, getVrachtenPerLocatie, getOrdersOverigeLocaties } from '@/lib/db/dashboard'
 import { DASHBOARD_LOCATIES } from '@/lib/constants/locaties'
 import { LocatieKolom } from '@/components/dashboard/LocatieKolom'
 
-const KLEUREN = ['#2563eb', '#059669', '#7c3aed'] as const
+const KLEUREN = ['#2563eb', '#059669', '#7c3aed', '#6b7280'] as const
 
 export default async function DashboardPage() {
-  const [orders, vrachten] = await Promise.all([
+  const [orders, vrachten, overigeOrders] = await Promise.all([
     getOrdersPerLocatie(),
     getVrachtenPerLocatie(),
+    getOrdersOverigeLocaties(),
   ])
 
   const nu = new Date().toLocaleDateString('nl-NL', {
@@ -24,7 +25,7 @@ export default async function DashboardPage() {
         <p className="text-sm text-gray-400 capitalize pb-0.5">{nu}</p>
       </div>
 
-      <div className="grid grid-cols-3 gap-5 items-start">
+      <div className="grid grid-cols-4 gap-5 items-start">
         {DASHBOARD_LOCATIES.map((l, i) => (
           <LocatieKolom
             key={l.waarde}
@@ -35,6 +36,13 @@ export default async function DashboardPage() {
             vrachten={vrachten[l.waarde]}
           />
         ))}
+        <LocatieKolom
+          label="Overige locaties"
+          kleur={KLEUREN[3]}
+          inBehandeling={overigeOrders.inBehandeling}
+          bevestigd={overigeOrders.bevestigd}
+          vrachten={[]}
+        />
       </div>
     </div>
   )
