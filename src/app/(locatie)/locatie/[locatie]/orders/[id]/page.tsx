@@ -33,7 +33,7 @@ export default async function LocatieOrderDetailPage({
     ? Math.min(100, Math.round((totaalGeleverd / order.order_grootte) * 100))
     : 0
   const isAfgerond = order.status === 'geleverd' || order.status === 'gefactureerd'
-  const kanMelden = order.status === 'in_behandeling' && resterend > 0
+  const kanMelden = !isAfgerond && resterend > 0
 
   const vandaag = new Date().toISOString().split('T')[0]
 
