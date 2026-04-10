@@ -1,7 +1,7 @@
+import Link from 'next/link'
 import type { Order } from '@/types'
 import { deadlineKleur } from '@/lib/db/dashboard'
 import { formatDate, formatAantal } from '@/lib/utils/formatters'
-import { meldOrderGereed } from '@/lib/actions/locatie'
 
 interface Props {
   order: Order
@@ -31,10 +31,11 @@ export function LocatieOrderKaartje({ order, locatie }: Props) {
   const statusKleur =
     order.status === 'in_behandeling' ? '#d97706' : '#2563eb'
 
-  const kanGereedMelden = order.status === 'in_behandeling'
-
   return (
-    <div className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
+    <Link
+      href={`/locatie/${locatie}/orders/${order.id}`}
+      className="block bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm hover:shadow-md hover:-translate-y-px transition-all"
+    >
       <div className="flex">
         <div className="w-1.5 flex-shrink-0" style={{ backgroundColor: accentKleur }} />
         <div className="flex-1 p-5">
@@ -78,26 +79,8 @@ export function LocatieOrderKaartje({ order, locatie }: Props) {
             </div>
           </div>
 
-          {/* Gereed melden */}
-          {kanGereedMelden && (
-            <form
-              action={async () => {
-                'use server'
-                await meldOrderGereed(order.id, locatie)
-              }}
-              className="mt-4"
-            >
-              <button
-                type="submit"
-                className="w-full py-2 px-4 rounded-lg text-sm font-semibold bg-green-50 text-green-700 border border-green-200 hover:bg-green-100 transition-colors"
-              >
-                Gereed melden
-              </button>
-            </form>
-          )}
-
         </div>
       </div>
-    </div>
+    </Link>
   )
 }
