@@ -13,59 +13,63 @@ export function LocatieOrderKaartje({ order, locatie }: Props) {
   const isActief = order.status === 'in_behandeling'
 
   const accentKleur =
-    kleur === 'rood'   ? '#ef4444' :
-    kleur === 'oranje' ? '#f59e0b' :
-    isActief           ? '#a78bfa' :
-                         '#475569'
+    kleur === 'rood'   ? '#dc2626' :
+    kleur === 'oranje' ? '#d97706' :
+    isActief           ? '#7c3aed' :
+                         '#64748b'
 
-  const deadlinePill =
-    kleur === 'rood'
-      ? 'bg-red-500/20 text-red-300 font-bold'
-      : kleur === 'oranje'
-      ? 'bg-amber-500/20 text-amber-300 font-bold'
-      : 'bg-white/8 text-gray-400'
+  const deadlineKleurStijl =
+    kleur === 'rood'   ? { backgroundColor: 'rgba(220,38,38,0.15)', color: '#fca5a5' } :
+    kleur === 'oranje' ? { backgroundColor: 'rgba(217,119,6,0.15)', color: '#fcd34d' } :
+                         { backgroundColor: 'rgba(255,255,255,0.08)', color: '#94a3b8' }
 
   return (
     <Link
       href={`/locatie/${locatie}/orders/${order.id}`}
-      className="group block bg-gray-900 rounded-xl overflow-hidden shadow-md hover:shadow-xl hover:bg-gray-800 hover:-translate-y-0.5 transition-all duration-150"
+      className="group block rounded-xl overflow-hidden transition-all duration-150 hover:-translate-y-0.5"
+      style={{
+        backgroundColor: '#111827',
+        boxShadow: '0 2px 8px rgba(0,0,0,0.18)',
+      }}
+      onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#1e293b')}
+      onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#111827')}
     >
-      <div className="flex">
-        {/* Dikke accentbalk */}
-        <div className="w-[4px] flex-shrink-0 rounded-l-xl" style={{ backgroundColor: accentKleur }} />
+      <div style={{ display: 'flex' }}>
+        {/* Accentbalk */}
+        <div style={{ width: '4px', flexShrink: 0, backgroundColor: accentKleur }} />
 
-        <div className="flex-1 px-4 py-4 min-w-0">
+        <div style={{ flex: 1, padding: '16px 18px', minWidth: 0 }}>
 
           {/* Ordernummer + aantal */}
-          <div className="flex items-start justify-between gap-3 mb-2.5">
-            <span className="font-mono text-[16px] font-black text-white leading-none tracking-tight">
+          <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '12px', marginBottom: '8px' }}>
+            <span style={{ fontFamily: 'monospace', fontSize: '16px', fontWeight: 900, color: '#f8fafc', letterSpacing: '-0.01em', lineHeight: 1 }}>
               {order.order_nummer}
             </span>
-            <span className="font-mono text-xs text-gray-500 tabular-nums flex-shrink-0 mt-0.5">
+            <span style={{ fontFamily: 'monospace', fontSize: '11px', color: '#475569', flexShrink: 0, marginTop: '2px' }}>
               {formatAantal(order.order_grootte)} st.
             </span>
           </div>
 
-          {/* Omschrijving of bewerking */}
+          {/* Omschrijving */}
           {(order.omschrijving || order.bewerking) && (
-            <p className="text-sm text-gray-400 leading-snug line-clamp-2 mb-3">
+            <p style={{ fontSize: '13px', color: '#94a3b8', lineHeight: 1.4, marginBottom: '12px', overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' as const }}>
               {order.omschrijving || order.bewerking}
             </p>
           )}
 
-          {/* Footer: status + deadline */}
-          <div className="flex items-center justify-between gap-2 pt-2.5 border-t border-white/6">
-            <span className="text-[10px] font-bold uppercase tracking-[0.14em]" style={{ color: accentKleur }}>
+          {/* Footer */}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: '10px', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+            <span style={{ fontSize: '10px', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: accentKleur }}>
               {isActief ? '▶ Actief' : '◎ Aankomend'}
             </span>
-            <div className="flex items-center gap-1.5">
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               {order.tht && (
-                <span className="text-[10px] text-gray-600">
+                <span style={{ fontSize: '10px', color: '#475569' }}>
                   THT {formatDate(order.tht)}
                 </span>
               )}
               {order.deadline && (
-                <span className={`text-[11px] px-2 py-0.5 rounded-md ${deadlinePill}`}>
+                <span style={{ fontSize: '11px', fontWeight: 700, padding: '2px 8px', borderRadius: '6px', ...deadlineKleurStijl }}>
                   {formatDate(order.deadline)}
                 </span>
               )}

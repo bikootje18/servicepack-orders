@@ -8,7 +8,7 @@ export default async function LocatieLayout({ children }: { children: React.Reac
   if (!user) redirect('/login')
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen" style={{ backgroundColor: '#f1f5f9' }}>
       <header className="bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src="/favicon-preview.png" alt="Service Pack" className="h-10 w-auto object-contain" />

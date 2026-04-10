@@ -47,7 +47,7 @@ export default async function LocatieOrderDetailPage({
       </Link>
 
       {/* Order header — donkere kaart */}
-      <div className="bg-gray-900 rounded-2xl p-6 mb-4 shadow-lg">
+      <div className="rounded-2xl p-6 mb-4" style={{ backgroundColor: '#111827', boxShadow: '0 4px 16px rgba(0,0,0,0.18)' }}>
         <div className="flex items-start justify-between gap-4 mb-4">
           <div>
             <p className="font-mono text-2xl font-black text-white tracking-tight leading-none mb-1.5">
