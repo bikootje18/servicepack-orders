@@ -12,47 +12,38 @@ export function LocatieSecties({ orders, locatie }: Props) {
 
   if (leeg) {
     return (
-      <div className="text-center py-32">
-        <p className="text-3xl text-gray-300 mb-3">—</p>
-        <p className="text-gray-400 text-sm">Geen actieve orders voor deze locatie</p>
+      <div className="py-20 text-center">
+        <p className="text-sm text-gray-400">Geen actieve orders voor deze locatie</p>
       </div>
     )
   }
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-8">
       {inBehandeling.length > 0 && (
-        <section>
-          <div className="flex items-center gap-3 mb-4">
-            <span className="text-[10px] font-black uppercase tracking-[0.18em] text-violet-500">
-              In behandeling
-            </span>
-            <span className="flex-1 h-px bg-violet-500/20" />
-            <span className="text-[10px] font-bold text-violet-500/60">{inBehandeling.length}</span>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div>
+          <p className="text-[10px] font-bold uppercase tracking-widest mb-3 px-1" style={{ color: '#7c3aed' }}>
+            In behandeling
+          </p>
+          <div className="flex flex-col gap-2.5">
             {inBehandeling.map(order => (
               <LocatieOrderKaartje key={order.id} order={order} locatie={locatie} />
             ))}
           </div>
-        </section>
+        </div>
       )}
 
       {bevestigd.length > 0 && (
-        <section>
-          <div className="flex items-center gap-3 mb-4">
-            <span className="text-[10px] font-black uppercase tracking-[0.18em] text-slate-400">
-              Aankomend
-            </span>
-            <span className="flex-1 h-px bg-slate-200" />
-            <span className="text-[10px] font-bold text-slate-400">{bevestigd.length}</span>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div>
+          <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-3 px-1">
+            Aankomend
+          </p>
+          <div className="flex flex-col gap-2.5">
             {bevestigd.map(order => (
               <LocatieOrderKaartje key={order.id} order={order} locatie={locatie} />
             ))}
           </div>
-        </section>
+        </div>
       )}
     </div>
   )

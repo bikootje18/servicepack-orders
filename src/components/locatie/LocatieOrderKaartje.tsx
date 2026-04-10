@@ -8,67 +8,70 @@ interface Props {
   locatie: string
 }
 
+const STATUS_LABEL: Record<string, string> = {
+  in_behandeling: 'In behandeling',
+  bevestigd:      'Aankomend',
+}
+
 export function LocatieOrderKaartje({ order, locatie }: Props) {
   const kleur = deadlineKleur(order.deadline)
-  const isActief = order.status === 'in_behandeling'
 
   const accentKleur =
-    kleur === 'rood'   ? '#dc2626' :
-    kleur === 'oranje' ? '#d97706' :
-    isActief           ? '#7c3aed' :
-                         '#64748b'
+    kleur === 'rood'   ? '#ef4444' :
+    kleur === 'oranje' ? '#f59e0b' :
+    order.status === 'in_behandeling' ? '#7c3aed' :
+                         '#e5e7eb'
 
-  const deadlineKleurStijl =
-    kleur === 'rood'   ? { backgroundColor: 'rgba(220,38,38,0.15)', color: '#fca5a5' } :
-    kleur === 'oranje' ? { backgroundColor: 'rgba(217,119,6,0.15)', color: '#fcd34d' } :
-                         { backgroundColor: 'rgba(255,255,255,0.08)', color: '#94a3b8' }
+  const deadlineStijl =
+    kleur === 'rood'
+      ? { backgroundColor: '#fef2f2', color: '#dc2626' }
+      : kleur === 'oranje'
+      ? { backgroundColor: '#fffbeb', color: '#b45309' }
+      : { color: '#9ca3af' }
+
+  const statusKleur =
+    order.status === 'in_behandeling' ? '#d97706' :
+    order.status === 'bevestigd'      ? '#2563eb' :
+                                        '#6b7280'
 
   return (
     <Link
       href={`/locatie/${locatie}/orders/${order.id}`}
-      className="locatie-kaartje group block rounded-xl overflow-hidden transition-all duration-150 hover:-translate-y-0.5"
-      style={{
-        backgroundColor: '#111827',
-        boxShadow: '0 2px 8px rgba(0,0,0,0.18)',
-      }}
+      className="block bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-md hover:-translate-y-px transition-all"
     >
-      <div style={{ display: 'flex' }}>
-        {/* Accentbalk */}
-        <div style={{ width: '4px', flexShrink: 0, backgroundColor: accentKleur }} />
+      <div className="flex">
+        <div className="w-1 flex-shrink-0" style={{ backgroundColor: accentKleur }} />
+        <div className="flex-1 px-4 py-3.5">
 
-        <div style={{ flex: 1, padding: '16px 18px', minWidth: 0 }}>
-
-          {/* Ordernummer + aantal */}
-          <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '12px', marginBottom: '8px' }}>
-            <span style={{ fontFamily: 'monospace', fontSize: '16px', fontWeight: 900, color: '#f8fafc', letterSpacing: '-0.01em', lineHeight: 1 }}>
+          {/* Ordernummer + grootte */}
+          <div className="flex items-baseline justify-between gap-2 mb-1">
+            <span className="font-mono text-sm font-bold text-gray-900">
               {order.order_nummer}
             </span>
-            <span style={{ fontFamily: 'monospace', fontSize: '11px', color: '#475569', flexShrink: 0, marginTop: '2px' }}>
+            <span className="text-xs text-gray-400 tabular-nums flex-shrink-0">
               {formatAantal(order.order_grootte)} st.
             </span>
           </div>
 
-          {/* Omschrijving */}
-          {(order.omschrijving || order.bewerking) && (
-            <p style={{ fontSize: '13px', color: '#94a3b8', lineHeight: 1.4, marginBottom: '12px', overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' as const }}>
-              {order.omschrijving || order.bewerking}
-            </p>
+          {/* Omschrijving (ipv klantnaam) */}
+          {order.omschrijving && (
+            <p className="text-xs text-gray-500 mb-2.5 truncate">{order.omschrijving}</p>
           )}
 
-          {/* Footer */}
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: '10px', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-            <span style={{ fontSize: '10px', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: accentKleur }}>
-              {isActief ? '▶ Actief' : '◎ Aankomend'}
+          {/* Status + deadline + THT */}
+          <div className="flex items-center justify-between gap-2">
+            <span className="text-[11px] font-semibold" style={{ color: statusKleur }}>
+              {STATUS_LABEL[order.status] ?? order.status}
             </span>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              {order.tht && (
-                <span style={{ fontSize: '10px', color: '#475569' }}>
-                  THT {formatDate(order.tht)}
+            <div className="flex items-center gap-1.5 flex-shrink-0">
+              {order.deadline && (
+                <span className="text-[11px] font-semibold px-1.5 py-0.5 rounded" style={deadlineStijl}>
+                  {formatDate(order.deadline)}
                 </span>
               )}
-              {order.deadline && (
-                <span style={{ fontSize: '11px', fontWeight: 700, padding: '2px 8px', borderRadius: '6px', ...deadlineKleurStijl }}>
-                  {formatDate(order.deadline)}
+              {order.tht && (
+                <span className="text-[11px] text-gray-400 bg-gray-50 px-1.5 py-0.5 rounded">
+                  THT {formatDate(order.tht)}
                 </span>
               )}
             </div>
