@@ -2,14 +2,31 @@
 
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
+import { createLevering } from '@/lib/db/leveringen'
 
-export async function meldOrderGereed(orderId: string, locatie: string): Promise<void> {
+export async function locatieMeldGereed(formData: FormData): Promise<void> {
   const supabase = await createClient()
-  const { error } = await supabase
-    .from('orders')
-    .update({ status: 'geleverd' })
-    .eq('id', orderId)
-    .eq('status', 'in_behandeling') // alleen als het nog in behandeling is
-  if (error) throw error
+  const { data: { user } } = await supabase.auth.getUser()
+
+  const orderId   = formData.get('order_id') as string
+  const locatie   = formData.get('locatie') as string
+  const aantalStr = formData.get('aantal_geleverd') as string
+  const leverdatum = formData.get('leverdatum') as string
+  const tht       = (formData.get('tht') as string) || null
+  const notities  = (formData.get('notities') as string) || ''
+
+  const aantal = parseInt(aantalStr)
+  if (!aantal || aantal <= 0 || !leverdatum) return
+
+  await createLevering({
+    order_id: orderId,
+    aantal_geleverd: aantal,
+    leverdatum,
+    notities,
+    tht,
+    aangemaakt_door: user?.id ?? null,
+  })
+
+  revalidatePath(`/locatie/${locatie}/orders/${orderId}`)
   revalidatePath(`/locatie/${locatie}`)
 }
