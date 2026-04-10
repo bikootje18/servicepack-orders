@@ -41,6 +41,10 @@ a, button {
   animation: progress-shimmer 2.4s ease-in-out infinite;
 }
 
+.locatie-kaartje:hover {
+  background-color: #1e293b !important;
+}
+
 @layer components {
   .form-input,
   .form-select,

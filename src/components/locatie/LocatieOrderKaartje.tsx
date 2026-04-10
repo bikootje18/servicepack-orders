@@ -26,13 +26,11 @@ export function LocatieOrderKaartje({ order, locatie }: Props) {
   return (
     <Link
       href={`/locatie/${locatie}/orders/${order.id}`}
-      className="group block rounded-xl overflow-hidden transition-all duration-150 hover:-translate-y-0.5"
+      className="locatie-kaartje group block rounded-xl overflow-hidden transition-all duration-150 hover:-translate-y-0.5"
       style={{
         backgroundColor: '#111827',
         boxShadow: '0 2px 8px rgba(0,0,0,0.18)',
       }}
-      onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#1e293b')}
-      onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#111827')}
     >
       <div style={{ display: 'flex' }}>
         {/* Accentbalk */}
