@@ -76,3 +76,26 @@ export async function getVrachtenPerLocatie(): Promise<Record<Locatie, Vracht[]>
 
   return result
 }
+
+export async function getOrdersOverigeLocaties(): Promise<{ inBehandeling: Order[]; bevestigd: Order[] }> {
+  const supabase = await createClient()
+  const overigeLocaties = LOCATIES.filter(l => !l.dashboard).map(l => l.waarde)
+
+  const { data, error } = await supabase
+    .from('orders')
+    .select('*, klant:klanten(id, naam)')
+    .in('status', ['in_behandeling', 'bevestigd'])
+    .in('locatie', overigeLocaties)
+    .order('deadline', { ascending: true, nullsFirst: false })
+  if (error) throw error
+
+  const inBehandeling: Order[] = []
+  const bevestigd: Order[] = []
+
+  for (const order of data as Order[]) {
+    if (order.status === 'in_behandeling') inBehandeling.push(order)
+    else bevestigd.push(order)
+  }
+
+  return { inBehandeling, bevestigd }
+}
