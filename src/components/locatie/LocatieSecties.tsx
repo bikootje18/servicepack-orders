@@ -25,7 +25,7 @@ export function LocatieSecties({ orders, locatie }: Props) {
           <h2 className="text-xs font-bold uppercase tracking-widest text-amber-600 mb-4">
             In behandeling — {inBehandeling.length}
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
             {inBehandeling.map(order => (
               <LocatieOrderKaartje key={order.id} order={order} locatie={locatie} />
             ))}
@@ -38,7 +38,7 @@ export function LocatieSecties({ orders, locatie }: Props) {
           <h2 className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4">
             Aankomend — {bevestigd.length}
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
             {bevestigd.map(order => (
               <LocatieOrderKaartje key={order.id} order={order} locatie={locatie} />
             ))}

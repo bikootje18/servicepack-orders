@@ -18,7 +18,7 @@ export default async function LocatieLayout({ children }: { children: React.Reac
           </button>
         </form>
       </header>
-      <main className="p-6 max-w-6xl mx-auto">
+      <main className="p-6 max-w-4xl mx-auto">
         {children}
       </main>
     </div>
