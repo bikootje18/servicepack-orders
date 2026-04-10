@@ -18,16 +18,36 @@ export default async function LocatiePage({
     weekday: 'long', day: 'numeric', month: 'long'
   })
 
+  const totaalActief = orders.inBehandeling.length
+  const totaalAankomend = orders.bevestigd.length
+
   return (
     <div>
-      <div className="flex items-end justify-between mb-8">
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-1">
-            Productie
-          </p>
-          <h1 className="text-2xl font-bold text-gray-900">{label}</h1>
+      {/* Header */}
+      <div className="mb-8">
+        <p className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 mb-1">
+          Productie
+        </p>
+        <div className="flex items-end justify-between gap-4">
+          <h1 className="text-3xl font-black text-gray-900 leading-none">{label}</h1>
+          <p className="text-sm text-gray-400 capitalize pb-0.5 flex-shrink-0">{nu}</p>
         </div>
-        <p className="text-sm text-gray-400 capitalize pb-0.5">{nu}</p>
+        {/* Samenvatting */}
+        {(totaalActief > 0 || totaalAankomend > 0) && (
+          <div className="flex items-center gap-4 mt-3">
+            {totaalActief > 0 && (
+              <span className="text-xs font-semibold text-violet-600">
+                {totaalActief} actief
+              </span>
+            )}
+            {totaalAankomend > 0 && (
+              <span className="text-xs font-semibold text-gray-400">
+                {totaalAankomend} aankomend
+              </span>
+            )}
+          </div>
+        )}
+        <div className="mt-4 h-px bg-gray-200" />
       </div>
 
       <LocatieSecties orders={orders} locatie={locatie} />
