@@ -25,6 +25,7 @@ export function LeveringenList({ leveringen, orderId }: { leveringen: Levering[]
             <th className="text-left px-5 py-3 font-semibold text-xs text-gray-500">Datum</th>
             <th className="text-right px-5 py-3 font-semibold text-xs text-gray-500">Aantal</th>
             <th className="text-left px-5 py-3 font-semibold text-xs text-gray-500">THT</th>
+            <th className="text-right px-5 py-3 font-semibold text-xs text-gray-500">Uren</th>
             <th className="text-left px-5 py-3 font-semibold text-xs text-gray-500">Notities</th>
             <th className="text-center px-5 py-3 font-semibold text-xs text-gray-500">Factuur</th>
             <th className="print:hidden"></th>
@@ -55,6 +56,12 @@ export function LeveringenList({ leveringen, orderId }: { leveringen: Levering[]
                           <p className="text-xs text-gray-500 mb-0.5">THT</p>
                           <input type="date" name="tht" defaultValue={l.tht ?? ''}
                             className="form-input w-36 text-sm" />
+                        </div>
+                        <div>
+                          <p className="text-xs text-gray-500 mb-0.5">Uren</p>
+                          <input type="number" name="uren" defaultValue={l.uren ?? ''}
+                            min={0.25} step={0.25} placeholder="–"
+                            className="form-input w-20 text-sm" />
                         </div>
                         <div className="flex-1 min-w-[160px]">
                           <p className="text-xs text-gray-500 mb-0.5">Notities</p>
@@ -89,6 +96,9 @@ export function LeveringenList({ leveringen, orderId }: { leveringen: Levering[]
                 </td>
                 <td className="px-5 py-3.5 text-gray-500 text-xs tabular-nums">
                   {l.tht ? formatDate(l.tht) : <span className="text-gray-300">–</span>}
+                </td>
+                <td className="px-5 py-3.5 text-right tabular-nums text-gray-500 text-sm">
+                  {l.uren != null ? `${l.uren}u` : <span className="text-gray-300">–</span>}
                 </td>
                 <td className="px-5 py-3.5 text-gray-500 max-w-[240px]">
                   <span className="line-clamp-2 print:line-clamp-none">{l.notities || <span className="text-gray-300">–</span>}</span>

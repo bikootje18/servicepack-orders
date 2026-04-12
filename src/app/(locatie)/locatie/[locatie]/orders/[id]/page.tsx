@@ -257,6 +257,20 @@ export default async function LocatieOrderDetailPage({
 
             <div>
               <label className="block text-[10px] font-bold uppercase tracking-widest text-gray-500 mb-2">
+                Uren <span className="text-gray-300 normal-case tracking-normal font-normal">(optioneel)</span>
+              </label>
+              <input
+                type="number"
+                name="uren"
+                min={0.25}
+                step={0.25}
+                placeholder="bijv. 3.5"
+                className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-900 placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
+              />
+            </div>
+
+            <div>
+              <label className="block text-[10px] font-bold uppercase tracking-widest text-gray-500 mb-2">
                 THT <span className="text-gray-300 normal-case tracking-normal font-normal">(optioneel)</span>
               </label>
               <input
@@ -300,6 +314,7 @@ export default async function LocatieOrderDetailPage({
               <div key={l.id} className="flex items-center justify-between px-5 py-3">
                 <span className="font-mono text-sm font-bold text-gray-900">{formatAantal(l.aantal_geleverd)} st.</span>
                 <div className="flex items-center gap-3 text-xs text-gray-400">
+                  {l.uren != null && <span className="font-semibold text-gray-600">{l.uren}u</span>}
                   {l.tht && <span>THT {formatDate(l.tht)}</span>}
                   {l.notities && <span className="italic">{l.notities}</span>}
                   <span>{formatDate(l.leverdatum)}</span>

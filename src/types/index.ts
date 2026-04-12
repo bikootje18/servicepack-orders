@@ -64,6 +64,7 @@ export interface Levering {
   aangemaakt_door: string | null
   aangemaakt_op: string
   tht: string | null
+  uren: number | null
 }
 
 export interface Factuur {

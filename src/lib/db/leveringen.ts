@@ -38,6 +38,7 @@ export async function updateLevering(id: string, data: {
   leverdatum: string
   notities: string
   tht?: string | null
+  uren?: number | null
 }): Promise<void> {
   const supabase = await createClient()
   const { error } = await supabase.from('leveringen').update(data).eq('id', id)
@@ -50,6 +51,7 @@ export async function createLevering(data: {
   leverdatum: string
   notities: string
   tht?: string | null
+  uren?: number | null
   aangemaakt_door: string | null
 }): Promise<Levering> {
   const supabase = await createClient()

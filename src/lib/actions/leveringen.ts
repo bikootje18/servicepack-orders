@@ -29,6 +29,8 @@ export async function updateLevering(formData: FormData): Promise<void> {
   const id = formData.get('id') as string
   const orderId = formData.get('order_id') as string
   const aantalNum = parseInt(formData.get('aantal_geleverd') as string) || 0
+  const urenStr = (formData.get('uren') as string) || ''
+  const uren = urenStr ? parseFloat(urenStr) : null
   if (aantalNum <= 0) {
     await dbDeleteLevering(id)
   } else {
@@ -37,6 +39,7 @@ export async function updateLevering(formData: FormData): Promise<void> {
       leverdatum: formData.get('leverdatum') as string,
       notities: (formData.get('notities') as string) ?? '',
       tht: (formData.get('tht') as string) || null,
+      uren,
     })
   }
   redirect(`/orders/${orderId}`)

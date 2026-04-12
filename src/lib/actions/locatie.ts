@@ -14,6 +14,8 @@ export async function locatieMeldGereed(formData: FormData): Promise<void> {
   const leverdatum = formData.get('leverdatum') as string
   const tht        = (formData.get('tht') as string) || null
   const notities   = (formData.get('notities') as string) || ''
+  const urenStr    = (formData.get('uren') as string) || ''
+  const uren       = urenStr ? parseFloat(urenStr) : null
 
   const aantal = parseInt(aantalStr)
   if (!aantal || aantal <= 0 || !leverdatum) return
@@ -24,6 +26,7 @@ export async function locatieMeldGereed(formData: FormData): Promise<void> {
     leverdatum,
     notities,
     tht,
+    uren,
     aangemaakt_door: user?.id ?? null,
   })
 
