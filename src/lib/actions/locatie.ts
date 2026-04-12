@@ -8,12 +8,12 @@ export async function locatieMeldGereed(formData: FormData): Promise<void> {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
-  const orderId   = formData.get('order_id') as string
-  const locatie   = formData.get('locatie') as string
-  const aantalStr = formData.get('aantal_geleverd') as string
+  const orderId    = formData.get('order_id') as string
+  const locatie    = formData.get('locatie') as string
+  const aantalStr  = formData.get('aantal_geleverd') as string
   const leverdatum = formData.get('leverdatum') as string
-  const tht       = (formData.get('tht') as string) || null
-  const notities  = (formData.get('notities') as string) || ''
+  const tht        = (formData.get('tht') as string) || null
+  const notities   = (formData.get('notities') as string) || ''
 
   const aantal = parseInt(aantalStr)
   if (!aantal || aantal <= 0 || !leverdatum) return
