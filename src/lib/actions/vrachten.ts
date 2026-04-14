@@ -2,8 +2,12 @@
 
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
-import { createVracht } from '@/lib/db/vrachten'
+import { createVracht, deleteVracht } from '@/lib/db/vrachten'
 import { createVrachtFactuur as dbCreateFactuur } from '@/lib/db/facturen'
+
+export async function verwijderVracht(id: string): Promise<void> {
+  await deleteVracht(id)
+}
 
 export async function createVrachtAction(formData: FormData): Promise<void> {
   const klant_id    = formData.get('klant_id') as string
@@ -49,6 +53,16 @@ export async function markeerVrachtOpgehaald(id: string): Promise<void> {
   if (error) throw error
   revalidatePath('/vrachten')
   redirect(`/vrachten/${id}?mail=1`)
+}
+
+export async function markeerVrachtNietOpgehaald(id: string): Promise<void> {
+  const { createClient } = await import('@/lib/supabase/server')
+  const supabase = await createClient()
+  const { error } = await supabase.from('vrachten').update({ status: 'aangemaakt' }).eq('id', id)
+  if (error) throw error
+  revalidatePath('/vrachten')
+  revalidatePath('/vrachten/archief')
+  redirect('/vrachten')
 }
 
 export async function createVrachtFactuurAction(vrachtId: string): Promise<void> {

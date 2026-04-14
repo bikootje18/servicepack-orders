@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { getVrachtenArchief } from '@/lib/db/vrachten'
+import { markeerVrachtNietOpgehaald } from '@/lib/actions/vrachten'
 import { formatDate } from '@/lib/utils/formatters'
 
 export default async function VrachtenArchiefPage({
@@ -72,7 +73,17 @@ export default async function VrachtenArchiefPage({
                     <td className="px-4 py-3 font-medium text-gray-600">{v.klant?.naam}</td>
                     <td className="px-4 py-3 text-gray-400 text-xs">{formatDate(v.datum)}</td>
                     <td className="px-4 py-3 text-right">
-                      <span className="text-xs text-emerald-600 font-medium">✓ Opgehaald</span>
+                      <div className="flex items-center justify-end gap-3">
+                        <span className="text-xs text-emerald-600 font-medium">✓ Opgehaald</span>
+                        <form action={markeerVrachtNietOpgehaald.bind(null, v.id)}>
+                          <button
+                            type="submit"
+                            className="text-xs text-gray-400 hover:text-gray-700 border border-gray-200 px-2 py-0.5 rounded hover:bg-gray-50 transition-colors"
+                          >
+                            Ongedaan maken
+                          </button>
+                        </form>
+                      </div>
                     </td>
                   </tr>
                 ))}
