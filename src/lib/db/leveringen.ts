@@ -99,9 +99,17 @@ export async function deleteLeveringMetCascade(id: string): Promise<void> {
     if (overigError) throw overigError
 
     if (overig.length === 0) {
-      // Vracht is leeg → verwijder de vracht-factuur én de vracht
-      const { error: deleteVrachtFactuurError } = await supabase.from('facturen').delete().eq('vracht_id', regel.vracht_id)
-      if (deleteVrachtFactuurError) throw deleteVrachtFactuurError
+      // Vracht is leeg → factuur opzoeken, leveringen ontkoppelen, factuur verwijderen, vracht verwijderen
+      const { data: vrachtFactuur } = await supabase
+        .from('facturen')
+        .select('id')
+        .eq('vracht_id', regel.vracht_id)
+        .maybeSingle()
+      if (vrachtFactuur) {
+        await supabase.from('leveringen').update({ factuur_id: null }).eq('factuur_id', vrachtFactuur.id)
+        const { error: deleteVrachtFactuurError } = await supabase.from('facturen').delete().eq('id', vrachtFactuur.id)
+        if (deleteVrachtFactuurError) throw deleteVrachtFactuurError
+      }
       const { error: deleteVrachtError } = await supabase
         .from('vrachten')
         .delete()
@@ -110,7 +118,8 @@ export async function deleteLeveringMetCascade(id: string): Promise<void> {
     }
     // Als vracht nog regels heeft: factuur blijft staan (hoort bij overige gereedmeldingen)
   } else if (levering.factuur_id) {
-    // Geen vracht_regel: gereedmelding heeft een order-factuur → verwijder die
+    // Geen vracht_regel: gereedmelding heeft een order-factuur → eerst ontkoppelen, dan verwijderen
+    await supabase.from('leveringen').update({ factuur_id: null }).eq('factuur_id', levering.factuur_id)
     const { error: deleteFactuurError } = await supabase
       .from('facturen')
       .delete()
