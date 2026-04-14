@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { validateOrder, berekenResterend } from './orders'
+import { validateOrder, berekenResterend, bepaalSplitNummer } from './orders'
 
 describe('validateOrder', () => {
   const base = {
@@ -38,5 +38,20 @@ describe('berekenResterend', () => {
   })
   it('returns 0 when fully delivered', () => {
     expect(berekenResterend(100, 100)).toBe(0)
+  })
+})
+
+describe('bepaalSplitNummer', () => {
+  it('geeft A als suffix als er geen gesplitste orders zijn', () => {
+    expect(bepaalSplitNummer('ANC26-20260319', [])).toBe('ANC26-20260319A')
+  })
+  it('geeft B als A al bestaat', () => {
+    expect(bepaalSplitNummer('ANC26-20260319', ['ANC26-20260319A'])).toBe('ANC26-20260319B')
+  })
+  it('geeft C als A en B al bestaan', () => {
+    expect(bepaalSplitNummer('ANC26-20260319', ['ANC26-20260319A', 'ANC26-20260319B'])).toBe('ANC26-20260319C')
+  })
+  it('geeft het eerste beschikbare letter terug (niet op volgorde)', () => {
+    expect(bepaalSplitNummer('ORD-001', ['ORD-001B', 'ORD-001A'])).toBe('ORD-001C')
   })
 })

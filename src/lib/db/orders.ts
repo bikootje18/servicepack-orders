@@ -24,6 +24,15 @@ export function berekenResterend(orderGrootte: number, totaalGeleverd: number): 
   return Math.max(0, orderGrootte - totaalGeleverd)
 }
 
+export function bepaalSplitNummer(origineel: string, bestaandeNummers: string[]): string {
+  const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+  for (const letter of letters) {
+    const kandidaat = `${origineel}${letter}`
+    if (!bestaandeNummers.includes(kandidaat)) return kandidaat
+  }
+  throw new Error('Geen beschikbare split-letter meer (A-Z uitgeput)')
+}
+
 export async function getOrders(
   page = 1,
   perPagina = 50,
@@ -106,6 +115,83 @@ export async function updateOrderStatus(id: string, status: Order['status']): Pr
     .update({ status })
     .eq('id', id)
   if (error) throw error
+}
+
+export async function splitsOrder(id: string, data: {
+  aantal: number
+  locatie: string
+}): Promise<Order> {
+  const supabase = await createClient()
+
+  // Haal origineel order op
+  const { data: origineel, error: origError } = await supabase
+    .from('orders')
+    .select('*')
+    .eq('id', id)
+    .single()
+  if (origError) throw origError
+
+  // Valideer: aantal moet tussen 1 en resterend liggen
+  const { data: leveringen, error: levError } = await supabase
+    .from('leveringen')
+    .select('aantal_geleverd')
+    .eq('order_id', id)
+  if (levError) throw levError
+  const totaalGeleverd = (leveringen ?? []).reduce((sum: number, l: any) => sum + l.aantal_geleverd, 0)
+  const resterend = Math.max(0, origineel.order_grootte - totaalGeleverd)
+
+  if (data.aantal < 1) throw new Error('Aantal moet minimaal 1 zijn')
+  if (data.aantal > resterend) throw new Error(`Maximaal ${resterend} stuks beschikbaar`)
+  if (data.locatie === origineel.locatie) throw new Error('Nieuwe locatie moet verschillen van huidige locatie')
+
+  // Bepaal nieuw ordernummer
+  const { data: bestaande, error: bestaandeError } = await supabase
+    .from('orders')
+    .select('order_nummer')
+    .like('order_nummer', `${origineel.order_nummer}%`)
+  if (bestaandeError) throw bestaandeError
+  const bestaandeNummers = (bestaande ?? []).map((o: any) => o.order_nummer)
+  const nieuwNummer = bepaalSplitNummer(origineel.order_nummer, bestaandeNummers)
+
+  // Maak nieuw order aan
+  const { data: nieuw, error: nieuwError } = await supabase
+    .from('orders')
+    .insert({
+      order_nummer:       nieuwNummer,
+      order_code:         origineel.order_code,
+      klant_id:           origineel.klant_id,
+      facturatie_code_id: origineel.facturatie_code_id,
+      order_grootte:      data.aantal,
+      aantal_per_doos:    origineel.aantal_per_doos,
+      aantal_per_inner:   origineel.aantal_per_inner,
+      aantal_per_pallet:  origineel.aantal_per_pallet,
+      pallet_type:        origineel.pallet_type,
+      bewerking:          origineel.bewerking,
+      opwerken:           origineel.opwerken,
+      bio:                origineel.bio,
+      omschrijving:       origineel.omschrijving,
+      deadline:           origineel.deadline,
+      tht:                origineel.tht,
+      aangemaakt_door:    origineel.aangemaakt_door,
+      locatie:            data.locatie,
+      status:             'in_behandeling',
+      gesplitst_van:      origineel.id,
+    })
+    .select()
+    .single()
+  if (nieuwError) throw nieuwError
+
+  // Verlaag origineel en sla verwijzing op
+  const { error: updateError } = await supabase
+    .from('orders')
+    .update({
+      order_grootte:  origineel.order_grootte - data.aantal,
+      gesplitst_naar: nieuw.id,
+    })
+    .eq('id', id)
+  if (updateError) throw updateError
+
+  return nieuw as Order
 }
 
 export async function getOrdersVoorKlant(klantId: string): Promise<OrderMetVrachten[]> {
