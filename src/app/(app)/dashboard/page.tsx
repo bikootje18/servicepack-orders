@@ -42,6 +42,7 @@ export default async function DashboardPage() {
           inBehandeling={overigeOrders.inBehandeling}
           bevestigd={overigeOrders.bevestigd}
           vrachten={[]}
+          toonLocatie
         />
       </div>
     </div>

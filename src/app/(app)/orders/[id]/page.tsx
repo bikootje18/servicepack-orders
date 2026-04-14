@@ -190,7 +190,7 @@ export default async function OrderDetailPage({
               </p>
             </div>
             <div>
-              <p className="text-xs text-gray-400 mb-0.5">Per pallet</p>
+              <p className="text-xs text-gray-400 mb-0.5">Dozen per pallet</p>
               <p className="font-semibold text-gray-900 tabular-nums">
                 {order.aantal_per_pallet > 0 ? formatAantal(order.aantal_per_pallet) : <span className="text-gray-300">–</span>}
               </p>

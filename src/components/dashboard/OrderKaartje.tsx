@@ -1,9 +1,11 @@
 import type { Order } from '@/types'
 import { deadlineKleur } from '@/lib/db/dashboard'
 import { formatDate, formatAantal } from '@/lib/utils/formatters'
+import { locatieLabel } from '@/lib/constants/locaties'
 
 interface Props {
   order: Order
+  toonLocatie?: boolean
 }
 
 const STATUS_LABEL: Record<string, string> = {
@@ -14,7 +16,7 @@ const STATUS_LABEL: Record<string, string> = {
   gefactureerd:   'Gefactureerd',
 }
 
-export function OrderKaartje({ order }: Props) {
+export function OrderKaartje({ order, toonLocatie }: Props) {
   const kleur = deadlineKleur(order.deadline)
 
   const accentKleur =
@@ -56,7 +58,12 @@ export function OrderKaartje({ order }: Props) {
 
           {/* Klant */}
           {order.klant && (
-            <p className="text-xs text-gray-500 mb-2.5 truncate">{order.klant.naam}</p>
+            <p className="text-xs text-gray-500 mb-1 truncate">{order.klant.naam}</p>
+          )}
+
+          {/* Locatie (alleen bij overige locaties) */}
+          {toonLocatie && order.locatie && (
+            <p className="text-[11px] text-gray-400 mb-2 truncate">{locatieLabel(order.locatie)}</p>
           )}
 
           {/* Status + deadline */}

@@ -159,7 +159,7 @@ export function OrderFormulier({
             className="form-input" />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Per pallet</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Dozen per pallet</label>
           <input name="aantal_per_pallet" type="number" min="0"
             value={v.aantal_per_pallet} onChange={set('aantal_per_pallet')}
             className="form-input" />

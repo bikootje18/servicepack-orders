@@ -28,11 +28,12 @@ function berekenVerpakkingRegels(
   const regels: VerpakkingRegel[] = []
   let rest = aantal
 
-  if (perPallet > 0) {
-    const vollePallets = Math.floor(rest / perPallet)
+  if (perPallet > 0 && perDoos > 0) {
+    const productenPerPallet = perPallet * perDoos
+    const vollePallets = Math.floor(rest / productenPerPallet)
     if (vollePallets > 0) {
-      regels.push({ label: `${vollePallets} pallet${vollePallets !== 1 ? 's' : ''} a ${nl(perPallet)}`, subtotaal: vollePallets * perPallet, isLos: false })
-      rest -= vollePallets * perPallet
+      regels.push({ label: `${vollePallets} pallet${vollePallets !== 1 ? 's' : ''} a ${nl(productenPerPallet)}`, subtotaal: vollePallets * productenPerPallet, isLos: false })
+      rest -= vollePallets * productenPerPallet
     }
   }
 
@@ -159,10 +160,12 @@ export function CmrOverlayDocument({ vracht }: Props) {
   // Totaal pallets gegroepeerd per pallettype
   const palletTotalen: Record<string, number> = {}
   for (const r of regels) {
-    const per = r.levering?.order?.aantal_per_pallet ?? 0
-    if (per <= 0) continue
+    const perPallet = r.levering?.order?.aantal_per_pallet ?? 0
+    const perDoos   = r.levering?.order?.aantal_per_doos   ?? 0
+    if (perPallet <= 0 || perDoos <= 0) continue
+    const productenPerPallet = perPallet * perDoos
     const type = palletLabel((r.levering?.order?.pallet_type ?? 'chep') as any)
-    const aantal = Math.ceil((r.levering?.aantal_geleverd ?? 0) / per)
+    const aantal = Math.ceil((r.levering?.aantal_geleverd ?? 0) / productenPerPallet)
     palletTotalen[type] = (palletTotalen[type] ?? 0) + aantal
   }
   const totaalPallets = Object.values(palletTotalen).reduce((s, n) => s + n, 0)

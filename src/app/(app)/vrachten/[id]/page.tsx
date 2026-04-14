@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { getVracht } from '@/lib/db/vrachten'
 import { VrachtbriefKnop } from '@/components/vrachten/VrachtbriefKnop'
+import { VerwijderVrachtKnop } from '@/components/vrachten/VerwijderVrachtKnop'
 import { AutoMail } from '@/components/vrachten/AutoMail'
 import { CmrNotitieBewerker } from '@/components/vrachten/CmrNotitieBewerker'
 import { formatDate, formatAantal, formatCurrency } from '@/lib/utils/formatters'
@@ -17,9 +18,10 @@ function berekenCmrTekst(l: {
   const regels: string[] = []
   let rest = l.aantal_geleverd
 
-  if (o.aantal_per_pallet > 0) {
-    const n = Math.floor(rest / o.aantal_per_pallet)
-    if (n > 0) { regels.push(`${n} pallet${n !== 1 ? 's' : ''} a ${o.aantal_per_pallet.toLocaleString('nl-NL')} = ${(n * o.aantal_per_pallet).toLocaleString('nl-NL')} verpakkingen${tht}`); rest -= n * o.aantal_per_pallet }
+  if (o.aantal_per_pallet > 0 && o.aantal_per_doos > 0) {
+    const productenPerPallet = o.aantal_per_pallet * o.aantal_per_doos
+    const n = Math.floor(rest / productenPerPallet)
+    if (n > 0) { regels.push(`${n} pallet${n !== 1 ? 's' : ''} a ${productenPerPallet.toLocaleString('nl-NL')} = ${(n * productenPerPallet).toLocaleString('nl-NL')} verpakkingen${tht}`); rest -= n * productenPerPallet }
   }
   if (o.aantal_per_inner > 0 && rest > 0) {
     const n = Math.floor(rest / o.aantal_per_inner)
@@ -90,6 +92,7 @@ export default async function VrachtDetailPage({
           >
             {klantEmail ? 'Mail klant' : 'Mail opstellen'}
           </a>
+          <VerwijderVrachtKnop vrachtId={id} vrachtbriefNummer={vracht.vrachtbrief_nummer} />
         </div>
       </div>
 

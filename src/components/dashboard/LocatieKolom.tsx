@@ -9,6 +9,7 @@ interface Props {
   inBehandeling: Order[]
   bevestigd: Order[]
   vrachten: Vracht[]
+  toonLocatie?: boolean
 }
 
 function vroegsteDeadline(orders: Order[]): string | null {
@@ -18,7 +19,7 @@ function vroegsteDeadline(orders: Order[]): string | null {
     .sort()[0] ?? null
 }
 
-export function LocatieKolom({ label, kleur, inBehandeling, bevestigd, vrachten }: Props) {
+export function LocatieKolom({ label, kleur, inBehandeling, bevestigd, vrachten, toonLocatie }: Props) {
   const totaalActief = inBehandeling.length
   const alleOrders = [...inBehandeling, ...bevestigd]
   const vroegste = vroegsteDeadline(alleOrders)
@@ -82,7 +83,7 @@ export function LocatieKolom({ label, kleur, inBehandeling, bevestigd, vrachten 
                 </p>
                 <div className="flex flex-col gap-2.5">
                   {inBehandeling.map(order => (
-                    <OrderKaartje key={order.id} order={order} />
+                    <OrderKaartje key={order.id} order={order} toonLocatie={toonLocatie} />
                   ))}
                 </div>
               </div>
@@ -96,7 +97,7 @@ export function LocatieKolom({ label, kleur, inBehandeling, bevestigd, vrachten 
                 </p>
                 <div className="flex flex-col gap-2.5">
                   {bevestigd.map(order => (
-                    <OrderKaartje key={order.id} order={order} />
+                    <OrderKaartje key={order.id} order={order} toonLocatie={toonLocatie} />
                   ))}
                 </div>
               </div>

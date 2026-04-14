@@ -192,6 +192,23 @@ export async function splitLeveringVoorVracht(
   return leveringId
 }
 
+export async function deleteVracht(id: string): Promise<void> {
+  const supabase = await createClient()
+  // Ontkoppel eventuele factuur (facturen.vracht_id heeft geen ON DELETE CASCADE)
+  await supabase.from('facturen').update({ vracht_id: null }).eq('vracht_id', id)
+  // Verwijder de regels, dan de vracht zelf
+  const { error: regelsError } = await supabase
+    .from('vracht_regels')
+    .delete()
+    .eq('vracht_id', id)
+  if (regelsError) throw regelsError
+  const { error } = await supabase
+    .from('vrachten')
+    .delete()
+    .eq('id', id)
+  if (error) throw error
+}
+
 export async function createVracht(data: {
   klant_id: string
   datum: string
