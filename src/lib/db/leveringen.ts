@@ -100,7 +100,8 @@ export async function deleteLeveringMetCascade(id: string): Promise<void> {
 
     if (overig.length === 0) {
       // Vracht is leeg → verwijder de vracht-factuur én de vracht
-      await supabase.from('facturen').delete().eq('vracht_id', regel.vracht_id)
+      const { error: deleteVrachtFactuurError } = await supabase.from('facturen').delete().eq('vracht_id', regel.vracht_id)
+      if (deleteVrachtFactuurError) throw deleteVrachtFactuurError
       const { error: deleteVrachtError } = await supabase
         .from('vrachten')
         .delete()
