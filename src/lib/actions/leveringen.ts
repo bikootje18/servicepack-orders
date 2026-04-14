@@ -2,7 +2,7 @@
 
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
-import { createLevering as dbCreateLevering, deleteLevering as dbDeleteLevering, updateLevering as dbUpdateLevering } from '@/lib/db/leveringen'
+import { createLevering as dbCreateLevering, deleteLevering as dbDeleteLevering, deleteLeveringMetCascade as dbDeleteLeveringMetCascade, updateLevering as dbUpdateLevering } from '@/lib/db/leveringen'
 import { createVracht } from '@/lib/db/vrachten'
 import { createVrachtFactuur as dbCreateFactuur } from '@/lib/db/facturen'
 
@@ -21,7 +21,7 @@ export async function createLevering(data: {
 export async function deleteLevering(formData: FormData): Promise<void> {
   const id = formData.get('id') as string
   const orderId = formData.get('order_id') as string
-  await dbDeleteLevering(id)
+  await dbDeleteLeveringMetCascade(id)
   redirect(`/orders/${orderId}`)
 }
 
