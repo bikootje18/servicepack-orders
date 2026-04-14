@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import type { Levering } from '@/types'
+import { deleteVracht } from './vrachten'
 
 export function validateLevering(data: {
   aantal_geleverd: number
@@ -99,7 +100,7 @@ export async function deleteLeveringMetCascade(id: string): Promise<void> {
     if (overigError) throw overigError
 
     if (overig.length === 0) {
-      // Vracht is leeg → factuur opzoeken, leveringen ontkoppelen, factuur verwijderen, vracht verwijderen
+      // Vracht is leeg → eerst factuur opruimen, dan vracht verwijderen via bestaande deleteVracht
       const { data: vrachtFactuur } = await supabase
         .from('facturen')
         .select('id')
@@ -110,11 +111,7 @@ export async function deleteLeveringMetCascade(id: string): Promise<void> {
         const { error: deleteVrachtFactuurError } = await supabase.from('facturen').delete().eq('id', vrachtFactuur.id)
         if (deleteVrachtFactuurError) throw deleteVrachtFactuurError
       }
-      const { error: deleteVrachtError } = await supabase
-        .from('vrachten')
-        .delete()
-        .eq('id', regel.vracht_id)
-      if (deleteVrachtError) throw deleteVrachtError
+      await deleteVracht(regel.vracht_id)
     }
     // Als vracht nog regels heeft: factuur blijft staan (hoort bij overige gereedmeldingen)
   } else if (levering.factuur_id) {
