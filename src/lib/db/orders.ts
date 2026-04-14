@@ -117,6 +117,8 @@ export async function updateOrderStatus(id: string, status: Order['status']): Pr
   if (error) throw error
 }
 
+// Let op: splitsOrder is niet transactioneel. Bij gelijktijdig gebruik door meerdere gebruikers
+// kan er een race condition optreden. Voor dit systeem (klein intern team) is dit acceptabel.
 export async function splitsOrder(id: string, data: {
   aantal: number
   locatie: string
@@ -150,7 +152,9 @@ export async function splitsOrder(id: string, data: {
     .select('order_nummer')
     .like('order_nummer', `${origineel.order_nummer}%`)
   if (bestaandeError) throw bestaandeError
-  const bestaandeNummers = (bestaande ?? []).map((o: any) => o.order_nummer)
+  const bestaandeNummers = (bestaande ?? [])
+    .map((o: any) => o.order_nummer as string)
+    .filter(n => /^[A-Z]$/.test(n.slice(origineel.order_nummer.length)))
   const nieuwNummer = bepaalSplitNummer(origineel.order_nummer, bestaandeNummers)
 
   // Maak nieuw order aan
