@@ -111,8 +111,8 @@ export function LeveringenList({ leveringen, orderId }: { leveringen: Levering[]
                   )}
                 </td>
                 <td className="px-3 py-3.5 text-right print:hidden">
-                  {!inFactuur && (
-                    <div className="flex items-center gap-2 justify-end">
+                  <div className="flex items-center gap-2 justify-end">
+                    {!inFactuur && (
                       <button
                         type="button"
                         onClick={() => setBewerkId(l.id)}
@@ -120,18 +120,23 @@ export function LeveringenList({ leveringen, orderId }: { leveringen: Levering[]
                       >
                         Bewerken
                       </button>
-                      <form action={deleteLevering} className="inline-flex items-center">
-                        <input type="hidden" name="id" value={l.id} />
-                        <input type="hidden" name="order_id" value={orderId} />
-                        <button type="submit"
-                          className="text-xs text-red-400 hover:text-red-600"
-                          onClick={(e) => { if (!confirm('Gereedmelding verwijderen?')) e.preventDefault() }}
-                        >
-                          Verwijderen
-                        </button>
-                      </form>
-                    </div>
-                  )}
+                    )}
+                    <form action={deleteLevering} className="inline-flex items-center">
+                      <input type="hidden" name="id" value={l.id} />
+                      <input type="hidden" name="order_id" value={orderId} />
+                      <button type="submit"
+                        className="text-xs text-red-400 hover:text-red-600"
+                        onClick={(e) => {
+                          const bericht = inFactuur
+                            ? 'Deze gereedmelding is gekoppeld aan een factuur. De factuur en eventuele vracht worden ook verwijderd. Doorgaan?'
+                            : 'Gereedmelding verwijderen?'
+                          if (!confirm(bericht)) e.preventDefault()
+                        }}
+                      >
+                        Verwijderen
+                      </button>
+                    </form>
+                  </div>
                 </td>
               </tr>
             )
