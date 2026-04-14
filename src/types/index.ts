@@ -49,6 +49,8 @@ export interface Order {
   deadline: string | null
   tht: string | null
   pallet_type: PalletType
+  gesplitst_van: string | null
+  gesplitst_naar: string | null
   // Joins
   klant?: Klant
   facturatie_code?: FacturatieCode
