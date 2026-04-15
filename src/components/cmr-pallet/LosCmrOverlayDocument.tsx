@@ -31,8 +31,6 @@ const S = StyleSheet.create({
   adresBlok: { fontSize: 9, lineHeight: 1.5 },
   sectie: { marginBottom: mm(10) },
   regel: { fontSize: 9, lineHeight: 1.5 },
-  regelVet: { fontSize: 9, fontFamily: 'Helvetica-Bold', lineHeight: 1.5 },
-  regelVetOnder: { fontSize: 9, fontFamily: 'Helvetica-Bold', textDecoration: 'underline', lineHeight: 1.5 },
   goederenBlok: { marginBottom: mm(6) },
   totaal: { fontSize: 9, fontFamily: 'Helvetica-Bold', marginTop: mm(4), marginBottom: mm(30) },
   footer: { marginTop: 'auto' },
@@ -80,19 +78,18 @@ export function LosCmrOverlayDocument({ regels, datum }: Props) {
         </View>
 
         {/* 5. Goederen */}
-        {regels.map((r, i) => (
-          <View key={i} style={S.goederenBlok}>
-            {r.isVollePallet ? (
+        {regels.map((r, i) => {
+          const deelTekst = r.entries
+            .map(e => `${e.aantalPallets} pallet${e.aantalPallets !== 1 ? 's' : ''} ${r.palletTypeLabel} à ${e.krattenPerPallet} kratten`)
+            .join(' + ')
+          return (
+            <View key={i} style={S.goederenBlok}>
               <Text style={S.regel}>
-                {r.naam} — {r.aantalPallets} pallet{(r.aantalPallets ?? 1) !== 1 ? 's' : ''} {r.palletTypeLabel} à {r.krattenPerPallet} kratten = {r.kratten} kratten
+                {r.naam} — {deelTekst} = {r.totaalKratten} kratten
               </Text>
-            ) : (
-              <Text style={S.regel}>
-                {r.naam} — {r.kratten} kratten {r.palletTypeLabel}
-              </Text>
-            )}
-          </View>
-        ))}
+            </View>
+          )
+        })}
 
         {/* 6. Totaal geladen */}
         {totaalPallets > 0 && (
