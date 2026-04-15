@@ -93,10 +93,14 @@ export function LosCmrOverlayDocument({ regels, datum }: Props) {
 
         {/* 6. Totaal geladen */}
         {totaalPallets > 0 && (
-          <Text style={S.totaal}>
-            {'Totaal geladen op   '}
-            {Object.entries(palletTotalen).map(([type, n]) => `${n} ${type}${n !== 1 ? 's' : ''}`).join(' + ')}
-          </Text>
+          <View style={{ marginTop: mm(4), marginBottom: mm(30) }}>
+            <Text style={{ fontSize: 9, fontFamily: 'Helvetica-Bold', lineHeight: 1.5 }}>
+              {'Totaal: '}{totaalPallets}{' pallet'}{totaalPallets !== 1 ? 's' : ''}
+              {'   ('}
+              {Object.entries(palletTotalen).map(([type, n]) => `${n} ${type}${n !== 1 ? 's' : ''}`).join(' + ')}
+              {')'}
+            </Text>
+          </View>
         )}
 
         {/* 7. Footer */}
