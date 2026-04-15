@@ -190,7 +190,7 @@ export async function splitsOrder(id: string, data: {
     .from('orders')
     .update({
       order_grootte:  origineel.order_grootte - data.aantal,
-      gesplitst_naar: nieuw.id,
+      gesplitst_naar: nieuw.id, // Overschrijft bij meerdere splits: wijst altijd naar de laatste split
     })
     .eq('id', id)
   if (updateError) throw updateError

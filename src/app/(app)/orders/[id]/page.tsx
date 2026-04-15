@@ -182,17 +182,17 @@ export default async function OrderDetailPage({
                 {gesplitstVanOrder && (
                   <div>
                     <p className="text-xs text-gray-400 mb-0.5">Gesplitst van</p>
-                    <a href={`/orders/${gesplitstVanOrder.id}`} className="font-mono text-xs font-semibold text-violet-600 hover:text-violet-800">
+                    <Link href={`/orders/${gesplitstVanOrder.id}`} className="font-mono text-xs font-semibold text-violet-600 hover:text-violet-800">
                       {gesplitstVanOrder.order_nummer}
-                    </a>
+                    </Link>
                   </div>
                 )}
                 {gesplitstNaarOrder && (
                   <div>
                     <p className="text-xs text-gray-400 mb-0.5">Gesplitst naar</p>
-                    <a href={`/orders/${gesplitstNaarOrder.id}`} className="font-mono text-xs font-semibold text-violet-600 hover:text-violet-800">
+                    <Link href={`/orders/${gesplitstNaarOrder.id}`} className="font-mono text-xs font-semibold text-violet-600 hover:text-violet-800">
                       {gesplitstNaarOrder.order_nummer}
-                    </a>
+                    </Link>
                   </div>
                 )}
               </div>
