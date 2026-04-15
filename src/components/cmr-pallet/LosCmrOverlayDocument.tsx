@@ -12,8 +12,8 @@ function formatDatum(d: Date) {
 
 const BSB = {
   naam:     'BSB',
-  adres:    '',
-  postcode: '',
+  adres:    'Lokkerdreef 35',
+  postcode: '4879 ND',
   stad:     'Etten-Leur',
   land:     'Nederland',
 }
@@ -61,7 +61,8 @@ export function LosCmrOverlayDocument({ regels, datum }: Props) {
         {/* 2. Ontvanger */}
         <View style={[S.sectie, { marginTop: mm(1.5) }]}>
           <Text style={S.regel}>{BSB.naam}</Text>
-          <Text style={S.regel}>{BSB.stad}</Text>
+          <Text style={S.regel}>{BSB.adres}</Text>
+          <Text style={S.regel}>{BSB.postcode} {BSB.stad}</Text>
           <Text style={S.regel}>{BSB.land}</Text>
         </View>
 
