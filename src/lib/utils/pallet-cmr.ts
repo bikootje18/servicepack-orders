@@ -1,55 +1,60 @@
+// src/lib/utils/pallet-cmr.ts
 import type { LosPalletType } from '@/lib/constants/pallet-producten'
 import { losPalletLabel } from '@/lib/constants/pallet-producten'
+
+export interface PalletEntry {
+  aantalPallets: number
+  krattenPerPallet: number
+}
 
 export interface PalletInvoerRegel {
   naam: string
   palletType: LosPalletType
+  entries: PalletEntry[]
+}
+
+export interface CmrRegelEntry {
+  aantalPallets: number
   krattenPerPallet: number
-  modus: 'pallets' | 'kratten'
-  waarde: number
+  kratten: number
 }
 
 export interface CmrRegel {
   naam: string
   palletType: LosPalletType
   palletTypeLabel: string
-  kratten: number
-  isVollePallet: boolean
-  aantalPallets?: number
-  krattenPerPallet?: number
+  entries: CmrRegelEntry[]
+  totaalKratten: number
+  totaalPallets: number
 }
 
 export function berekenCmrRegels(invoer: PalletInvoerRegel[]): CmrRegel[] {
   return invoer
-    .filter(r => r.waarde > 0)
     .map(r => {
-      if (r.modus === 'pallets') {
-        return {
-          naam: r.naam,
-          palletType: r.palletType,
-          palletTypeLabel: losPalletLabel(r.palletType),
-          kratten: r.waarde * r.krattenPerPallet,
-          isVollePallet: true,
-          aantalPallets: r.waarde,
-          krattenPerPallet: r.krattenPerPallet,
-        }
-      }
+      const validEntries = r.entries.filter(e => e.aantalPallets > 0 && e.krattenPerPallet > 0)
+      if (validEntries.length === 0) return null
+      const cmrEntries: CmrRegelEntry[] = validEntries.map(e => ({
+        aantalPallets: e.aantalPallets,
+        krattenPerPallet: e.krattenPerPallet,
+        kratten: e.aantalPallets * e.krattenPerPallet,
+      }))
       return {
         naam: r.naam,
         palletType: r.palletType,
         palletTypeLabel: losPalletLabel(r.palletType),
-        kratten: r.waarde,
-        isVollePallet: false,
+        entries: cmrEntries,
+        totaalKratten: cmrEntries.reduce((s, e) => s + e.kratten, 0),
+        totaalPallets: cmrEntries.reduce((s, e) => s + e.aantalPallets, 0),
       }
     })
+    .filter((r): r is CmrRegel => r !== null)
 }
 
 export function berekenPalletTotalen(regels: CmrRegel[]): Record<string, number> {
   const totalen: Record<string, number> = {}
   for (const r of regels) {
     const label = r.palletTypeLabel
-    const pallets = r.isVollePallet ? (r.aantalPallets ?? 1) : 1
-    totalen[label] = (totalen[label] ?? 0) + pallets
+    totalen[label] = (totalen[label] ?? 0) + r.totaalPallets
   }
   return totalen
 }
