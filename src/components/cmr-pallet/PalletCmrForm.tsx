@@ -222,11 +222,11 @@ export function PalletCmrForm() {
                               placeholder="kratten"
                               className="form-input w-20 tabular-nums"
                             />
-                            {ei === staat.entries.length - 1 && (
+                            {ei === staat.entries.length - 1 && Number(entry.aantalPallets) > 0 && (
                               <button
                                 type="button"
                                 onClick={() => addVasteEntry(i)}
-                                className="h-8 px-2.5 rounded border border-[#7C3AED] text-[#7C3AED] hover:bg-[#7C3AED] hover:text-white text-sm font-semibold transition-colors"
+                                className="h-8 px-2.5 rounded border border-[#7C3AED] text-[#7C3AED] hover:bg-[#7C3AED] hover:text-white text-xs font-semibold transition-colors whitespace-nowrap"
                                 title="Extra regel toevoegen"
                               >
                                 + Restje
@@ -236,7 +236,7 @@ export function PalletCmrForm() {
                               <button
                                 type="button"
                                 onClick={() => removeVasteEntry(i, ei)}
-                                className="h-8 px-2.5 rounded border border-gray-200 text-gray-400 hover:border-red-300 hover:text-red-500 hover:bg-red-50 text-xs font-medium transition-colors"
+                                className="h-8 px-2.5 rounded border border-gray-200 text-gray-400 hover:border-red-300 hover:text-red-500 hover:bg-red-50 text-xs font-medium transition-colors whitespace-nowrap"
                               >
                                 Verwijder
                               </button>
@@ -305,11 +305,11 @@ export function PalletCmrForm() {
                         placeholder="kratten/pallet"
                         className="form-input w-24 tabular-nums"
                       />
-                      {ei === rij.entries.length - 1 && (
+                      {ei === rij.entries.length - 1 && Number(entry.aantalPallets) > 0 && (
                         <button
                           type="button"
                           onClick={() => addHandmatigeEntry(rij.id)}
-                          className="h-8 px-2.5 rounded border border-[#7C3AED] text-[#7C3AED] hover:bg-[#7C3AED] hover:text-white text-sm font-semibold transition-colors"
+                          className="h-8 px-2.5 rounded border border-[#7C3AED] text-[#7C3AED] hover:bg-[#7C3AED] hover:text-white text-xs font-semibold transition-colors whitespace-nowrap"
                         >
                           + Restje
                         </button>
