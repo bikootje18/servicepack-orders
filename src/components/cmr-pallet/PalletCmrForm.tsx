@@ -226,19 +226,19 @@ export function PalletCmrForm() {
                               <button
                                 type="button"
                                 onClick={() => addVasteEntry(i)}
-                                className="text-[#7C3AED] hover:text-[#6D28D9] text-xs px-1 font-bold"
-                                title="Extra regel"
+                                className="h-8 px-2.5 rounded border border-[#7C3AED] text-[#7C3AED] hover:bg-[#7C3AED] hover:text-white text-sm font-semibold transition-colors"
+                                title="Extra regel toevoegen"
                               >
-                                +
+                                + Restje
                               </button>
                             )}
                             {staat.entries.length > 1 && (
                               <button
                                 type="button"
                                 onClick={() => removeVasteEntry(i, ei)}
-                                className="text-gray-300 hover:text-red-400 text-xs px-1"
+                                className="h-8 px-2.5 rounded border border-gray-200 text-gray-400 hover:border-red-300 hover:text-red-500 hover:bg-red-50 text-xs font-medium transition-colors"
                               >
-                                ✕
+                                Verwijder
                               </button>
                             )}
                           </div>
@@ -309,18 +309,18 @@ export function PalletCmrForm() {
                         <button
                           type="button"
                           onClick={() => addHandmatigeEntry(rij.id)}
-                          className="text-[#7C3AED] hover:text-[#6D28D9] text-xs px-1 font-bold"
+                          className="h-8 px-2.5 rounded border border-[#7C3AED] text-[#7C3AED] hover:bg-[#7C3AED] hover:text-white text-sm font-semibold transition-colors"
                         >
-                          +
+                          + Restje
                         </button>
                       )}
                       {rij.entries.length > 1 && (
                         <button
                           type="button"
                           onClick={() => removeHandmatigeEntry(rij.id, ei)}
-                          className="text-gray-300 hover:text-red-400 text-xs px-1"
+                          className="h-8 px-2.5 rounded border border-gray-200 text-gray-400 hover:border-red-300 hover:text-red-500 hover:bg-red-50 text-xs font-medium transition-colors"
                         >
-                          ✕
+                          Verwijder
                         </button>
                       )}
                     </div>
