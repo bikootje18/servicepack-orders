@@ -7,6 +7,7 @@ const nav = [
   { href: '/dashboard', label: 'Dashboard' },
   { href: '/orders', label: 'Orders' },
   { href: '/vrachten', label: 'Vrachten' },
+  { href: '/cmr-pallet', label: 'Pallet-CMR' },
   { href: '/voorraad', label: 'Voorraad' },
 ]
 
