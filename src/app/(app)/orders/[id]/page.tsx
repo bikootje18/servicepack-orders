@@ -17,6 +17,7 @@ import { BEDRIJF } from '@/lib/constants/bedrijf'
 import { AutoPrint } from '@/components/orders/AutoPrint'
 import { PrintKnop } from '@/components/orders/PrintKnop'
 import { VerwijderOrderKnop } from '@/components/orders/VerwijderOrderKnop'
+import { SplitsOrderForm } from '@/components/orders/SplitsOrderForm'
 
 export default async function OrderDetailPage({
   params,
@@ -39,6 +40,11 @@ export default async function OrderDetailPage({
     ? Math.min(100, Math.round((totaalGeleverd / order.order_grootte) * 100))
     : 0
   const isAfgerond = order.status === 'geleverd' || order.status === 'gefactureerd'
+
+  const [gesplitstVanOrder, gesplitstNaarOrder] = await Promise.all([
+    order.gesplitst_van ? getOrder(order.gesplitst_van) : Promise.resolve(null),
+    order.gesplitst_naar ? getOrder(order.gesplitst_naar) : Promise.resolve(null),
+  ])
 
   return (
     <div className="max-w-4xl">
@@ -171,6 +177,26 @@ export default async function OrderDetailPage({
               <p className="font-semibold text-gray-900">{order.tht ? formatDate(order.tht) : <span className="text-gray-300">–</span>}</p>
             </div>
           </div>
+            {(gesplitstVanOrder || gesplitstNaarOrder) && (
+              <div className="mt-3 pt-3 border-t border-gray-100 flex gap-6 text-sm">
+                {gesplitstVanOrder && (
+                  <div>
+                    <p className="text-xs text-gray-400 mb-0.5">Gesplitst van</p>
+                    <a href={`/orders/${gesplitstVanOrder.id}`} className="font-mono text-xs font-semibold text-violet-600 hover:text-violet-800">
+                      {gesplitstVanOrder.order_nummer}
+                    </a>
+                  </div>
+                )}
+                {gesplitstNaarOrder && (
+                  <div>
+                    <p className="text-xs text-gray-400 mb-0.5">Gesplitst naar</p>
+                    <a href={`/orders/${gesplitstNaarOrder.id}`} className="font-mono text-xs font-semibold text-violet-600 hover:text-violet-800">
+                      {gesplitstNaarOrder.order_nummer}
+                    </a>
+                  </div>
+                )}
+              </div>
+            )}
         </div>
 
         {/* Verpakking */}
@@ -244,12 +270,21 @@ export default async function OrderDetailPage({
       {/* ── Status actie ── */}
       <div className="flex items-center justify-between mb-6 print:hidden">
         <StatusButtons order={order} />
-        <Link
-          href={`/orders/nieuw?kloon=${id}`}
-          className="text-sm text-gray-400 hover:text-violet-600 hover:underline"
-        >
-          + Kloon deze order
-        </Link>
+        <div className="flex flex-col items-end gap-2">
+          <Link
+            href={`/orders/nieuw?kloon=${id}`}
+            className="text-sm text-gray-400 hover:text-violet-600 hover:underline"
+          >
+            + Kloon deze order
+          </Link>
+          {resterend > 0 && (
+            <SplitsOrderForm
+              orderId={id}
+              resterend={resterend}
+              huidigeLocatie={order.locatie}
+            />
+          )}
+        </div>
       </div>
 
       {/* ── Artikelen ── */}
