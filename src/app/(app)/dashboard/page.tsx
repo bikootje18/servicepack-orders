@@ -1,14 +1,19 @@
 import { getOrdersPerLocatie, getVrachtenPerLocatie, getOrdersOverigeLocaties } from '@/lib/db/dashboard'
-import { DASHBOARD_LOCATIES } from '@/lib/constants/locaties'
-import { LocatieKolom } from '@/components/dashboard/LocatieKolom'
+import { getKlanten } from '@/lib/db/klanten'
+import { DashboardGrid } from '@/components/dashboard/DashboardGrid'
 
-const KLEUREN = ['#2563eb', '#059669', '#7c3aed', '#6b7280'] as const
+export default async function DashboardPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ klant?: string }>
+}) {
+  const { klant: klantId } = await searchParams
 
-export default async function DashboardPage() {
-  const [orders, vrachten, overigeOrders] = await Promise.all([
-    getOrdersPerLocatie(),
+  const [orders, vrachten, overigeOrders, klanten] = await Promise.all([
+    getOrdersPerLocatie(klantId),
     getVrachtenPerLocatie(),
-    getOrdersOverigeLocaties(),
+    getOrdersOverigeLocaties(klantId),
+    getKlanten(),
   ])
 
   const nu = new Date().toLocaleDateString('nl-NL', {
@@ -25,26 +30,13 @@ export default async function DashboardPage() {
         <p className="text-sm text-gray-400 capitalize pb-0.5">{nu}</p>
       </div>
 
-      <div className="grid grid-cols-4 gap-5 items-start">
-        {DASHBOARD_LOCATIES.map((l, i) => (
-          <LocatieKolom
-            key={l.waarde}
-            label={l.label}
-            kleur={KLEUREN[i]}
-            inBehandeling={orders[l.waarde].inBehandeling}
-            bevestigd={orders[l.waarde].bevestigd}
-            vrachten={vrachten[l.waarde]}
-          />
-        ))}
-        <LocatieKolom
-          label="Overige locaties"
-          kleur={KLEUREN[3]}
-          inBehandeling={overigeOrders.inBehandeling}
-          bevestigd={overigeOrders.bevestigd}
-          vrachten={[]}
-          toonLocatie
-        />
-      </div>
+      <DashboardGrid
+        orders={orders}
+        vrachten={vrachten}
+        overigeOrders={overigeOrders}
+        klanten={klanten.map(k => ({ id: k.id, naam: k.naam }))}
+        geselecteerdeKlantId={klantId}
+      />
     </div>
   )
 }
