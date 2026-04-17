@@ -12,7 +12,7 @@ export async function getOrdersPerLocatie(klantId?: string): Promise<Record<Loca
     .not('locatie', 'is', null)
     .order('deadline', { ascending: true, nullsFirst: false })
 
-  if (klantId) query = query.eq('klant_id', klantId)
+  if (klantId != null && klantId !== '') query = query.eq('klant_id', klantId)
 
   const { data, error } = await query
   if (error) throw error
@@ -79,7 +79,7 @@ export async function getOrdersOverigeLocaties(klantId?: string): Promise<{ inBe
     .in('locatie', overigeLocaties)
     .order('deadline', { ascending: true, nullsFirst: false })
 
-  if (klantId) query = query.eq('klant_id', klantId)
+  if (klantId != null && klantId !== '') query = query.eq('klant_id', klantId)
 
   const { data, error } = await query
   if (error) throw error
