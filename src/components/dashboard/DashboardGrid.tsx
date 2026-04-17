@@ -1,10 +1,9 @@
 'use client'
 
 import { useState } from 'react'
-import type { Order, Vracht, Klant } from '@/types'
+import type { Order, Vracht } from '@/types'
 import { DASHBOARD_LOCATIES } from '@/lib/constants/locaties'
 import { LocatieKolom } from './LocatieKolom'
-import { KlantCombobox } from './KlantCombobox'
 
 const KLEUREN = ['#2563eb', '#059669', '#7c3aed', '#6b7280'] as const
 
@@ -17,11 +16,9 @@ interface Props {
   orders: Record<string, LocatieData>
   vrachten: Record<string, Vracht[]>
   overigeOrders: LocatieData
-  klanten: Pick<Klant, 'id' | 'naam'>[]
-  geselecteerdeKlantId?: string
 }
 
-export function DashboardGrid({ orders, vrachten, overigeOrders, klanten, geselecteerdeKlantId }: Props) {
+export function DashboardGrid({ orders, vrachten, overigeOrders }: Props) {
   const [focusLocatie, setFocusLocatie] = useState<string | null>(null)
 
   const handleFocus = (locatie: string) => {
@@ -33,14 +30,6 @@ export function DashboardGrid({ orders, vrachten, overigeOrders, klanten, gesele
 
   return (
     <div>
-      {/* Klantfilter combobox */}
-      <div className="mb-6">
-        <KlantCombobox
-          klanten={klanten}
-          geselecteerdeKlantId={geselecteerdeKlantId}
-        />
-      </div>
-
       {/* Grid */}
       <div className={isFocusMode ? 'grid grid-cols-1 gap-5 items-start' : 'grid grid-cols-4 gap-5 items-start'}>
         {DASHBOARD_LOCATIES.map((l, i) => {

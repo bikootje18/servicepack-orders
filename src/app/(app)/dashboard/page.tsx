@@ -1,6 +1,7 @@
 import { getOrdersPerLocatie, getVrachtenPerLocatie, getOrdersOverigeLocaties } from '@/lib/db/dashboard'
 import { getKlanten } from '@/lib/db/klanten'
 import { DashboardGrid } from '@/components/dashboard/DashboardGrid'
+import { KlantCombobox } from '@/components/dashboard/KlantCombobox'
 
 export default async function DashboardPage({
   searchParams,
@@ -22,20 +23,24 @@ export default async function DashboardPage({
 
   return (
     <div>
-      <div className="flex items-end justify-between mb-8">
+      <div className="flex items-center justify-between mb-8">
         <div>
           <p className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-1">Productie</p>
           <h1 className="text-2xl font-bold text-gray-900">Locatie-overzicht</h1>
         </div>
-        <p className="text-sm text-gray-400 capitalize pb-0.5">{nu}</p>
+        <div className="flex items-center gap-4">
+          <p className="text-sm text-gray-400 capitalize">{nu}</p>
+          <KlantCombobox
+            klanten={klanten.map(k => ({ id: k.id, naam: k.naam }))}
+            geselecteerdeKlantId={klantId}
+          />
+        </div>
       </div>
 
       <DashboardGrid
         orders={orders}
         vrachten={vrachten}
         overigeOrders={overigeOrders}
-        klanten={klanten.map(k => ({ id: k.id, naam: k.naam }))}
-        geselecteerdeKlantId={klantId}
       />
     </div>
   )
