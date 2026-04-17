@@ -1,5 +1,5 @@
 import type { Order, Vracht } from '@/types'
-import { deadlineKleur } from '@/lib/db/dashboard'
+import { deadlineKleur } from '@/lib/utils/deadline'
 import { formatDate } from '@/lib/utils/formatters'
 import { OrderKaartje } from './OrderKaartje'
 

@@ -1,5 +1,5 @@
 import type { Order } from '@/types'
-import { deadlineKleur } from '@/lib/db/dashboard'
+import { deadlineKleur } from '@/lib/utils/deadline'
 import { formatDate, formatAantal } from '@/lib/utils/formatters'
 import { locatieLabel } from '@/lib/constants/locaties'
 

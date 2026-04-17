@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { deadlineKleur } from './dashboard'
+import { deadlineKleur } from '../utils/deadline'
 
 describe('deadlineKleur', () => {
   it('returns "rood" for a past deadline', () => {
