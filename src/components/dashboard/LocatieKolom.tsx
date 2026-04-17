@@ -1,3 +1,5 @@
+'use client'
+
 import type { Order, Vracht } from '@/types'
 import { deadlineKleur } from '@/lib/utils/deadline'
 import { formatDate } from '@/lib/utils/formatters'
@@ -10,6 +12,8 @@ interface Props {
   bevestigd: Order[]
   vrachten: Vracht[]
   toonLocatie?: boolean
+  onClick?: () => void
+  isFocused?: boolean
 }
 
 function vroegsteDeadline(orders: Order[]): string | null {
@@ -19,7 +23,7 @@ function vroegsteDeadline(orders: Order[]): string | null {
     .sort()[0] ?? null
 }
 
-export function LocatieKolom({ label, kleur, inBehandeling, bevestigd, vrachten, toonLocatie }: Props) {
+export function LocatieKolom({ label, kleur, inBehandeling, bevestigd, vrachten, toonLocatie, onClick, isFocused }: Props) {
   const totaalActief = inBehandeling.length
   const alleOrders = [...inBehandeling, ...bevestigd]
   const vroegste = vroegsteDeadline(alleOrders)
@@ -29,18 +33,33 @@ export function LocatieKolom({ label, kleur, inBehandeling, bevestigd, vrachten,
   return (
     <div className="rounded-xl overflow-hidden border border-gray-200 shadow-sm bg-white">
 
-      {/* Header — donker blok met locatienaam */}
-      <div className="px-5 py-5" style={{ backgroundColor: kleur }}>
+      {/* Header — klikbaar voor focus mode */}
+      <div
+        className={`px-5 py-5 ${onClick ? 'cursor-pointer select-none' : ''}`}
+        style={{ backgroundColor: kleur }}
+        onClick={onClick}
+      >
         <div className="flex items-center justify-between gap-3">
           <h2 className="text-lg font-bold text-white leading-tight">{label}</h2>
-          {totaalActief > 0 && (
-            <span
-              className="inline-flex items-center justify-center w-8 h-8 rounded-full text-sm font-bold flex-shrink-0"
-              style={{ backgroundColor: 'rgba(255,255,255,0.2)', color: '#fff' }}
-            >
-              {totaalActief}
-            </span>
-          )}
+          <div className="flex items-center gap-2">
+            {totaalActief > 0 && (
+              <span
+                className="inline-flex items-center justify-center w-8 h-8 rounded-full text-sm font-bold flex-shrink-0"
+                style={{ backgroundColor: 'rgba(255,255,255,0.2)', color: '#fff' }}
+              >
+                {totaalActief}
+              </span>
+            )}
+            {isFocused && (
+              <span
+                className="inline-flex items-center justify-center w-8 h-8 rounded-full text-sm flex-shrink-0"
+                style={{ backgroundColor: 'rgba(255,255,255,0.2)', color: '#fff' }}
+                title="Klik om te sluiten"
+              >
+                ✕
+              </span>
+            )}
+          </div>
         </div>
 
         {/* Subtekst in header */}
