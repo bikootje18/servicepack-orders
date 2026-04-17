@@ -1,7 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import type { Order, Vracht } from '@/types'
 import { LOCATIES, type Locatie } from '@/lib/constants/locaties'
-import { deadlineKleur } from '@/lib/utils/deadline'
 export type { DeadlineKleur } from '@/lib/utils/deadline'
 
 export async function getOrdersPerLocatie(): Promise<Record<Locatie, { inBehandeling: Order[]; bevestigd: Order[] }>> {
