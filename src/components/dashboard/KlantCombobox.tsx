@@ -49,7 +49,7 @@ export function KlantCombobox({ klanten, geselecteerdeKlantId }: Props) {
   }, [geselecteerdeNaam])
 
   return (
-    <div ref={containerRef} className="relative w-60">
+    <div ref={containerRef} className="relative w-48">
       <div className="relative flex items-center">
         {/* Zoek icoon */}
         <svg className="pointer-events-none absolute left-2.5 text-gray-400 shrink-0" width="13" height="13" viewBox="0 0 16 16" fill="none">
@@ -96,7 +96,7 @@ export function KlantCombobox({ klanten, geselecteerdeKlantId }: Props) {
       </div>
 
       {open && (
-        <div className="absolute right-0 z-50 mt-1 w-full min-w-[240px] rounded-lg border border-gray-200 bg-white shadow-lg overflow-hidden">
+        <div className="absolute right-0 z-50 mt-1 w-full min-w-[220px] rounded-lg border border-gray-200 bg-white shadow-lg overflow-hidden">
           <ul className="max-h-[300px] overflow-y-auto py-1 text-sm">
             <li>
               <button
