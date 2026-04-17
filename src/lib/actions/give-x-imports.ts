@@ -91,6 +91,8 @@ export async function verwerkGiveXImports(
         deadline: parsed.leverdatum ? parsed.leverdatum.toISOString().split('T')[0] : null,
         tht: null,
         pallet_type: template.pallet_type ?? 'chep',
+        gesplitst_van: null,
+        gesplitst_naar: null,
         aangemaakt_door: null,
       })
 

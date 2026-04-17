@@ -65,6 +65,8 @@ export default async function NieuweOrderPage({
       locatie,
       deadline: formData.get('deadline') as string || null,
       tht: formData.get('tht') as string || null,
+      gesplitst_van: null,
+      gesplitst_naar: null,
       aangemaakt_door: null,
     })
     // Artikelen opslaan als de sectie geopend was bij submit

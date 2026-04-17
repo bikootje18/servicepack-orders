@@ -187,6 +187,7 @@ export function FactuurDocument({ factuur, leveringen, klantNaam, logoUrl }: Pro
   const order = factuur.order
   const tarief = factuur.tarief ?? 0
   const facturatieCode = (order as any)?.facturatie_code
+  const tariefOmschrijving = facturatieCode?.omschrijving as string | undefined
 
   return (
     <Document>
@@ -243,6 +244,12 @@ export function FactuurDocument({ factuur, leveringen, klantNaam, logoUrl }: Pro
               <View style={S.bewerkingRegel}>
                 <Text style={S.orderMetaItemLabel}>Bewerking</Text>
                 <Text style={S.orderMetaItemWaarde}>{order.bewerking}</Text>
+              </View>
+            )}
+            {!!tariefOmschrijving && (
+              <View style={S.bewerkingRegel}>
+                <Text style={S.orderMetaItemLabel}>Tariefcode</Text>
+                <Text style={S.orderMetaItemWaarde}>{tariefOmschrijving}</Text>
               </View>
             )}
           </View>

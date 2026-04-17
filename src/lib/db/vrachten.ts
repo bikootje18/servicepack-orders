@@ -194,14 +194,23 @@ export async function splitLeveringVoorVracht(
 
 export async function deleteVracht(id: string): Promise<void> {
   const supabase = await createClient()
-  // Ontkoppel eventuele factuur (facturen.vracht_id heeft geen ON DELETE CASCADE)
-  await supabase.from('facturen').update({ vracht_id: null }).eq('vracht_id', id)
-  // Verwijder de regels, dan de vracht zelf
-  const { error: regelsError } = await supabase
-    .from('vracht_regels')
-    .delete()
+
+  // Zoek de factuur van deze vracht op
+  const { data: factuur } = await supabase
+    .from('facturen')
+    .select('id')
     .eq('vracht_id', id)
-  if (regelsError) throw regelsError
+    .maybeSingle()
+
+  if (factuur) {
+    // Ontkoppel de leveringen van de factuur zodat ze weer beschikbaar zijn
+    await supabase.from('leveringen').update({ factuur_id: null }).eq('factuur_id', factuur.id)
+    // Verwijder de factuur
+    const { error: factuurError } = await supabase.from('facturen').delete().eq('id', factuur.id)
+    if (factuurError) throw factuurError
+  }
+
+  // Verwijder de vracht (vracht_regels worden via ON DELETE CASCADE mee verwijderd)
   const { error } = await supabase
     .from('vrachten')
     .delete()

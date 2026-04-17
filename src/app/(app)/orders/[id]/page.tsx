@@ -268,23 +268,23 @@ export default async function OrderDetailPage({
       </div>
 
       {/* ── Status actie ── */}
-      <div className="flex items-center justify-between mb-6 print:hidden">
-        <StatusButtons order={order} />
-        <div className="flex flex-col items-end gap-2">
+      <div className="mb-6 print:hidden">
+        <div className="flex items-center justify-between mb-2">
+          <StatusButtons order={order} />
           <Link
             href={`/orders/nieuw?kloon=${id}`}
             className="text-sm text-gray-400 hover:text-violet-600 hover:underline"
           >
             + Kloon deze order
           </Link>
-          {resterend > 0 && (
-            <SplitsOrderForm
-              orderId={id}
-              resterend={resterend}
-              huidigeLocatie={order.locatie}
-            />
-          )}
         </div>
+        {resterend > 0 && (
+          <SplitsOrderForm
+            orderId={id}
+            resterend={resterend}
+            huidigeLocatie={order.locatie}
+          />
+        )}
       </div>
 
       {/* ── Artikelen ── */}
