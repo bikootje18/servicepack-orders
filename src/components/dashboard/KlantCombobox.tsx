@@ -62,22 +62,16 @@ export function KlantCombobox({ klanten, geselecteerdeKlantId }: Props) {
     >
       {/* Zoekbalk */}
       <div className="p-2 border-b border-gray-100">
-        <div className="relative flex items-center">
-          <svg className="pointer-events-none absolute left-2.5 text-gray-400 shrink-0" width="12" height="12" viewBox="0 0 16 16" fill="none">
-            <circle cx="6.5" cy="6.5" r="5" stroke="currentColor" strokeWidth="1.5" />
-            <path d="M10.5 10.5L14 14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-          </svg>
-          <input
-            ref={inputRef}
-            type="text"
-            value={zoekterm}
-            onChange={e => setZoekterm(e.target.value)}
-            onKeyDown={e => { if (e.key === 'Escape') setOpen(false) }}
-            placeholder="Zoek klant…"
-            autoComplete="off"
-            className="w-full rounded-md border border-gray-200 bg-gray-50 pl-8 pr-3 py-1.5 text-sm text-gray-800 placeholder:text-gray-400 focus:outline-none focus:border-violet-400 focus:bg-white transition-all"
-          />
-        </div>
+        <input
+          ref={inputRef}
+          type="text"
+          value={zoekterm}
+          onChange={e => setZoekterm(e.target.value)}
+          onKeyDown={e => { if (e.key === 'Escape') setOpen(false) }}
+          placeholder="Zoek klant…"
+          autoComplete="off"
+          className="w-full rounded-md border border-gray-200 bg-gray-50 px-3 py-1.5 text-sm text-gray-800 placeholder:text-gray-400 focus:outline-none focus:border-violet-400 focus:bg-white transition-all"
+        />
       </div>
 
       {/* Lijst */}
