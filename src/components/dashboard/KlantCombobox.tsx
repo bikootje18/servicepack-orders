@@ -75,7 +75,7 @@ export function KlantCombobox({ klanten, geselecteerdeKlantId }: Props) {
             onKeyDown={e => { if (e.key === 'Escape') setOpen(false) }}
             placeholder="Zoek klant…"
             autoComplete="off"
-            className="w-full rounded-md border border-gray-200 bg-gray-50 pl-7 pr-3 py-1.5 text-sm text-gray-800 placeholder:text-gray-400 focus:outline-none focus:border-violet-400 focus:bg-white transition-all"
+            className="w-full rounded-md border border-gray-200 bg-gray-50 pl-8 pr-3 py-1.5 text-sm text-gray-800 placeholder:text-gray-400 focus:outline-none focus:border-violet-400 focus:bg-white transition-all"
           />
         </div>
       </div>
