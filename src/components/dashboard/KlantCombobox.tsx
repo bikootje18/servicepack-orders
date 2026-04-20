@@ -10,16 +10,12 @@ interface Props {
 
 export function KlantCombobox({ klanten, geselecteerdeKlantId }: Props) {
   const router = useRouter()
-  const geselecteerdeNaam = klanten.find(k => k.id === geselecteerdeKlantId)?.naam ?? ''
+  const geselecteerdeNaam = klanten.find(k => k.id === geselecteerdeKlantId)?.naam ?? null
 
   const [open, setOpen] = useState(false)
-  const [zoekterm, setZoekterm] = useState(geselecteerdeNaam)
+  const [zoekterm, setZoekterm] = useState('')
   const containerRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
-
-  useEffect(() => {
-    if (!open) setZoekterm(geselecteerdeNaam)
-  }, [geselecteerdeNaam, open])
 
   const gefilterd = zoekterm.trim()
     ? klanten.filter(k => k.naam.toLowerCase().includes(zoekterm.toLowerCase().trim()))
@@ -27,77 +23,94 @@ export function KlantCombobox({ klanten, geselecteerdeKlantId }: Props) {
 
   const selecteer = useCallback((klantId: string | null) => {
     setOpen(false)
+    setZoekterm('')
     if (klantId === null) {
-      setZoekterm('')
       router.push('/dashboard')
     } else {
-      const naam = klanten.find(k => k.id === klantId)?.naam ?? ''
-      setZoekterm(naam)
       router.push('?klant=' + klantId)
     }
-  }, [klanten, router])
+  }, [router])
+
+  useEffect(() => {
+    if (open) setTimeout(() => inputRef.current?.focus(), 0)
+    else setZoekterm('')
+  }, [open])
 
   useEffect(() => {
     function handleClick(e: MouseEvent) {
       if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
         setOpen(false)
-        setZoekterm(geselecteerdeNaam)
       }
     }
     document.addEventListener('mousedown', handleClick)
     return () => document.removeEventListener('mousedown', handleClick)
-  }, [geselecteerdeNaam])
+  }, [])
 
   return (
-    <div ref={containerRef} className="relative w-48">
-      <div className="relative flex items-center">
-        {/* Zoek icoon */}
-        <svg className="pointer-events-none absolute left-2.5 text-gray-400 shrink-0" width="13" height="13" viewBox="0 0 16 16" fill="none">
+    <div ref={containerRef} className="relative">
+      {/* Trigger chip */}
+      <button
+        type="button"
+        onClick={() => setOpen(o => !o)}
+        className={`flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-sm transition-all ${
+          geselecteerdeNaam
+            ? 'border-violet-300 bg-violet-50 text-violet-700 font-medium'
+            : 'border-gray-200 bg-white text-gray-500 hover:border-gray-300 hover:text-gray-700'
+        }`}
+      >
+        <svg width="12" height="12" viewBox="0 0 16 16" fill="none" className="shrink-0 opacity-60">
           <circle cx="6.5" cy="6.5" r="5" stroke="currentColor" strokeWidth="1.5" />
           <path d="M10.5 10.5L14 14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
         </svg>
-
-        <input
-          ref={inputRef}
-          type="text"
-          value={zoekterm}
-          onFocus={() => { setOpen(true); setZoekterm('') }}
-          onChange={e => { setZoekterm(e.target.value); setOpen(true) }}
-          onKeyDown={e => {
-            if (e.key === 'Escape') { setOpen(false); setZoekterm(geselecteerdeNaam); inputRef.current?.blur() }
-          }}
-          placeholder={geselecteerdeKlantId ? geselecteerdeNaam : 'Alle klanten'}
-          autoComplete="off"
-          className="w-full rounded-lg border border-gray-200 bg-white px-8 py-2 text-sm text-gray-800 placeholder:text-gray-500 focus:outline-none focus:border-violet-400 focus:ring-2 focus:ring-violet-100 transition-all"
-        />
-
-        {/* Wis-knop of chevron */}
-        <div className="pointer-events-none absolute right-2.5 flex items-center">
-          {geselecteerdeKlantId && !open ? (
-            <button
-              type="button"
-              className="pointer-events-auto flex items-center justify-center w-4 h-4 rounded-full text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
-              title="Filter wissen"
-              onMouseDown={e => { e.preventDefault(); selecteer(null) }}
-            >
-              <svg width="8" height="8" viewBox="0 0 8 8" fill="none">
-                <path d="M1 1l6 6M7 1L1 7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-              </svg>
-            </button>
-          ) : (
-            <svg
-              className={`text-gray-400 transition-transform duration-150 ${open ? 'rotate-180' : ''}`}
-              width="11" height="11" viewBox="0 0 12 12" fill="none"
-            >
-              <path d="M2 4l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        <span className="max-w-[160px] truncate">
+          {geselecteerdeNaam ?? 'Alle klanten'}
+        </span>
+        {geselecteerdeNaam ? (
+          <span
+            role="button"
+            className="ml-0.5 flex items-center justify-center w-3.5 h-3.5 rounded-full hover:bg-violet-200 transition-colors"
+            onMouseDown={e => { e.stopPropagation(); selecteer(null) }}
+            title="Filter wissen"
+          >
+            <svg width="7" height="7" viewBox="0 0 8 8" fill="none">
+              <path d="M1 1l6 6M7 1L1 7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
             </svg>
-          )}
-        </div>
-      </div>
+          </span>
+        ) : (
+          <svg
+            className={`shrink-0 text-gray-400 transition-transform duration-150 ${open ? 'rotate-180' : ''}`}
+            width="10" height="10" viewBox="0 0 12 12" fill="none"
+          >
+            <path d="M2 4l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        )}
+      </button>
 
+      {/* Dropdown */}
       {open && (
-        <div className="absolute right-0 z-50 mt-1 w-full min-w-[220px] rounded-lg border border-gray-200 bg-white shadow-lg overflow-hidden">
-          <ul className="max-h-[300px] overflow-y-auto py-1 text-sm">
+        <div className="absolute right-0 z-50 mt-1.5 w-64 rounded-xl border border-gray-200 bg-white shadow-lg overflow-hidden">
+          {/* Zoekbalk in dropdown */}
+          <div className="p-2 border-b border-gray-100">
+            <div className="relative flex items-center">
+              <svg className="pointer-events-none absolute left-2.5 text-gray-400 shrink-0" width="12" height="12" viewBox="0 0 16 16" fill="none">
+                <circle cx="6.5" cy="6.5" r="5" stroke="currentColor" strokeWidth="1.5" />
+                <path d="M10.5 10.5L14 14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+              </svg>
+              <input
+                ref={inputRef}
+                type="text"
+                value={zoekterm}
+                onChange={e => setZoekterm(e.target.value)}
+                onKeyDown={e => { if (e.key === 'Escape') setOpen(false) }}
+                placeholder="Zoek klant…"
+                autoComplete="off"
+                className="w-full rounded-md border border-gray-200 bg-gray-50 pl-7 pr-3 py-1.5 text-sm text-gray-800 placeholder:text-gray-400 focus:outline-none focus:border-violet-400 focus:bg-white transition-all"
+              />
+            </div>
+          </div>
+
+          {/* Lijst */}
+          <ul className="max-h-[280px] overflow-y-auto py-1 text-sm">
             <li>
               <button
                 type="button"
