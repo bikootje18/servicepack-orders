@@ -163,3 +163,32 @@ export interface GiveXImport {
   // Joins
   order?: Pick<Order, 'id' | 'order_nummer' | 'order_code'>
 }
+
+export interface Productdefinitie {
+  id: string
+  publiceren: boolean
+  art_nr: string
+  omschrijving_eindproduct: string
+  art_grondstof: string
+  omschrijving_grondstof: string
+  grondstof_per_he: number
+  tray_1_code: string
+  tray_1_per_he: number
+  tray_1_omschrijving: string
+  tray_2_code: string
+  tray_2_per_he: number
+  tray_2_omschrijving: string
+  ean_he: string
+  label_1_per_he: number
+  ean_ce: string
+  label_2_per_he: number
+  per_laag: number
+  lagen: number
+  per_pallet: number
+  lading_drager: string
+  tussenlegvel: boolean
+  hoekprofiel: boolean
+  spiegelen: boolean
+  tarief_service_pack: number
+  aangemaakt_op: string
+}
