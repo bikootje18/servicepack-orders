@@ -2,6 +2,8 @@
 
 import { useActionState, useState } from 'react'
 import { ArtikelenForm } from './ArtikelenForm'
+import { ProductLookup } from './ProductLookup'
+import type { ProductLookupResult } from './ProductLookup'
 import { LOCATIES } from '@/lib/constants/locaties'
 import { PALLET_OPTIES } from '@/lib/constants/pallets'
 import type { Klant, FacturatieCode, OrderArtikel } from '@/types'
@@ -46,6 +48,10 @@ export function OrderFormulier({
 }: Props) {
   const [state, formAction, isPending] = useActionState(action, null)
 
+  const [artikelenVanLookup, setArtikelenVanLookup] = useState<
+    Array<{ naam: string; berekening_type: 'delen' | 'vermenigvuldigen'; factor: number }>
+  >([])
+
   const [v, setV] = useState({
     order_nummer:        init?.order_nummer        ?? '',
     order_code:          init?.order_code          ?? '',
@@ -75,6 +81,17 @@ export function OrderFormulier({
       setV(prev => ({ ...prev, [field]: e.target.checked }))
   }
 
+  function onProductSelect(result: ProductLookupResult) {
+    setV(prev => ({
+      ...prev,
+      order_code: result.order_code,
+      omschrijving: result.omschrijving,
+      aantal_per_pallet: String(result.aantal_per_pallet),
+      pallet_type: result.pallet_type,
+    }))
+    setArtikelenVanLookup(result.artikelen)
+  }
+
   return (
     <form action={formAction} className="space-y-4">
       {state?.error && (
@@ -89,11 +106,11 @@ export function OrderFormulier({
           <input name="order_nummer" required value={v.order_nummer} onChange={set('order_nummer')}
             className="form-input" />
         </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Order code *</label>
-          <input name="order_code" required value={v.order_code} onChange={set('order_code')}
-            className="form-input" />
-        </div>
+        <ProductLookup
+          value={v.order_code}
+          onChange={(val) => setV(prev => ({ ...prev, order_code: val }))}
+          onSelect={onProductSelect}
+        />
       </div>
 
       <div className="grid grid-cols-2 gap-4">
@@ -201,6 +218,7 @@ export function OrderFormulier({
       <ArtikelenForm
         initialArtikelen={initialArtikelen}
         defaultOrderGrootte={init?.order_grootte ?? null}
+        lookupArtikelen={artikelenVanLookup}
       />
 
       <div className="flex gap-3">

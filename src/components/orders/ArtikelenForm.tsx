@@ -13,9 +13,10 @@ interface ArtikelRij {
 interface Props {
   initialArtikelen: Pick<OrderArtikel, 'naam' | 'berekening_type' | 'factor'>[]
   defaultOrderGrootte: number | null
+  lookupArtikelen?: Array<{ naam: string; berekening_type: 'delen' | 'vermenigvuldigen'; factor: number }>
 }
 
-export function ArtikelenForm({ initialArtikelen, defaultOrderGrootte }: Props) {
+export function ArtikelenForm({ initialArtikelen, defaultOrderGrootte, lookupArtikelen }: Props) {
   const [open, setOpen] = useState(initialArtikelen.length > 0)
   const [regels, setRegels] = useState<ArtikelRij[]>(
     initialArtikelen.map(a => ({
@@ -25,6 +26,16 @@ export function ArtikelenForm({ initialArtikelen, defaultOrderGrootte }: Props) 
     }))
   )
   const [orderGrootte, setOrderGrootte] = useState<number | null>(defaultOrderGrootte)
+
+  useEffect(() => {
+    if (!lookupArtikelen || lookupArtikelen.length === 0) return
+    setRegels(lookupArtikelen.map(a => ({
+      naam: a.naam,
+      berekening_type: a.berekening_type,
+      factor: String(a.factor),
+    })))
+    setOpen(true)
+  }, [lookupArtikelen])
 
   // Luister naar wijzigingen in het order_grootte invoerveld in de parent form
   useEffect(() => {
