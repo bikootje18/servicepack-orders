@@ -36,7 +36,8 @@ export function bepaalSplitNummer(origineel: string, bestaandeNummers: string[])
 export async function getOrders(
   page = 1,
   perPagina = 50,
-  zoek?: string
+  zoek?: string,
+  archief = false,
 ): Promise<{ orders: Order[]; totaal: number }> {
   const supabase = await createClient()
   const van = (page - 1) * perPagina
@@ -49,6 +50,18 @@ export async function getOrders(
 
   if (zoek && zoek.trim()) {
     query = query.or(`order_nummer.ilike.%${zoek}%,order_code.ilike.%${zoek}%`)
+  }
+
+  // Archief filter: orders met/zonder gekoppelde vracht
+  const { data: archiefIds } = await supabase.from('order_heeft_vracht').select('order_id')
+  const ids = (archiefIds ?? []).map((r: any) => r.order_id)
+  if (archief) {
+    if (ids.length === 0) return { orders: [], totaal: 0 }
+    query = query.in('id', ids)
+  } else {
+    if (ids.length > 0) {
+      query = query.not('id', 'in', `(${ids.join(',')})`)
+    }
   }
 
   const { data, count, error } = await query.range(van, tot)
@@ -101,6 +114,32 @@ export async function updateOrder(id: string, data: Partial<Order>): Promise<voi
 
 export async function deleteOrder(id: string): Promise<void> {
   const supabase = await createClient()
+
+  // Als dit een afsplitsing is, zet het aantal terug op het originele order
+  const { data: teVerwijderen } = await supabase
+    .from('orders')
+    .select('gesplitst_van, order_grootte')
+    .eq('id', id)
+    .single()
+
+  if (teVerwijderen?.gesplitst_van) {
+    const { data: origineel } = await supabase
+      .from('orders')
+      .select('order_grootte')
+      .eq('id', teVerwijderen.gesplitst_van)
+      .single()
+
+    if (origineel) {
+      await supabase
+        .from('orders')
+        .update({
+          order_grootte: origineel.order_grootte + teVerwijderen.order_grootte,
+          gesplitst_naar: null,
+        })
+        .eq('id', teVerwijderen.gesplitst_van)
+    }
+  }
+
   const { error } = await supabase
     .from('orders')
     .delete()

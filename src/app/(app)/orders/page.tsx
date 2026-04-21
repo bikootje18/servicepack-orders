@@ -8,13 +8,14 @@ import { formatDate } from '@/lib/utils/formatters'
 export default async function OrdersPage({
   searchParams,
 }: {
-  searchParams: Promise<{ pagina?: string; zoek?: string }>
+  searchParams: Promise<{ pagina?: string; zoek?: string; archief?: string }>
 }) {
   const params = await searchParams
   const pagina = parseInt(params.pagina ?? '1')
   const zoek = params.zoek ?? ''
+  const archief = params.archief === '1'
   const perPagina = 50
-  const { orders, totaal } = await getOrders(pagina, perPagina, zoek)
+  const { orders, totaal } = await getOrders(pagina, perPagina, zoek, archief)
   const totaalPaginas = Math.ceil(totaal / perPagina)
 
   return (
@@ -27,6 +28,26 @@ export default async function OrdersPage({
             + Nieuwe order
           </Link>
         </div>
+      </div>
+
+      {/* Actief / Archief tabs */}
+      <div className="flex gap-1 mb-6 bg-gray-100 rounded-lg p-1 w-fit">
+        <a
+          href={`/orders${zoek ? `?zoek=${encodeURIComponent(zoek)}` : ''}`}
+          className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${
+            !archief ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'
+          }`}
+        >
+          Actief
+        </a>
+        <a
+          href={`/orders?archief=1${zoek ? `&zoek=${encodeURIComponent(zoek)}` : ''}`}
+          className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${
+            archief ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'
+          }`}
+        >
+          Archief
+        </a>
       </div>
 
       {zoek && (
@@ -51,7 +72,10 @@ export default async function OrdersPage({
             {orders.length === 0 && (
               <tr>
                 <td colSpan={6} className="px-4 py-8 text-center text-gray-400 text-sm">
-                  Geen orders gevonden{zoek ? ` voor "${zoek}"` : ''}.
+                  {archief
+                    ? `Geen gearchiveerde orders gevonden${zoek ? ` voor "${zoek}"` : ''}.`
+                    : `Geen actieve orders gevonden${zoek ? ` voor "${zoek}"` : ''}.`
+                  }
                 </td>
               </tr>
             )}
@@ -76,7 +100,15 @@ export default async function OrdersPage({
         </table>
       </div>
 
-      <Pagination pagina={pagina} totaalPaginas={totaalPaginas} basisUrl={zoek ? `/orders?zoek=${encodeURIComponent(zoek)}` : '/orders'} />
+      <Pagination
+        pagina={pagina}
+        totaalPaginas={totaalPaginas}
+        basisUrl={
+          archief
+            ? `/orders?archief=1${zoek ? `&zoek=${encodeURIComponent(zoek)}` : ''}`
+            : zoek ? `/orders?zoek=${encodeURIComponent(zoek)}` : '/orders'
+        }
+      />
     </div>
   )
 }
