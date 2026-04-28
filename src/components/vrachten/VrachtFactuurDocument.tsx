@@ -213,7 +213,7 @@ export function VrachtFactuurDocument({ factuur, leveringen, klantNaam, logoUrl 
         <View style={S.headerRow}>
           <View style={S.headerLeft}>
             {logoUrl && <Image src={logoUrl} style={S.logo} />}
-            <Text style={S.bedrijfRegel}>{BEDRIJF.naam}</Text>
+            <Text style={S.bedrijfRegel}>{BEDRIJF.naam}{'    '}NL BIO-01</Text>
             <Text style={S.bedrijfRegel}>{BEDRIJF.adres}</Text>
             <Text style={S.bedrijfRegel}>{BEDRIJF.postcode} {BEDRIJF.stad}</Text>
             <Text style={S.bedrijfRegel}>{BEDRIJF.land}</Text>
