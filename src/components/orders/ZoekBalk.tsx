@@ -1,6 +1,6 @@
 'use client'
 
-import { useRouter, usePathname } from 'next/navigation'
+import { useRouter, usePathname, useSearchParams } from 'next/navigation'
 import { useTransition } from 'react'
 
 interface Props {
@@ -10,16 +10,21 @@ interface Props {
 export function ZoekBalk({ defaultValue }: Props) {
   const router = useRouter()
   const pathname = usePathname()
+  const searchParams = useSearchParams()
   const [, startTransition] = useTransition()
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const waarde = e.target.value
     startTransition(() => {
+      const params = new URLSearchParams(searchParams.toString())
+      params.delete('pagina')
       if (waarde.trim()) {
-        router.push(`${pathname}?zoek=${encodeURIComponent(waarde)}`)
+        params.set('zoek', waarde)
       } else {
-        router.push(pathname)
+        params.delete('zoek')
       }
+      const query = params.toString()
+      router.push(query ? `${pathname}?${query}` : pathname)
     })
   }
 
