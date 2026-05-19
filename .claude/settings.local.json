@@ -1,0 +1,28 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mv tmpscaffold/.gitignore .)",
+      "Bash(mv tmpscaffold/next-env.d.ts .)",
+      "Bash(mv tmpscaffold/next.config.ts .)",
+      "Bash(mv tmpscaffold/package.json .)",
+      "Bash(mv tmpscaffold/package-lock.json .)",
+      "Bash(npm install:*)",
+      "Bash(npm ls:*)",
+      "Bash(npm run:*)",
+      "Bash(ls \"/Users/biko/Documents/New Order System/src/app/\\(app\\)/\")",
+      "Bash(find '/Users/biko/Documents/New Order System/src' -name types*)",
+      "Bash(ls \"/Users/biko/Documents/New Order System/src/app/\\(app\\)\")",
+      "Bash(node -e \"const Next = require\\(''/Users/biko/Documents/New Order System/node_modules/next/package.json''\\); console.log\\(Next.version\\)\")",
+      "Bash(node -e \":*)",
+      "Bash(NEXT_TURBOPACK=false npx next build)",
+      "Bash(echo \"EXIT: $?\")",
+      "Bash(npx tsc:*)",
+      "Bash(ls \"/Users/biko/Documents/New Order System/src/app/\\(app\\)/orders/[id]/\")",
+      "Bash(node -e \"console.log\\(require\\(''./node_modules/react/package.json''\\).version\\)\")",
+      "Bash(npx vitest:*)",
+      "Bash(ls \"/Users/biko/Documents/New Order System/src/app/\\(app\\)/vrachten/\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000/)",
+      "Bash(identify \"/Users/biko/Documents/New Order System/public/favicon-preview.png\")"
+    ]
+  }
+}
