@@ -10,6 +10,7 @@ export interface Klant {
   stad: string
   land: string
   email: string | null
+  portal_user_id: string | null
   aangemaakt_op: string
 }
 
@@ -192,4 +193,26 @@ export interface Productdefinitie {
   spiegelen: boolean
   tarief_service_pack: number
   aangemaakt_op: string
+}
+
+export interface PortalLevering {
+  id: string
+  leverdatum: string
+  aantal_geleverd: number
+  notities: string
+}
+
+export interface PortalOrder {
+  id: string
+  order_nummer: string
+  order_code: string
+  status: OrderStatus
+  order_grootte: number
+  deadline: string | null
+  tht: string | null
+  pallet_type: PalletType
+  aantal_per_doos: number
+  aantal_per_inner: number
+  aantal_per_pallet: number
+  leveringen: PortalLevering[]
 }
