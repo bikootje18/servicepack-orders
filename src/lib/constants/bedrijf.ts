@@ -4,7 +4,7 @@
 
 export const BEDRIJF = {
   naam:     'Service Pack b.v.',
-  adres:    'Lokkerdreef 35',
+  adres:    'Lokkerdreef 20',
   postcode: '4879 ND',
   stad:     'Etten-Leur',
   land:     'Nederland',
