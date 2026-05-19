@@ -2,6 +2,7 @@ import { getKlant, updateKlant, deleteKlant } from '@/lib/db/klanten'
 import { getGiveXImports } from '@/lib/db/give-x-imports'
 import { getOrdersVoorKlant } from '@/lib/db/orders'
 import { groepeerOrders } from '@/lib/utils/order-groepering'
+import { PortalToegang } from '@/components/portal/PortalToegang'
 import { ImportDropzone } from '@/components/give-x/ImportDropzone'
 import { KlantBewerkFormulier } from '@/components/klanten/KlantBewerkFormulier'
 import { VerwijderKlantKnop } from '@/components/klanten/VerwijderKlantKnop'
@@ -65,6 +66,19 @@ export default async function KlantDetailPage({ params }: { params: Promise<{ id
         <OrderGroepTabel titel="Lopend" orders={groepen.lopend} />
         <OrderGroepTabel titel="Vracht klaar" orders={groepen.vracht_klaar} />
         <OrderGroepTabel titel="Opgehaald" orders={groepen.opgehaald} />
+      </section>
+
+      {/* Portaaltoegang */}
+      <section className="mb-10 pt-6 border-t border-gray-100">
+        <h2 className="text-lg font-semibold mb-1">Portaaltoegang</h2>
+        <p className="text-sm text-gray-400 mb-4">
+          Geef deze klant toegang tot het klantportaal om eigen orders te bekijken.
+        </p>
+        <PortalToegang
+          klantId={klant.id}
+          klantEmail={klant.email}
+          portalUserId={klant.portal_user_id}
+        />
       </section>
 
       {/* Klant verwijderen */}
