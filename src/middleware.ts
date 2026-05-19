@@ -24,12 +24,39 @@ export async function middleware(request: NextRequest) {
   )
 
   const { data: { user } } = await supabase.auth.getUser()
+  const path = request.nextUrl.pathname
+  const isPortalPath = path.startsWith('/portal')
+  const isPortalLogin = path === '/portal/login'
+  const isStaffLogin = path === '/login'
+  const isKlant = user?.user_metadata?.role === 'klant'
 
-  if (!user && !request.nextUrl.pathname.startsWith('/login')) {
-    return NextResponse.redirect(new URL('/login', request.url))
+  if (!user) {
+    if (isPortalPath && !isPortalLogin) {
+      return NextResponse.redirect(new URL('/portal/login', request.url))
+    }
+    if (!isPortalPath && !isStaffLogin) {
+      return NextResponse.redirect(new URL('/login', request.url))
+    }
+    return supabaseResponse
   }
 
-  if (user && request.nextUrl.pathname === '/login') {
+  // Authenticated klant on portal login → go to dashboard
+  if (isKlant && isPortalLogin) {
+    return NextResponse.redirect(new URL('/portal/dashboard', request.url))
+  }
+
+  // Authenticated klant trying to access staff app → redirect to portal
+  if (isKlant && !isPortalPath) {
+    return NextResponse.redirect(new URL('/portal/dashboard', request.url))
+  }
+
+  // Authenticated staff trying to access portal → redirect to staff app
+  if (!isKlant && isPortalPath) {
+    return NextResponse.redirect(new URL('/', request.url))
+  }
+
+  // Authenticated staff on staff login → go to app root
+  if (!isKlant && isStaffLogin) {
     return NextResponse.redirect(new URL('/', request.url))
   }
 
