@@ -17,11 +17,6 @@ export interface ProductLookupResult {
   omschrijving: string
   aantal_per_pallet: number
   pallet_type: PalletType
-  artikelen: Array<{
-    naam: string
-    berekening_type: 'delen' | 'vermenigvuldigen'
-    factor: number
-  }>
 }
 
 interface Props {
@@ -69,23 +64,6 @@ export function ProductLookup({ value, onChange, onSelect }: Props) {
   }, [])
 
   function selecteer(pd: Productdefinitie) {
-    const artikelen: ProductLookupResult['artikelen'] = []
-
-    if (pd.tray_1_code && pd.tray_1_per_he > 0) {
-      artikelen.push({
-        naam: `BSB${pd.tray_1_code} ${pd.tray_1_omschrijving}`.trim(),
-        berekening_type: 'vermenigvuldigen',
-        factor: pd.tray_1_per_he,
-      })
-    }
-    if (pd.tray_2_code && pd.tray_2_per_he > 0) {
-      artikelen.push({
-        naam: `BSB${pd.tray_2_code} ${pd.tray_2_omschrijving}`.trim(),
-        berekening_type: 'vermenigvuldigen',
-        factor: pd.tray_2_per_he,
-      })
-    }
-
     const omschrijvingParts = [
       `${pd.art_nr} ${pd.omschrijving_eindproduct}`,
     ]
@@ -101,7 +79,6 @@ export function ProductLookup({ value, onChange, onSelect }: Props) {
       omschrijving: omschrijvingParts.join('\n'),
       aantal_per_pallet: pd.per_pallet,
       pallet_type: LADING_DRAGER_MAP[pd.lading_drager] ?? 'geen',
-      artikelen,
     })
 
     setOpen(false)

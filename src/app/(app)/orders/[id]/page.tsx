@@ -93,6 +93,12 @@ export default async function OrderDetailPage({
                 </>
               )}
             </p>
+            <p className="text-xs text-gray-400 mt-0.5">
+              Aangemaakt op {new Date(order.aangemaakt_op).toLocaleDateString('nl-NL', { day: 'numeric', month: 'long', year: 'numeric' })}
+              {order.aangemaakt_door_profiel?.naam && (
+                <> door {order.aangemaakt_door_profiel.naam}</>
+              )}
+            </p>
           </div>
           <div className="flex items-center gap-2 flex-shrink-0 print:hidden">
             <PrintKnop />

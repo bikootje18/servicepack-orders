@@ -125,6 +125,17 @@ const S = StyleSheet.create({
     flexDirection: 'row',
     gap: mm(2),
   },
+  omschrijvingRegel: {
+    marginTop: mm(3),
+    paddingTop: mm(3),
+    borderTopWidth: 0.25,
+    borderTopColor: '#ccc',
+  },
+  omschrijvingTekst: {
+    fontSize: 8.5,
+    color: '#222',
+    lineHeight: 1.5,
+  },
   tabelHeader: {
     flexDirection: 'row',
     paddingBottom: mm(1.5),
@@ -147,11 +158,31 @@ const S = StyleSheet.create({
   tdTarief: { flex: 2.5, fontSize: 8.5, textAlign: 'right', color: '#555' },
   tdBedrag: { flex: 2.5, fontSize: 8.5, textAlign: 'right', fontFamily: 'Helvetica-Bold', color: '#111' },
   totaalBlok: {
+    marginTop: mm(4),
+    paddingTop: mm(4),
+    borderTopWidth: 0.5,
+    borderTopColor: '#bbb',
+  },
+  totaalRij: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingTop: mm(4),
-    marginTop: mm(3),
+    marginBottom: mm(1.5),
+  },
+  totaalRijLabel: {
+    fontSize: 8.5,
+    color: '#555',
+  },
+  totaalRijBedrag: {
+    fontSize: 8.5,
+    color: '#555',
+  },
+  totaalBtwRij: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingTop: mm(3),
+    marginTop: mm(1),
     borderTopWidth: 1.5,
     borderTopColor: '#111',
   },
@@ -183,11 +214,16 @@ interface Props {
   logoUrl?: string
 }
 
+const BTW_PERCENTAGE = 21
+
 export function FactuurDocument({ factuur, leveringen, klantNaam, logoUrl }: Props) {
   const order = factuur.order
   const tarief = factuur.tarief ?? 0
   const facturatieCode = (order as any)?.facturatie_code
   const tariefOmschrijving = facturatieCode?.omschrijving as string | undefined
+  const exclBtw = factuur.totaal_bedrag
+  const btwBedrag = exclBtw * (BTW_PERCENTAGE / 100)
+  const inclBtw = exclBtw + btwBedrag
 
   return (
     <Document>
@@ -252,6 +288,11 @@ export function FactuurDocument({ factuur, leveringen, klantNaam, logoUrl }: Pro
                 <Text style={S.orderMetaItemWaarde}>{tariefOmschrijving}</Text>
               </View>
             )}
+            {!!order.omschrijving && (
+              <View style={S.omschrijvingRegel}>
+                <Text style={S.omschrijvingTekst}>{order.omschrijving}</Text>
+              </View>
+            )}
           </View>
         )}
 
@@ -273,8 +314,18 @@ export function FactuurDocument({ factuur, leveringen, klantNaam, logoUrl }: Pro
 
         {/* Totaal */}
         <View style={S.totaalBlok}>
-          <Text style={S.totaalLabel}>TOTAAL EXCL. BTW</Text>
-          <Text style={S.totaalBedrag}>{euro(factuur.totaal_bedrag)}</Text>
+          <View style={S.totaalRij}>
+            <Text style={S.totaalRijLabel}>Subtotaal excl. BTW</Text>
+            <Text style={S.totaalRijBedrag}>{euro(exclBtw)}</Text>
+          </View>
+          <View style={S.totaalRij}>
+            <Text style={S.totaalRijLabel}>BTW {BTW_PERCENTAGE}%</Text>
+            <Text style={S.totaalRijBedrag}>{euro(btwBedrag)}</Text>
+          </View>
+          <View style={S.totaalBtwRij}>
+            <Text style={S.totaalLabel}>TOTAAL INCL. BTW</Text>
+            <Text style={S.totaalBedrag}>{euro(inclBtw)}</Text>
+          </View>
         </View>
 
         <View style={S.footer}>

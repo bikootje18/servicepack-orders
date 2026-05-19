@@ -54,6 +54,7 @@ export interface Order {
   // Joins
   klant?: Klant
   facturatie_code?: FacturatieCode
+  aangemaakt_door_profiel?: { naam: string } | null
 }
 
 export interface Levering {

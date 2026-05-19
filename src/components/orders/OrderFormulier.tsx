@@ -48,10 +48,6 @@ export function OrderFormulier({
 }: Props) {
   const [state, formAction, isPending] = useActionState(action, null)
 
-  const [artikelenVanLookup, setArtikelenVanLookup] = useState<
-    Array<{ naam: string; berekening_type: 'delen' | 'vermenigvuldigen'; factor: number }>
-  >([])
-
   const [v, setV] = useState({
     order_nummer:        init?.order_nummer        ?? '',
     order_code:          init?.order_code          ?? '',
@@ -82,14 +78,15 @@ export function OrderFormulier({
   }
 
   function onProductSelect(result: ProductLookupResult) {
+    const bsb = klanten.find(k => k.naam.toUpperCase() === 'BSB')
     setV(prev => ({
       ...prev,
       order_code: result.order_code,
       omschrijving: result.omschrijving,
       aantal_per_pallet: String(result.aantal_per_pallet),
       pallet_type: result.pallet_type,
+      ...(bsb ? { klant_id: bsb.id } : {}),
     }))
-    setArtikelenVanLookup(result.artikelen)
   }
 
   return (
@@ -218,7 +215,7 @@ export function OrderFormulier({
       <ArtikelenForm
         initialArtikelen={initialArtikelen}
         defaultOrderGrootte={init?.order_grootte ?? null}
-        lookupArtikelen={artikelenVanLookup}
+        lookupArtikelen={[]}
       />
 
       <div className="flex gap-3">

@@ -61,19 +61,22 @@ const records = rows
 console.log(`${records.length} geldige records om te importeren`)
 
 // Upsert in batches van 50
-const BATCH = 50
-let imported = 0
-for (let i = 0; i < records.length; i += BATCH) {
-  const batch = records.slice(i, i + BATCH)
-  const { error } = await supabase
-    .from('productdefinities')
-    .upsert(batch, { onConflict: 'art_nr' })
-  if (error) {
-    console.error(`Fout bij batch ${i}:`, error.message)
-    process.exit(1)
+async function main() {
+  const BATCH = 50
+  let imported = 0
+  for (let i = 0; i < records.length; i += BATCH) {
+    const batch = records.slice(i, i + BATCH)
+    const { error } = await supabase
+      .from('productdefinities')
+      .upsert(batch, { onConflict: 'art_nr' })
+    if (error) {
+      console.error(`Fout bij batch ${i}:`, error.message)
+      process.exit(1)
+    }
+    imported += batch.length
+    console.log(`${imported}/${records.length} geïmporteerd...`)
   }
-  imported += batch.length
-  console.log(`${imported}/${records.length} geïmporteerd...`)
+  console.log(`Klaar! ${imported} productdefinities geïmporteerd.`)
 }
 
-console.log(`Klaar! ${imported} productdefinities geïmporteerd.`)
+main()

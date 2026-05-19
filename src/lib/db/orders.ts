@@ -73,7 +73,7 @@ export async function getOrder(id: string): Promise<Order> {
   const supabase = await createClient()
   const { data, error } = await supabase
     .from('orders')
-    .select('*, klant:klanten(id, naam), facturatie_code:facturatie_codes(id, code, omschrijving, tarief)')
+    .select('*, klant:klanten(id, naam), facturatie_code:facturatie_codes(id, code, omschrijving, tarief), aangemaakt_door_profiel:profielen!aangemaakt_door(naam)')
     .eq('id', id)
     .single()
   if (error) throw error
@@ -182,7 +182,7 @@ export async function splitsOrder(id: string, data: {
   const resterend = Math.max(0, origineel.order_grootte - totaalGeleverd)
 
   if (data.aantal < 1) throw new Error('Aantal moet minimaal 1 zijn')
-  if (data.aantal > resterend) throw new Error(`Maximaal ${resterend} stuks beschikbaar`)
+  if (data.aantal >= resterend) throw new Error(`Maximaal ${resterend - 1} stuks afsplitsen (origineel moet ≥ 1 resterend houden)`)
   if (data.locatie === origineel.locatie) throw new Error('Nieuwe locatie moet verschillen van huidige locatie')
 
   // Bepaal nieuw ordernummer
