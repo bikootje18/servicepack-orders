@@ -1,7 +1,6 @@
 import { getCodes, createCode } from '@/lib/db/codes'
 import { revalidatePath } from 'next/cache'
-import { formatCurrency } from '@/lib/utils/formatters'
-import { VerwijderCodeKnop } from '@/components/codes/VerwijderCodeKnop'
+import { CodeRij } from '@/components/codes/CodeRij'
 
 export default async function CodesPage() {
   const codes = await getCodes(true)
@@ -47,15 +46,7 @@ export default async function CodesPage() {
         </thead>
         <tbody>
           {codes.map(code => (
-            <tr key={code.id} className={`border-b border-gray-100 ${!code.actief ? 'opacity-50' : ''}`}>
-              <td className="py-2 font-mono text-xs">{code.code}</td>
-              <td className="py-2">{code.omschrijving}</td>
-              <td className="py-2 text-right">{formatCurrency(code.tarief)}</td>
-              <td className="py-2 text-center">{code.actief ? '✓' : '✗'}</td>
-              <td className="py-2 text-right">
-                <VerwijderCodeKnop id={code.id} code={code.code} />
-              </td>
-            </tr>
+            <CodeRij key={code.id} code={code} />
           ))}
         </tbody>
       </table>
