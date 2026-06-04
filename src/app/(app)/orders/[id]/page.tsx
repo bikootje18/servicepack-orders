@@ -230,7 +230,14 @@ export default async function OrderDetailPage({
             <div>
               <p className="text-xs text-gray-400 mb-0.5">Facturatie code</p>
               {order.facturatie_code?.code
-                ? <p className="font-mono text-xs font-semibold text-violet-700 bg-violet-50 inline-block px-2 py-0.5 rounded">{order.facturatie_code.code}</p>
+                ? <span className="group relative inline-block">
+                    <span className="font-mono text-xs font-semibold text-violet-700 bg-violet-50 inline-block px-2 py-0.5 rounded cursor-help">{order.facturatie_code.code}</span>
+                    {order.facturatie_code.omschrijving && (
+                      <span className="pointer-events-none absolute left-0 top-full mt-1 z-10 hidden whitespace-nowrap rounded bg-gray-900 px-2 py-1 text-xs font-medium text-white shadow-lg group-hover:block print:hidden">
+                        {order.facturatie_code.omschrijving}
+                      </span>
+                    )}
+                  </span>
                 : <p className="text-gray-300 font-semibold">–</p>
               }
             </div>
