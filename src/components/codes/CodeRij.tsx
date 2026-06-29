@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { updateCodeAction, toggleCodeActiefAction } from '@/lib/actions/codes'
 import { VerwijderCodeKnop } from './VerwijderCodeKnop'
-import { formatCurrency } from '@/lib/utils/formatters'
+import { formatTarief } from '@/lib/utils/formatters'
 import type { FacturatieCode } from '@/types'
 
 export function CodeRij({ code }: { code: FacturatieCode }) {
@@ -63,7 +63,7 @@ export function CodeRij({ code }: { code: FacturatieCode }) {
     <tr className={`border-b border-gray-100 ${!code.actief ? 'opacity-50' : ''}`}>
       <td className="py-2 font-mono text-xs">{code.code}</td>
       <td className="py-2">{code.omschrijving}</td>
-      <td className="py-2 text-right">{formatCurrency(code.tarief)}</td>
+      <td className="py-2 text-right">{formatTarief(code.tarief)}</td>
       <td className="py-2 pl-3 text-gray-500">{code.eenheid}</td>
       <td className="py-2 text-center">
         <form action={toggleCodeActiefAction} className="inline">
