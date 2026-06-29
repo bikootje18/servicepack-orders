@@ -10,7 +10,7 @@ import { LeveringenList } from '@/components/leveringen/LeveringenList'
 import { BijlageUpload } from '@/components/bijlagen/BijlageUpload'
 import { BijlagenList } from '@/components/bijlagen/BijlagenList'
 import { berekenResterend } from '@/lib/db/orders'
-import { formatDate, formatAantal } from '@/lib/utils/formatters'
+import { formatDate, formatAantal, formatCurrency } from '@/lib/utils/formatters'
 import { berekenAantal } from '@/lib/utils/artikel-berekening'
 import { locatieLabel } from '@/lib/constants/locaties'
 import { BEDRIJF } from '@/lib/constants/bedrijf'
@@ -235,6 +235,9 @@ export default async function OrderDetailPage({
                     {order.facturatie_code.omschrijving && (
                       <span className="pointer-events-none absolute left-0 top-full mt-1 z-10 hidden whitespace-nowrap rounded bg-gray-900 px-2 py-1 text-xs font-medium text-white shadow-lg group-hover:block print:hidden">
                         {order.facturatie_code.omschrijving}
+                        {order.facturatie_code.eenheid && (
+                          <span className="text-gray-300"> · {formatCurrency(order.facturatie_code.tarief)} {order.facturatie_code.eenheid}</span>
+                        )}
                       </span>
                     )}
                   </span>

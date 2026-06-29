@@ -18,13 +18,13 @@ export async function getCodes(inclusiefInactief = false): Promise<FacturatieCod
   return data
 }
 
-export async function createCode(data: { code: string; omschrijving: string; tarief: number }): Promise<void> {
+export async function createCode(data: { code: string; omschrijving: string; tarief: number; eenheid: string }): Promise<void> {
   const supabase = await createClient()
   const { error } = await supabase.from('facturatie_codes').insert(data)
   if (error) throw error
 }
 
-export async function updateCode(id: string, data: { omschrijving?: string; tarief?: number }): Promise<void> {
+export async function updateCode(id: string, data: { omschrijving?: string; tarief?: number; eenheid?: string }): Promise<void> {
   const supabase = await createClient()
   const { error } = await supabase.from('facturatie_codes').update(data).eq('id', id)
   if (error) throw error

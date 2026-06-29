@@ -12,6 +12,7 @@ export async function updateCodeAction(formData: FormData) {
   await updateCode(formData.get('id') as string, {
     omschrijving: formData.get('omschrijving') as string,
     tarief: parseFloat(formData.get('tarief') as string),
+    eenheid: formData.get('eenheid') as string,
   })
   revalidatePath('/codes')
 }

@@ -57,7 +57,7 @@ export default async function NieuweFactuurPage({
           </tbody>
         </table>
 
-        <p className="text-sm text-gray-500 mb-4">Tarief: {formatCurrency(order.facturatie_code!.tarief)} per eenheid (excl. BTW)</p>
+        <p className="text-sm text-gray-500 mb-4">Tarief: {formatCurrency(order.facturatie_code!.tarief)} {order.facturatie_code!.eenheid || 'per eenheid'} (excl. BTW)</p>
 
         <button type="submit"
           className="bg-green-600 text-white px-6 py-2 rounded text-sm font-medium hover:bg-green-700">

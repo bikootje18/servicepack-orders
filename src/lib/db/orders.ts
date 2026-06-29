@@ -73,7 +73,7 @@ export async function getOrder(id: string): Promise<Order> {
   const supabase = await createClient()
   const { data, error } = await supabase
     .from('orders')
-    .select('*, klant:klanten(id, naam), facturatie_code:facturatie_codes(id, code, omschrijving, tarief), aangemaakt_door_profiel:profielen!aangemaakt_door(naam)')
+    .select('*, klant:klanten(id, naam), facturatie_code:facturatie_codes(id, code, omschrijving, tarief, eenheid), aangemaakt_door_profiel:profielen!aangemaakt_door(naam)')
     .eq('id', id)
     .single()
   if (error) throw error

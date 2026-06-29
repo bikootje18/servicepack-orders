@@ -13,7 +13,7 @@ export function CodeRij({ code }: { code: FacturatieCode }) {
     return (
       <tr className="border-b border-gray-100">
         <td className="py-2 font-mono text-xs align-top">{code.code}</td>
-        <td className="py-2" colSpan={4}>
+        <td className="py-2" colSpan={5}>
           <form
             action={async (formData) => {
               await updateCodeAction(formData)
@@ -37,6 +37,12 @@ export function CodeRij({ code }: { code: FacturatieCode }) {
               required
               className="form-input w-28"
             />
+            <input
+              name="eenheid"
+              defaultValue={code.eenheid}
+              placeholder="per stuk"
+              className="form-input w-36"
+            />
             <button type="submit" className="btn-primary">
               Opslaan
             </button>
@@ -58,6 +64,7 @@ export function CodeRij({ code }: { code: FacturatieCode }) {
       <td className="py-2 font-mono text-xs">{code.code}</td>
       <td className="py-2">{code.omschrijving}</td>
       <td className="py-2 text-right">{formatCurrency(code.tarief)}</td>
+      <td className="py-2 pl-3 text-gray-500">{code.eenheid}</td>
       <td className="py-2 text-center">
         <form action={toggleCodeActiefAction} className="inline">
           <input type="hidden" name="id" value={code.id} />

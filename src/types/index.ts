@@ -19,6 +19,7 @@ export interface FacturatieCode {
   code: string
   omschrijving: string
   tarief: number
+  eenheid: string
   actief: boolean
   aangemaakt_op: string
 }
