@@ -31,11 +31,11 @@ export function CodeRij({ code }: { code: FacturatieCode }) {
             <input
               name="tarief"
               type="number"
-              step="0.0001"
-              min="0.0001"
+              step="any"
+              min="0"
               defaultValue={code.tarief}
               required
-              className="form-input w-28"
+              className="form-input w-40"
             />
             <input
               name="eenheid"

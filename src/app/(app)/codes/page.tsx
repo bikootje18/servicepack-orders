@@ -17,24 +17,21 @@ export default async function CodesPage() {
   }
 
   return (
-    <div className="max-w-3xl">
+    <div className="max-w-5xl">
       <h1 className="text-2xl font-bold mb-6">Facturatie codes</h1>
 
-      <form action={maakCodeAan} className="grid grid-cols-4 gap-2 mb-6">
+      <form action={maakCodeAan} className="flex flex-wrap items-end gap-2 mb-6">
         <input name="code" placeholder="Code" required
-          className="form-input" />
+          className="form-input w-36" />
         <input name="omschrijving" placeholder="Omschrijving" required
-          className="form-input" />
+          className="form-input flex-1 min-w-[14rem]" />
         <input name="eenheid" placeholder="Per (bijv. per fles, per 6, per doos)"
-          className="form-input" />
-        <div className="flex gap-2">
-          <input name="tarief" type="number" step="0.0001" min="0.0001" placeholder="Tarief (€)"
-            required className="form-input flex-1" />
-          <button type="submit"
-            className="btn-primary">
-            Toevoegen
-          </button>
-        </div>
+          className="form-input w-52" />
+        <input name="tarief" type="number" step="any" min="0" placeholder="Tarief (€)"
+          required className="form-input w-40" />
+        <button type="submit" className="btn-primary">
+          Toevoegen
+        </button>
       </form>
 
       <table className="w-full text-sm">
